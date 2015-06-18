@@ -12,14 +12,24 @@ class Imu
 public:
 	Imu();
 	~Imu();
-	void ACCELERO_ReadAcc();
-	void ACCELERO_MEMS_Test();
-	void GYRO_ReadAng();
-	void GYRO_MEMS_Test();
+
+	void printAngles();
+	void comp_filter(float newAngle, float newRate);
 
 private:
+	void ACCELERO_ReadAcc();
+	void GYRO_ReadAng();
+
 	/* Init af threshold to detect acceleration on MEMS */
 	int16_t ThresholdHigh;
 	int16_t ThresholdLow;
+
+	int16_t xAccel;
+	int16_t yAccel;
+	float xGyro;
+	float yGyro;
+
+	float xAngleFiltered;
+	float dt = 0.02;
 };
 
