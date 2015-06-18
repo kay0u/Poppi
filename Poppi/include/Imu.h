@@ -1,11 +1,11 @@
 #pragma once
 
 #include <stm32f4xx_hal.h>
-#include "include/stm32f4_discovery.h"
-#include "include/stm32f4_discovery_accelerometer.h"
-#include "include/stm32f4_discovery_gyroscope.h"
+#include "stm32f4_discovery.h"
+#include "stm32f4_discovery_accelerometer.h"
+#include "stm32f4_discovery_gyroscope.h"
 
-#include "include/Useful.h"
+#include "Useful.h"
 
 class Imu
 {
