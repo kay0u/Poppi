@@ -189,3 +189,10 @@ GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
 CodeDB/
+Debug
+.sln
+.suo
+.mak
+.old
+VisualGDBCache/
+Makefile
