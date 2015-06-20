@@ -271,7 +271,8 @@ static void Print_Thread2(void const *argument)
 		/* Print every 500 ms for 10 s */
 		while (count >= osKernelSysTick())
 		{
-			imu.printAngles();
+			printf("ABWABWA\r\n");
+			//imu.printAngles();
 
 			osDelay(500);
 		}
@@ -281,6 +282,21 @@ static void Print_Thread2(void const *argument)
     
 		/* Suspend Thread 2 */
 		osThreadSuspend(NULL);  
+	}
+}
+
+static void BP_Thread(void const *argument)
+{
+	BSP_PB_Init(BUTTON_KEY, BUTTON_MODE_EXTI);
+
+	for (;;)
+	{
+		while (!Useful::UserPressButton)
+		{
+			osDelay(1);
+		}
+		Useful::UserPressButton = 0;
+		Toggle_Leds();
 	}
 }
 
@@ -298,16 +314,11 @@ int main(void)
 	HAL_Init();
 
 	Imu imu;
-	BSP_LED_Off(LED3);
-	BSP_LED_Off(LED4);
-	BSP_LED_Off(LED5);
-	BSP_LED_Off(LED6);
+	BSP_LED_Init(LED3);
+	BSP_LED_Init(LED4);
+	BSP_LED_Init(LED5);
+	BSP_LED_Init(LED6);
 
-	BSP_PB_Init(BUTTON_KEY, BUTTON_MODE_EXTI);
-	while (!Useful::UserPressButton)
-	{
-		Toggle_Leds();
-	}
 	/* Thread 1 definition */
 	osThreadDef(ABWABWALED, LED_Thread1, osPriorityNormal, 0, configMINIMAL_STACK_SIZE);
   
@@ -315,12 +326,16 @@ int main(void)
 	/* /!\ Attention, avec l'utilisation du printf il faut augmenter la stack size pour le thread.*/
 	osThreadDef(ABWAPrintIMU, Print_Thread2, osPriorityRealtime, 1, configMINIMAL_STACK_SIZE + 500);
   
+	osThreadDef(BPThread, BP_Thread, osPriorityNormal, 1, configMINIMAL_STACK_SIZE);
+
 	/* Start thread 1 */
 	LEDThread1Handle = osThreadCreate(osThread(ABWABWALED), NULL);
   
 	/* Start thread 2 */
 	PrintThread2Handle = osThreadCreate(osThread(ABWAPrintIMU), NULL);
-  
+
+	osThreadCreate(osThread(BPThread), NULL);
+
 	/* Start scheduler */
 	osKernelStart();
 
