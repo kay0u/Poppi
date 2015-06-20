@@ -200,6 +200,7 @@ VisualGDBCache/
 Makefile
 *.filters
 Poppi/gcc_Release.h
+Poppi/gcc_Debug.h
 *.old
 Poppi/Poppi-Debug.vgdbsettings
 Poppi/Poppi-Release.vgdbsettings
