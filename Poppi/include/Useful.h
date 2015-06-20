@@ -1,12 +1,16 @@
 #pragma once
 #include "stm32f4_discovery.h"
+#include "FreeRTOS/Source/include/FreeRTOS.h"
 #include "FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h"
 
-#define M_PI	3.14159265359f
 #define TWO_PI  6.2831853f
 #define HALF_PI 1.5707963f
 #define ABS(x)  (x < 0) ? (-x) : x
 #define SQRE(x) ((x)*(x))
+
+//Set to false to hide logs
+#define DEBUG true
+
 // Converts degrees to radians.
 #define DEGREETORADIAN(angleDegrees) (angleDegrees * M_PI / 180.0)
 

@@ -17,6 +17,7 @@ public:
 	~Imu();
 
 	void printAngles();
+	void init();
 
 private:
 	void readAcc();
