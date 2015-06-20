@@ -1,5 +1,6 @@
 #pragma once
 #include "stm32f4_discovery.h"
+#include "FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h"
 
 #define M_PI	3.14159265359
 #define ABS(x)  (x < 0) ? (-x) : x
