@@ -26,20 +26,6 @@ int16_t Useful::distance(int16_t d1, int16_t d2)
 }
 
 /**
-* @brief  This function is executed in case of error occurrence.
-* @param  None
-* @retval None
-*/
-void Error_Handler(void)
-{
-	/* Turn LED5 on */
-	BSP_LED_On(LED5);
-	while (1)
-	{
-	}
-}
-
-/**
 * @brief  EXTI line detection callbacks.
 * @param  GPIO_Pin: Specifies the pins connected EXTI line
 * @retval None
@@ -75,6 +61,28 @@ extern "C"
 {
 #endif
 
+	void SysTick_Handler(void)
+	{
+		HAL_IncTick();
+		HAL_SYSTICK_IRQHandler();
+		osSystickHandler();
+
+	}
+	
+	/**
+	* @brief  This function is executed in case of error occurrence.
+	* @param  None
+	* @retval None
+	*/
+	void Error_Handler(void)
+	{
+		/* Turn LED5 on */
+		BSP_LED_On(LED5);
+		while (1)
+		{
+		}
+	}
+	
 	/**
 	* @brief  This function handles NMI exception.
 	* @param  None
@@ -137,29 +145,11 @@ extern "C"
 	}
 
 	/**
-	* @brief  This function handles SVCall exception.
-	* @param  None
-	* @retval None
-	*/
-	void SVC_Handler(void)
-	{
-	}
-
-	/**
 	* @brief  This function handles Debug Monitor exception.
 	* @param  None
 	* @retval None
 	*/
 	void DebugMon_Handler(void)
-	{
-	}
-
-	/**
-	* @brief  This function handles PendSVC exception.
-	* @param  None
-	* @retval None
-	*/
-	void PendSV_Handler(void)
 	{
 	}
 
