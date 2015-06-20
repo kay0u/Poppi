@@ -3,12 +3,36 @@
 #include "include/stm32f4_discovery.h"
 #include "include/stm32f4_discovery_accelerometer.h"
 #include "include/stm32f4_discovery_gyroscope.h"
-#include "FreeRTOS/Source/include/FreeRTOS.h"
 
 #include "include/Useful.h"
 #include "include/Imu.h"
 
 void Toggle_Leds(void);
+
+/* Private typedef -----------------------------------------------------------*/
+#define  PERIOD_VALUE       (65535)      /* Period Value  */
+
+#define  PULSE1_VALUE       40961       /* Capture Compare 1 Value  */
+#define  PULSE2_VALUE       27309       /* Capture Compare 2 Value  */
+#define  PULSE3_VALUE       13654       /* Capture Compare 3 Value  */
+#define  PULSE4_VALUE       6826        /* Capture Compare 4 Value  */
+
+/* Private define ------------------------------------------------------------*/
+/* Private macro -------------------------------------------------------------*/
+/* Private variables ---------------------------------------------------------*/
+TIM_HandleTypeDef    TimHandle;
+TIM_OC_InitTypeDef   sConfig;
+
+uint32_t uwPrescalerValue = 0;
+uint32_t uwCapturedValue = 0;
+
+
+#define TIMx                           TIM3
+#define TIMx_CLK_ENABLE                __HAL_RCC_TIM3_CLK_ENABLE
+
+/* Definition for TIMx's NVIC */
+#define TIMx_IRQn                      TIM3_IRQn
+#define TIMx_IRQHandler                TIM3_IRQHandler
 
 /**
   * @brief  Toggle LEDs
@@ -88,6 +112,96 @@ static void SystemClock_Config(void)
 	}
 }
 
+void InitializeTimer()
+{
+	/* STM32F4xx HAL library initialization:
+	- Configure the Flash prefetch, instruction and Data caches
+	- Configure the Systick to generate an interrupt each 1 msec
+	- Set NVIC Group Priority to 4
+	- Global MSP (MCU Support Package) initialization
+	*/
+	if (HAL_Init() != HAL_OK)
+	{
+		/* Start Conversation Error */
+		Error_Handler();
+	}
+
+	/* Configure the system clock to 100 MHz */
+	SystemClock_Config();
+
+	/* Configure LED3 and LED4 */
+	BSP_LED_Init(LED3);
+	BSP_LED_Init(LED4);
+
+
+	/*##-1- Configure the TIM peripheral #######################################*/
+	/* -----------------------------------------------------------------------
+	In this example TIM3 input clock (TIM3CLK) is set to 2 * APB1 clock (PCLK1),
+	since APB1 prescaler is different from 1.
+	TIM3CLK = 2 * PCLK1
+	PCLK1 = HCLK / 2
+	=> TIM3CLK = HCLK = SystemCoreClock
+	To get TIM3 counter clock at 10 KHz, the Prescaler is computed as following:
+	Prescaler = (TIM3CLK / TIM3 counter clock) - 1
+	Prescaler = (SystemCoreClock /10 KHz) - 1
+
+	Note:
+	SystemCoreClock variable holds HCLK frequency and is defined in system_stm32f4xx.c file.
+	Each time the core clock (HCLK) changes, user had to update SystemCoreClock
+	variable value. Otherwise, any configuration based on this variable will be incorrect.
+	This variable is updated in three ways:
+	1) by calling CMSIS function SystemCoreClockUpdate()
+	2) by calling HAL API function HAL_RCC_GetSysClockFreq()
+	3) each time HAL_RCC_ClockConfig() is called to configure the system clock frequency
+	----------------------------------------------------------------------- */
+
+	/* Compute the prescaler value to have TIM3 counter clock equal to 10 KHz */
+	uwPrescalerValue = (uint32_t)((SystemCoreClock / 10000) - 1);
+
+	/* Set TIMx instance */
+	TimHandle.Instance = TIMx;
+
+	/* Initialize TIM3 peripheral as follow:
+	+ Period = 10000 - 1
+	+ Prescaler = ((SystemCoreClock/2)/10000) - 1
+	+ ClockDivision = 0
+	+ Counter direction = Up
+	*/
+	TimHandle.Init.Period = 10000 - 1;
+	TimHandle.Init.Prescaler = uwPrescalerValue;
+	TimHandle.Init.ClockDivision = 0;
+	TimHandle.Init.CounterMode = TIM_COUNTERMODE_UP;
+	if (HAL_TIM_Base_Init(&TimHandle) != HAL_OK)
+	{
+		/* Initialization Error */
+		Error_Handler();
+	}
+
+	/*##-2- Start the TIM Base generation in interrupt mode ####################*/
+	/* Start Channel1 */
+	if (HAL_TIM_Base_Start_IT(&TimHandle) != HAL_OK)
+	{
+		/* Starting Error */
+		Error_Handler();
+	}
+
+	/* Infinite loop */
+	while (1)
+	{
+	}
+}
+
+/**
+* @brief  Period elapsed callback in non blocking mode
+* @param  htim : TIM handle
+* @retval None
+*/
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+	printf("POUET POUET \r\n");
+	BSP_LED_Toggle(LED4);
+}
+
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
@@ -138,6 +252,8 @@ static void LED_Thread1(void const *argument)
 	}
 }
 
+Imu imu;
+
 /**
   * @brief  Toggle LED4 thread
   * @param  argument not used
@@ -152,18 +268,18 @@ static void Print_Thread2(void const *argument)
 	{
 		count = osKernelSysTick() + 10000;
     
-		// Print every 500 ms for 10 s 
+		/* Print every 500 ms for 10 s */
 		while (count >= osKernelSysTick())
 		{
-			//imu.printAngles();
+			imu.printAngles();
 
 			osDelay(500);
 		}
     
-		// Resume Thread 1 
+		/* Resume Thread 1 */
 		osThreadResume(LEDThread1Handle);
     
-		// Suspend Thread 2 
+		/* Suspend Thread 2 */
 		osThreadSuspend(NULL);  
 	}
 }
@@ -176,13 +292,12 @@ int main(void)
        - Set NVIC Group Priority to 4
        - Global MSP (MCU Support Package) initialization
      */
-	//SystemClock_Config();
+	SystemClock_Config();
 	//InitializeTimer();
 	
 	HAL_Init();
-	Imu imu;
-	imu.init();
 
+	Imu imu;
 	BSP_LED_Off(LED3);
 	BSP_LED_Off(LED4);
 	BSP_LED_Off(LED5);
@@ -193,18 +308,22 @@ int main(void)
 	{
 		Toggle_Leds();
 	}
-
+	/* Thread 1 definition */
 	osThreadDef(ABWABWALED, LED_Thread1, osPriorityNormal, 0, configMINIMAL_STACK_SIZE);
   
-	// /!\ Attention, avec l'utilisation du printf il faut augmenter la stack size pour le thread.
+	/* Thread 2 definition */
+	/* /!\ Attention, avec l'utilisation du printf il faut augmenter la stack size pour le thread.*/
 	osThreadDef(ABWAPrintIMU, Print_Thread2, osPriorityRealtime, 1, configMINIMAL_STACK_SIZE + 500);
   
+	/* Start thread 1 */
 	LEDThread1Handle = osThreadCreate(osThread(ABWABWALED), NULL);
+  
+	/* Start thread 2 */
 	PrintThread2Handle = osThreadCreate(osThread(ABWAPrintIMU), NULL);
   
+	/* Start scheduler */
 	osKernelStart();
 
-	  // We should never get here as control is now taken by the scheduler
-	for (;;) {
-	};
+	  /* We should never get here as control is now taken by the scheduler */
+	for (;;);
 }
