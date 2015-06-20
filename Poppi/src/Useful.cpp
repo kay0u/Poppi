@@ -69,6 +69,7 @@ extern "C"
 	{
 		/* Turn LED5 on */
 		BSP_LED_On(LED5);
+		printf("Error handler called\r\n");
 		while (1)
 		{
 		}

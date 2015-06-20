@@ -17,13 +17,16 @@ public:
 	~Imu();
 
 	void printAngles();
+	void init();
 
 private:
 	void readAcc();
 	void readGyr();
 	void computeAngles();
-	void computeOneAngle(uint8_t dt, int id);
+	float computeComplementaryfilter(float dt, float compAngle, float accelAngle, float omega);
 	float formatAccelRange(float accelAngle, float accelZ);
+	float formatRange0to2PI(float compAngle);
+	float formatFastConverge(float compAngle, float accAngle);
 
 	const float HPF;
 	const float LPF;
@@ -33,13 +36,8 @@ private:
 
 	//Gyroscope
 	float m_gyroValues[3];
-	float m_gyroOffset[2];
-	float m_gyroTotal[2];
-
-	//Time
-	uint32_t previousFrameTime;
 
 	//Absolute orientation
-	double m_orientation[2];
+	float m_orientation[2];
 };
 
