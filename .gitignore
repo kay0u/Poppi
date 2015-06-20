@@ -190,9 +190,12 @@ _Pvt_Extensions/
 ModelManifest.xml
 CodeDB/
 Debug
-.sln
-.suo
-.mak
-.old
+*.sln
+*.suo
+*.mak
+*.old
+*.vcxproj
+*.vgdbsettings
 VisualGDBCache/
 Makefile
+*.filters
