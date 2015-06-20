@@ -1,7 +1,9 @@
 #pragma once
 #include "stm32f4_discovery.h"
 
-#define M_PI	3.14159265359
+#define M_PI	3.14159265359f
+#define TWO_PI  6.2831853f
+#define HALF_PI 1.5707963f
 #define ABS(x)  (x < 0) ? (-x) : x
 #define SQRE(x) ((x)*(x))
 // Converts degrees to radians.

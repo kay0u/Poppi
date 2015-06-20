@@ -199,8 +199,6 @@ int main(void)
 	//InitializeTimer();
 	
 	HAL_Init();
-
-	Imu imu;
   
 	BSP_LED_Init(LED3);
 	BSP_LED_Init(LED4); 
@@ -212,7 +210,9 @@ int main(void)
 	{
 		Toggle_Leds();
 	}
-    
+
+
+	Imu imu;
 	BSP_LED_Off(LED3);
 	BSP_LED_Off(LED4);
 	BSP_LED_Off(LED5);
