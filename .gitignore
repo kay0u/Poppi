@@ -199,3 +199,9 @@ Debug
 VisualGDBCache/
 Makefile
 *.filters
+Poppi/gcc_Release.h
+*.old
+Poppi/Poppi-Debug.vgdbsettings
+Poppi/Poppi-Release.vgdbsettings
+Poppi/stm32.xml
+Poppi/VisualGDBCache/Poppi-Debug/MemoryUtilizationReport.xml
