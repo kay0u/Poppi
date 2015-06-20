@@ -1,16 +1,18 @@
 #include "../include/Imu.h"
 #include "inttypes.h"
 
-Imu::Imu()
+Imu::Imu() :
+	HPF(0.98f),
+	LPF(0.02)
 {
-	ThresholdHigh = 1000;
-	ThresholdLow = -1000;
-
 	if (BSP_ACCELERO_Init() != HAL_OK || BSP_ACCELERO_Init() != HAL_OK)
 	{
 		/* Initialization Error */
 		Error_Handler();
 	}
+
+	m_gyroOffset[0] = m_gyroOffset[1] = 0;
+	//previousFrameTime = Time::getTime();
 }
 
 
@@ -18,70 +20,19 @@ Imu::~Imu()
 {
 }
 
-
 /**
 * @brief  Read Acceleration data.
 * @param  None
 * @retval None
 */
-void Imu::ACCELERO_ReadAcc(void)
+void Imu::readAcc()
 {
-	int16_t buffer[3] = { 0 };
-	int16_t xval, yval = 0x00;
-
 	/* Read Acceleration */
-	BSP_ACCELERO_GetXYZ(buffer);
-
-	xAccel = buffer[0];
-	yAccel = buffer[1];
-
-	/*
-	xval = buffer[0];
-	yval = buffer[1];
-	
-	if ((ABS(xval))>(ABS(yval)))
-	{
-		if (xval > ThresholdHigh)
-		{
-			// LED5 On 
-			BSP_LED_On(LED5);
-			HAL_Delay(10);
-		}
-		else if (xval < ThresholdLow)
-		{
-			// LED4 On
-			BSP_LED_On(LED4);
-			HAL_Delay(10);
-		}
-		else
-		{
-			HAL_Delay(10);
-		}
-	}
-	else
-	{
-		if (yval < ThresholdLow)
-		{
-			// LED6 On 
-			BSP_LED_On(LED6);
-			HAL_Delay(10);
-		}
-		else if (yval > ThresholdHigh)
-		{
-			// LED3 On 
-			BSP_LED_On(LED3);
-			HAL_Delay(10);
-		}
-		else
-		{
-			HAL_Delay(10);
-		}
-	}
-
-	BSP_LED_Off(LED3);
-	BSP_LED_Off(LED4);
-	BSP_LED_Off(LED5);
-	BSP_LED_Off(LED6);*/
+	int16_t m_accelValues[3] = { 0 };
+	BSP_ACCELERO_GetXYZ(m_accelValues);
+	printf("%" PRId16 " %" PRId16 "\r\n", m_accelValues[0], m_accelValues[1]);
+	m_accelAngle[0] = RADIANTODEGREE(atan2(m_accelValues[0], Useful::distance(m_accelValues[1], m_accelValues[2])));
+	m_accelAngle[1] = RADIANTODEGREE(atan2(m_accelValues[1], Useful::distance(m_accelValues[0], m_accelValues[2])));
 }
 
 /**
@@ -89,93 +40,39 @@ void Imu::ACCELERO_ReadAcc(void)
 * @param  None
 * @retval None
 */
-void Imu::GYRO_ReadAng(void)
+void Imu::readGyr()
 {
-	/* Gyroscope variables */
-	float Buffer[3];
-	float Xval, Yval = 0x00;
-
-	/* Init Gyroscope Mems */
-	if (BSP_GYRO_Init() != HAL_OK)
-	{
-		/* Initialization Error */
-		Error_Handler();
-	}
-
 	/* Read Gyroscope Angular data */
-	BSP_GYRO_GetXYZ(Buffer);
-
-	xGyro = ABS(Buffer[0]);
-	yGyro = ABS(Buffer[1]);
-
-	/*
-	Xval = ABS(Buffer[0]);
-	Yval = ABS(Buffer[1]);
-	
-	if (Xval>Yval)
-	{
-		if (Buffer[0] > 5000.0f)
-		{
-			//LED5 On
-			BSP_LED_On(LED5);
-			HAL_Delay(10);
-		}
-		else if (Buffer[0] < -5000.0f)
-		{
-			//LED4 On
-			BSP_LED_On(LED4);
-			HAL_Delay(10);
-		}
-		else
-		{
-			HAL_Delay(10);
-		}
-	}
-	else
-	{
-		if (Buffer[1] < -5000.0f)
-		{
-			//LED6 On
-			BSP_LED_On(LED6);
-
-			HAL_Delay(10);
-		}
-		else if (Buffer[1] > 5000.0f)
-		{
-			// LED3 On 
-			BSP_LED_On(LED3);
-			HAL_Delay(10);
-		}
-		else
-		{
-			HAL_Delay(10);
-		}
-	}
-
-	BSP_LED_Off(LED3);
-	BSP_LED_Off(LED4);
-	BSP_LED_Off(LED5);
-	BSP_LED_Off(LED6);*/
+	BSP_GYRO_GetXYZ(m_gyroValues);
 }
 
-void Imu::comp_filter(float newAngle, float newRate) {
+void Imu::computeAngles()
+{
+	///Compute delta time
+	/*uint32_t currentTime = Time::getTime();
+	uint8_t dt = previousFrameTime - currentTime;
+	previousFrameTime = currentTime;*/
+	float dt = 0.1f;
 
-	float filterTerm0;
-	float filterTerm1;
-	float filterTerm2;
-	float timeConstant;
+	//Update the accelerometer and gyroscope values
+	readAcc();
+	readGyr();
 
-	timeConstant = 0.5; // default 1.0
+	//Compute X and Y separatly
+	computeOneAngle(dt, 0);
+	computeOneAngle(dt, 1);
+}
 
-	filterTerm0 = (newAngle - xAngleFiltered) * timeConstant * timeConstant;
-	filterTerm2 += filterTerm0 * dt;
-	filterTerm1 = filterTerm2 + ((newAngle - xAngleFiltered) * 2 * timeConstant) + newRate;
-	xAngleFiltered = (filterTerm1 * dt) + xAngleFiltered;
+void Imu::computeOneAngle(uint8_t dt, int id)
+{
+	m_gyroValues[id] -= m_gyroOffset[id];
+	float delta = m_gyroValues[id] * dt;
+	m_gyroTotal[id] += delta;
+
+	m_orientation[id] = HPF * (m_orientation[0] + delta) + (LPF * m_accelAngle[id]);
 }
 
 void Imu::printAngles()
 {
-	ACCELERO_ReadAcc();
-	GYRO_ReadAng();
-	comp_filter(xAccel, xGyro);
+	computeAngles();
 }

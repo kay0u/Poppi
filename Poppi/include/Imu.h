@@ -1,11 +1,14 @@
 #pragma once
 
 #include <stm32f4xx_hal.h>
+#include <math.h>
+
 #include "stm32f4_discovery.h"
 #include "stm32f4_discovery_accelerometer.h"
 #include "stm32f4_discovery_gyroscope.h"
 
 #include "Useful.h"
+#include "Time.h"
 
 class Imu
 {
@@ -14,22 +17,28 @@ public:
 	~Imu();
 
 	void printAngles();
-	void comp_filter(float newAngle, float newRate);
 
 private:
-	void ACCELERO_ReadAcc();
-	void GYRO_ReadAng();
+	void readAcc();
+	void readGyr();
+	void computeAngles();
+	void computeOneAngle(uint8_t dt, int id);
 
-	/* Init af threshold to detect acceleration on MEMS */
-	int16_t ThresholdHigh;
-	int16_t ThresholdLow;
+	const float HPF;
+	const float LPF;
 
-	int16_t xAccel;
-	int16_t yAccel;
-	float xGyro;
-	float yGyro;
+	//Accelerometer
+	double m_accelAngle[2];
 
-	float xAngleFiltered;
-	float dt = 0.02;
+	//Gyroscope
+	float m_gyroValues[3];
+	float m_gyroOffset[2];
+	float m_gyroTotal[2];
+
+	//Time
+	uint32_t previousFrameTime;
+
+	//Absolute orientation
+	double m_orientation[2];
 };
 

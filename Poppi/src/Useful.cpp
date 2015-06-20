@@ -20,6 +20,11 @@ Useful::~Useful()
 {
 }
 
+int16_t Useful::distance(int16_t d1, int16_t d2)
+{
+	return ABS(d1 - d2);
+}
+
 /**
 * @brief  This function is executed in case of error occurrence.
 * @param  None
