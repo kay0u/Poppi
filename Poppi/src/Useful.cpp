@@ -25,19 +25,6 @@ int16_t Useful::distance(int16_t d1, int16_t d2)
 	return ABS(d1 - d2);
 }
 
-/**
-* @brief  This function is executed in case of error occurrence.
-* @param  None
-* @retval None
-*/
-void Error_Handler(void)
-{
-	/* Turn LED5 on */
-	BSP_LED_On(LED5);
-	while (1)
-	{
-	}
-}
 
 /**
 * @brief  EXTI line detection callbacks.
@@ -74,6 +61,19 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 extern "C"
 {
 #endif
+	/**
+	* @brief  This function is executed in case of error occurrence.
+	* @param  None
+	* @retval None
+	*/
+	void Error_Handler(void)
+	{
+		/* Turn LED5 on */
+		BSP_LED_On(LED5);
+		while (1)
+		{
+		}
+	}
 
 	/**
 	* @brief  This function handles NMI exception.
