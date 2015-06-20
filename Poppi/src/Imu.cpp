@@ -5,9 +5,21 @@ Imu::Imu() :
 	HPF(0.98f),
 	LPF(0.02)
 {
-	if (BSP_ACCELERO_Init() != HAL_OK || BSP_ACCELERO_Init() != HAL_OK)
+}
+
+void Imu::init()
+{
+	if (BSP_ACCELERO_Init() != HAL_OK)
 	{
-		Error_Handler();
+#ifdef DEBUG
+		printf("[IMU]Error encountered while initializeing the accelerometer : %" PRIu8 "\r\n", BSP_ACCELERO_Init());
+#endif
+	}
+	if (BSP_GYRO_Init() != HAL_OK)
+	{
+#ifdef DEBUG
+		printf("[IMU]Error encountered while initializeing the gyroscope.\r\n");
+#endif
 	}
 }
 
@@ -38,6 +50,16 @@ void Imu::readAcc()
 }
 
 /**
+* @brief  Read Gyroscope Angular data.
+* @param  None
+* @retval None
+*/
+void Imu::readGyr()
+{
+	BSP_GYRO_GetXYZ(m_gyroValues);
+}
+
+/**
 * @brief  Find the quarant whee the angle lies and format it in range [0, 2*pi]
 * @param  accelAngle the angle (float)
 * @param  accelZ the raw Z acceleration (float)
@@ -62,14 +84,9 @@ float Imu::formatAccelRange(float accelAngle, float accelZ)
 float Imu::formatFastConverge(float compAngle, float accAngle)
 {
 	if (compAngle > accAngle + M_PI)
-	{
 		compAngle = compAngle - TWO_PI;
-	}
 	else if (accAngle > compAngle + M_PI)
-	{
 		compAngle = compAngle + TWO_PI;
-	}
-
 	return compAngle;
 }
 
@@ -81,26 +98,10 @@ float Imu::formatFastConverge(float compAngle, float accAngle)
 float Imu::formatRange0to2PI(float compAngle)
 {
 	while (compAngle >= TWO_PI)
-	{
 		compAngle = compAngle - TWO_PI;
-	}
-
 	while (compAngle < 0.0f)
-	{
 		compAngle = compAngle + TWO_PI;
-	}
-
 	return compAngle;
-}
-
-/**
-* @brief  Read Gyroscope Angular data.
-* @param  None
-* @retval None
-*/
-void Imu::readGyr()
-{
-	BSP_GYRO_GetXYZ(m_gyroValues);
 }
 
 /**
