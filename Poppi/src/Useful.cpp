@@ -60,15 +60,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 extern "C"
 {
 #endif
-
-	void SysTick_Handler(void)
-	{
-		HAL_IncTick();
-		HAL_SYSTICK_IRQHandler();
-		osSystickHandler();
-
-	}
-	
 	/**
 	* @brief  This function is executed in case of error occurrence.
 	* @param  None
@@ -81,6 +72,14 @@ extern "C"
 		while (1)
 		{
 		}
+	}
+
+	void SysTick_Handler(void)
+	{
+		HAL_IncTick();
+		HAL_SYSTICK_IRQHandler();
+		osSystickHandler();
+
 	}
 	
 	/**

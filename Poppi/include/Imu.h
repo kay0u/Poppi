@@ -23,6 +23,7 @@ private:
 	void readGyr();
 	void computeAngles();
 	void computeOneAngle(uint8_t dt, int id);
+	float formatAccelRange(float accelAngle, float accelZ);
 
 	const float HPF;
 	const float LPF;

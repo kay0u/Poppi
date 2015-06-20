@@ -3,6 +3,7 @@
 
 #define M_PI	3.14159265359
 #define ABS(x)  (x < 0) ? (-x) : x
+#define SQRE(x) ((x)*(x))
 // Converts degrees to radians.
 #define DEGREETORADIAN(angleDegrees) (angleDegrees * M_PI / 180.0)
 
