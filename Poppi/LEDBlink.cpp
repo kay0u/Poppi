@@ -146,7 +146,9 @@ static void LED_Thread1(void const *argument)
 static void Print_Thread2(void const *argument)
 {
 	uint32_t count;
-	(void) argument;
+	(void)argument;
+	Imu imu;
+	imu.init();
 
 	for (;;)
 	{
@@ -155,8 +157,8 @@ static void Print_Thread2(void const *argument)
 		// Print every 500 ms for 10 s 
 		while (count >= osKernelSysTick())
 		{
-			printf("ABWABWA\r\n");
-			//imu.printAngles();
+			//printf("ABWABWA\r\n");
+			imu.printAngles();
 
 			osDelay(500);
 		}
@@ -192,12 +194,9 @@ int main(void)
        - Set NVIC Group Priority to 4
        - Global MSP (MCU Support Package) initialization
      */
-	//SystemClock_Config();
-	//InitializeTimer();
+	SystemClock_Config();
 	
 	HAL_Init();
-	Imu imu;
-	imu.init();
 
 	BSP_LED_Init(LED3);
 	BSP_LED_Init(LED4);
@@ -205,15 +204,12 @@ int main(void)
 	BSP_LED_Init(LED6);
 
 	osThreadDef(ABWABWALED, LED_Thread1, osPriorityNormal, 0, configMINIMAL_STACK_SIZE);
-  
 	// /!\ Attention, avec l'utilisation du printf il faut augmenter la stack size pour le thread.
 	osThreadDef(ABWAPrintIMU, Print_Thread2, osPriorityRealtime, 1, configMINIMAL_STACK_SIZE + 500);
-  
 	osThreadDef(BPThread, BP_Thread, osPriorityNormal, 1, configMINIMAL_STACK_SIZE);
 
 	LEDThread1Handle = osThreadCreate(osThread(ABWABWALED), NULL);
 	PrintThread2Handle = osThreadCreate(osThread(ABWAPrintIMU), NULL);
-
 	osThreadCreate(osThread(BPThread), NULL);
 
 	/* Start scheduler */
