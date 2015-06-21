@@ -7,6 +7,11 @@ Imu::Imu() :
 {
 }
 
+/**
+* @brief  Initialize the accelerometer and the gyroscope.
+* @param  None
+* @retval None
+*/
 void Imu::init()
 {
 	if (BSP_ACCELERO_Init() != HAL_OK)
@@ -121,16 +126,15 @@ void Imu::computeAngles()
 	//Compute X and Y separatly
 	m_orientation[0] = computeComplementaryfilter(dt, m_orientation[0], m_accelAngle[0], m_gyroValues[0]);
 	m_orientation[1] = computeComplementaryfilter(dt, m_orientation[1], m_accelAngle[1], m_gyroValues[1]);
-	printf("%f %f\r\n", m_orientation[0], m_orientation[1]);
 }
 
 /**
-* @brief  Read Gyroscope Angular data.
+* @brief  Apply the complementary filter on one angle
 * @param  dt delta time
 * @param  compAngle previously computed angle
 * @param  accelAngle current accelerometer angle
 * @param  gyroValue current gyroscope value
-* @retval None
+* @retval The computed angle
 */
 float Imu::computeComplementaryfilter(float dt, float compAngle, float accelAngle, float gyroValue)
 {
@@ -149,7 +153,15 @@ float Imu::computeComplementaryfilter(float dt, float compAngle, float accelAngl
 	return compAngle;
 }
 
+/**
+* @brief  Debug function that prints the angles computed by the complementary filter.
+* @param  None
+* @retval None
+*/
 void Imu::printAngles()
 {
 	computeAngles();
+#ifdef DEBUG
+	printf("%f %f\r\n", m_orientation[0], m_orientation[1]);
+#endif
 }
