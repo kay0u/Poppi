@@ -36,7 +36,9 @@ uint32_t Time::getTime()
 	RTC_HandleTypeDef RTCHandle;
 	HAL_RTC_GetTime(&RTCHandle, &time, FORMAT_BIN);
 	HAL_RTC_GetDate(&RTCHandle, &date, FORMAT_BIN);
-	printf("pouet %f\r\n", time.Seconds);
+#ifdef DEBUG
+	printf("pouet %d\r\n", time.Seconds);
+#endif
 	return 0;// secondsSince2000(2000 + date.Year, date.Month, date.Date, time.Hours, time.Minutes, time.Seconds);
 }
 

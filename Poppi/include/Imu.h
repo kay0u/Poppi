@@ -2,6 +2,7 @@
 
 #include <stm32f4xx_hal.h>
 #include <math.h>
+#include <stdio.h>
 
 #include "stm32f4_discovery.h"
 #include "stm32f4_discovery_accelerometer.h"

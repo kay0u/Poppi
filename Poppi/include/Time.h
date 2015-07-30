@@ -1,6 +1,9 @@
 #pragma once
+#include <stdio.h>
+
 #include "stm32f4_discovery.h"
 
+#ifdef __cplusplus
 class Time
 {
 public:
@@ -14,4 +17,4 @@ private:
 	static bool leapYear(uint8_t year);
 	static uint16_t yearDay(uint8_t year, uint8_t month, uint8_t date);
 };
-
+#endif
