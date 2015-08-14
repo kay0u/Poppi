@@ -19,6 +19,7 @@ public:
 
 	void printAngles();
 	void init();
+	float* getOrientation();
 
 private:
 	void readAcc();

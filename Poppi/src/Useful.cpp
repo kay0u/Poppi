@@ -82,7 +82,6 @@ extern "C"
 		HAL_IncTick();
 		HAL_SYSTICK_IRQHandler();
 		osSystickHandler();
-
 	}
 	
 	/**

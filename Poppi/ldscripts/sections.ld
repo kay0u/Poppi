@@ -1,5 +1,5 @@
 /*
- * Default linker script for STM32F[34]xx.
+ * Default linker script for Cortex-M (it includes specifics for STM32F[34]xx).
  * 
  * To make use of the multi-region initialisations, define
  * OS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS for the _startup.c file.
@@ -61,7 +61,8 @@ SECTIONS
     {
         FILL(0xFF)
         
-        __vectors_start__ = ABSOLUTE(.) ;
+        __vectors_start = ABSOLUTE(.) ;
+        __vectors_start__ = ABSOLUTE(.) ; /* STM specific definition */
         KEEP(*(.isr_vector))     	/* Interrupt vectors */
         
 		KEEP(*(.cfmconfig))			/* Freescale configuration words */   
