@@ -82,12 +82,27 @@ static void LED_Thread1(void const *argument)
 Uart<1> serial_pc;
 #define RXBUFFERSIZE 64
 char aRxBuffer[RXBUFFERSIZE];
+
+static void Print_Thread2(void const *argument)
+{
+	for (;;)
+	{
+		//HAL_StatusTypeDef status;
+		//status = HAL_UART_Receive_IT(&serial_pc.UART, (uint8_t *) aRxBuffer, 10);
+
+		serial_pc.read(aRxBuffer);
+		//if (status == HAL_OK)
+		serial_pc.printfln("%s", aRxBuffer);
+		osDelay(500);
+	}
+}
+
 /**
- * @brief  Toggle LED4 thread
+ * @brief  Print IMU infos
  * @param  argument not used
  * @retval None
  */
-static void Print_Thread2(void const *argument)
+static void Print_Thread1(void const *argument)
 {
 	uint32_t count;
 	(void)argument;
@@ -101,7 +116,6 @@ static void Print_Thread2(void const *argument)
 		// Print every 500 ms for 10 s 
 		while (count >= osKernelSysTick())
 		{
-			//serial_pc.printf("ABWABWA\r\n");
 			serial_pc.printfln("%f, %f", imu.getOrientation()[0], imu.getOrientation()[1]);
 
 			osDelay(500);
@@ -124,12 +138,6 @@ static void BP_Thread(void const *argument)
 
 		while (!Useful::UserPressButton)
 		{
-			HAL_StatusTypeDef status;
-			status = HAL_UART_Receive_IT(&serial_pc.UART, (uint8_t *) aRxBuffer, 10);
-
-			//serial_pc.read(aRxBuffer);
-			if (status == HAL_OK)
-				serial_pc.printfln("%s", aRxBuffer);
 			osDelay(100);
 		}
 		Useful::UserPressButton = 0;
@@ -148,12 +156,15 @@ int main(void)
 
 	osThreadDef(ABWABWALED, LED_Thread1, osPriorityNormal, 0, configMINIMAL_STACK_SIZE);
 	// /!\ Attention, avec l'utilisation du printf il faut augmenter la stack size pour le thread.
-	osThreadDef(ABWAPrintIMU, Print_Thread2, osPriorityNormal, 1, configMINIMAL_STACK_SIZE + 200);
-	osThreadDef(BPThread, BP_Thread, osPriorityNormal, 1, configMINIMAL_STACK_SIZE + 200);
+	osThreadDef(ABWAPrintIMU, Print_Thread1, osPriorityNormal, 1, configMINIMAL_STACK_SIZE + 200);
+	osThreadDef(READThread, Print_Thread2, osPriorityNormal, 1, configMINIMAL_STACK_SIZE + 200);
+	osThreadDef(BPThread, BP_Thread, osPriorityNormal, 1, configMINIMAL_STACK_SIZE);
 
 	LEDThread1Handle = osThreadCreate(osThread(ABWABWALED), NULL);
 	PrintThread2Handle = osThreadCreate(osThread(ABWAPrintIMU), NULL);
 	osThreadCreate(osThread(BPThread), NULL);
+	osThreadCreate(osThread(READThread), NULL);
+
 
 	/* Start scheduler */
 	osKernelStart();

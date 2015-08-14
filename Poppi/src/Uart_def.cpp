@@ -22,10 +22,10 @@ template<> UART_HandleTypeDef Uart<6>::UART = u;
 extern "C" {
 #endif
 void USART1_IRQHandler(void) {
-	HAL_UART_IRQHandler(&Uart<1>::UART);
-	//uint8_t c[1];
-	//HAL_UART_Receive(&Uart<1>::UART, c, 1, 1);
-	//Uart<1>::store_char(c[0]);
+	//HAL_UART_IRQHandler(&Uart<1>::UART);
+	uint8_t c[1];
+	HAL_UART_Receive(&Uart<1>::UART, c, 1, 1);
+	Uart<1>::store_char(c[0]);
 }
 
 void USART2_IRQHandler(void) {

@@ -202,6 +202,8 @@ public:
 
 		if (HAL_UART_Init(&UART) != HAL_OK)
 			while(1);
+
+		__HAL_UART_ENABLE_IT(&UART, UART_IT_RXNE);
 	}
 
 	/**
