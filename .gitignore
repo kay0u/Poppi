@@ -12,6 +12,7 @@
 [Rr]elease/
 x64/
 build/
+.settings/
 bld/
 [Bb]in/
 [Oo]bj/
