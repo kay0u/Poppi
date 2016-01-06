@@ -12,8 +12,8 @@
 
 #include "Servo.h"
 
-#include "../Math/Vector3.hpp"
-#include "../Math/Trigo.hpp"
+#include "../Math/Vector3.h"
+#include "../Math/Trigo.h"
 
 class Leg {
 public:

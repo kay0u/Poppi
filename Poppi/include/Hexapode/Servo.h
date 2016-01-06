@@ -8,7 +8,7 @@
 #ifndef HEXAPODE_SERVO_H_
 #define HEXAPODE_SERVO_H_
 
-#include "../Math/Vector3.hpp"
+#include "../Math/Vector3.h"
 
 class Servo {
 public:
