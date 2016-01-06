@@ -9,6 +9,7 @@
 #define AX12_H_
 
 #include "FreeRTOS.h"
+#include "cmsis_os.h"
 #include <math.h>
 
 #define AX12_REG_ID 0x3
@@ -150,7 +151,7 @@ public:
         // bits 9-0   = Speed
         char data[2];
 
-        int goal = (0x3ff * abs(speed));
+        int goal = (0x3ff * fabs(speed));
 
         // Set direction CW if we have a negative speed
         if (speed < 0) {
