@@ -1,6 +1,15 @@
-#pragma once
+/*
+ * Vector3.hpp
+ *
+ *  Created on: 5 janv. 2016
+ *      Author: Vincent
+ */
 
-#ifdef __cplusplus
+#ifndef MATH_VECTOR3_H_
+#define MATH_VECTOR3_H_
+
+#include <math.h>
+
 class Vector3
 {
 public:
@@ -22,34 +31,27 @@ public:
 
 	~Vector3();
 
-	static Vector3 up()
+	static const Vector3 zero;
+	static const Vector3 up;
+	static const Vector3 down;
+	static const Vector3 left;
+	static const Vector3 right;
+	static const Vector3 forward;
+	static const Vector3 backward;
+
+	float magnitude()
 	{
-		return Vector3(0,1,0);
+		return sqrt((x * x) + (y * y) + (z * z));
 	}
 
-	static Vector3 down()
+	Vector3 normalized()
 	{
-		return Vector3(0,-1,0);
+		return (*this) / magnitude();
 	}
 
-	static Vector3 left()
+	static double Distance(Vector3 v1, Vector3 v2)
 	{
-		return Vector3(-1,0,0);
-	}
-
-	static Vector3 right()
-	{
-		return Vector3(1,0,0);
-	}
-
-	static Vector3 forward()
-	{
-		return Vector3(0,0,1);
-	}
-
-	static Vector3 backward()
-	{
-		return Vector3(0,0,-1);
+	   return sqrt((v1.x-v2.x)*(v1.x-v2.x)+(v1.y-v2.y)*(v1.y-v1.y));
 	}
 
     friend Vector3 operator+(const Vector3& v1, const Vector3& v2)
@@ -102,7 +104,7 @@ public:
         return ( (v.x == x) && (v.y == y) && (v.z == z));
     }
 
-    Vector3& Vector3::operator+=(const Vector3& v)
+    Vector3& operator+=(const Vector3& v)
     {
         x += v.x;
         y += v.y;
@@ -110,7 +112,7 @@ public:
         return *this;
     }
 
-    Vector3& Vector3::operator-=(const Vector3& v)
+    Vector3& operator-=(const Vector3& v)
     {
         x -= v.x;
         y -= v.y;
@@ -118,7 +120,7 @@ public:
         return *this;
     }
 
-    Vector3& Vector3::operator*=(const Vector3& v)
+    Vector3& operator*=(const Vector3& v)
     {
         x *= v.x;
         y *= v.y;
@@ -126,7 +128,7 @@ public:
         return *this;
     }
 
-    Vector3& Vector3::operator/=(const Vector3& v)
+    Vector3& operator/=(const Vector3& v)
     {
         x /= v.x;
         y /= v.y;
@@ -139,4 +141,12 @@ public:
 	float z;
 
 };
+
+const Vector3 Vector3::zero = Vector3(0,0,0);
+const Vector3 Vector3::up = Vector3(0,0,0);
+const Vector3 Vector3::down = Vector3(0,-1,0);
+const Vector3 Vector3::left = Vector3(0,-1,0);
+const Vector3 Vector3::right = Vector3(0,1,0);
+const Vector3 Vector3::forward = Vector3(0,0,1);
+const Vector3 Vector3::backward = Vector3(0,0,-1);
 #endif

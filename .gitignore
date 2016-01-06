@@ -12,7 +12,6 @@
 [Rr]elease/
 x64/
 build/
-.settings/
 bld/
 [Bb]in/
 [Oo]bj/
@@ -206,4 +205,5 @@ Poppi/gcc_Debug.h
 Poppi/Poppi-Debug.vgdbsettings
 Poppi/Poppi-Release.vgdbsettings
 Poppi/stm32.xml
+Poppi/.settings/
 Poppi/VisualGDBCache/Poppi-Debug/MemoryUtilizationReport.xml

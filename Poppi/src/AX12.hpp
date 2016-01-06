@@ -9,6 +9,7 @@
 #define AX12_H_
 
 #include "FreeRTOS.h"
+#include <math.h>
 
 #define AX12_REG_ID 0x3
 #define AX12_REG_BAUD 0x4
