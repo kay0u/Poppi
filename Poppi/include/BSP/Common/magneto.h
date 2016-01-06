@@ -1,10 +1,10 @@
 /**
   ******************************************************************************
-  * @file    accelero.h
+  * @file    magneto.h
   * @author  MCD Application Team
-  * @version V2.2.0
-  * @date    09-February-2015
-  * @brief   This header file contains the functions prototypes for the Accelerometer driver.
+  * @version V4.0.1
+  * @date    21-July-2015
+  * @brief   This header file contains the functions prototypes for the MAGNETO driver.
   ******************************************************************************
   * @attention
   *
@@ -36,8 +36,8 @@
   */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __ACCELERO_H
-#define __ACCELERO_H
+#ifndef __MAGNETO_H
+#define __MAGNETO_H
 
 #ifdef __cplusplus
  extern "C" {
@@ -53,23 +53,40 @@
 /** @addtogroup Components
   * @{
   */
-    
-/** @addtogroup ACCELERO
+
+/** @addtogroup MAGNETO
   * @{
   */
 
-/** @defgroup ACCELERO_Exported_Types
+/** @defgroup MAGNETO_Exported_Types
   * @{
-  */ 
+  */
 
-/** @defgroup ACCELERO_Driver_structure  Accelerometer Driver structure
+/** @defgroup MAGNETO_Config_structure  Magnetometer Configuration structure
   * @{
   */
 typedef struct
-{  
-  void      (*Init)(uint16_t);
+{
+  uint8_t Register1;
+  uint8_t Register2;
+  uint8_t Register3;
+  uint8_t Register4;
+  uint8_t Register5;
+}MAGNETO_InitTypeDef;
+/**
+  * @}
+  */
+
+/** @defgroup MAGNETO_Driver_structure  Magnetometer Driver structure
+  * @{
+  */
+typedef struct
+{
+  void      (*Init)(MAGNETO_InitTypeDef);
+  void      (*DeInit)(void);
   uint8_t   (*ReadID)(void);
   void      (*Reset)(void);
+  void      (*LowPower)(void);
   void      (*ConfigIT)(void);
   void      (*EnableIT)(uint8_t);
   void      (*DisableIT)(uint8_t);
@@ -78,43 +95,10 @@ typedef struct
   void      (*FilterConfig)(uint8_t);
   void      (*FilterCmd)(uint8_t);
   void      (*GetXYZ)(int16_t *);
-}ACCELERO_DrvTypeDef;
+}MAGNETO_DrvTypeDef;
 /**
   * @}
   */
-
-/** @defgroup ACCELERO_Configuration_structure  Accelerometer Configuration structure
-  * @{
-  */
-
-/* ACCELERO struct */
-typedef struct
-{
-  uint8_t Power_Mode;                         /* Power-down/Normal Mode */
-  uint8_t AccOutput_DataRate;                 /* OUT data rate */
-  uint8_t Axes_Enable;                        /* Axes enable */
-  uint8_t High_Resolution;                    /* High Resolution enabling/disabling */
-  uint8_t BlockData_Update;                   /* Block Data Update */
-  uint8_t Endianness;                         /* Endian Data selection */
-  uint8_t AccFull_Scale;                      /* Full Scale selection */
-  uint8_t Communication_Mode;
-}ACCELERO_InitTypeDef;
-
-/* ACCELERO High Pass Filter struct */
-typedef struct
-{
-  uint8_t HighPassFilter_Mode_Selection;      /* Internal filter mode */
-  uint8_t HighPassFilter_CutOff_Frequency;    /* High pass filter cut-off frequency */
-  uint8_t HighPassFilter_AOI1;                /* HPF_enabling/disabling for AOI function on interrupt 1 */
-  uint8_t HighPassFilter_AOI2;                /* HPF_enabling/disabling for AOI function on interrupt 2 */
-  uint8_t HighPassFilter_Data_Sel;
-  uint8_t HighPassFilter_Stat;
-}ACCELERO_FilterConfigTypeDef;
-
-/**
-  * @}
-  */
-
 
 /**
   * @}
@@ -136,6 +120,6 @@ typedef struct
 }
 #endif
 
-#endif /* __ACCELERO_H */
+#endif /* __MAGNETO_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

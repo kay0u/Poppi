@@ -4,9 +4,9 @@
 #include <math.h>
 #include <stdio.h>
 
-#include "stm32f4_discovery.h"
-#include "stm32f4_discovery_accelerometer.h"
-#include "stm32f4_discovery_gyroscope.h"
+#include "BSP/stm32f411e_discovery.h"
+#include "BSP/stm32f411e_discovery_accelerometer.h"
+#include "BSP/stm32f411e_discovery_gyroscope.h"
 
 #include "Useful.h"
 #include "Time.h"

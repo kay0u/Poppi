@@ -2,8 +2,8 @@
   ******************************************************************************
   * @file    stm32f4xx_hal_cryp.c
   * @author  MCD Application Team
-  * @version V1.3.1
-  * @date    25-March-2015
+  * @version V1.4.3
+  * @date    11-December-2015
   * @brief   CRYP HAL module driver.
   *          This file provides firmware functions to manage the following 
   *          functionalities of the Cryptography (CRYP) peripheral:
@@ -111,7 +111,7 @@
 
 #ifdef HAL_CRYP_MODULE_ENABLED
 
-#if defined(STM32F415xx) || defined(STM32F417xx) || defined(STM32F437xx) || defined(STM32F439xx)
+#if defined(STM32F415xx) || defined(STM32F417xx) || defined(STM32F437xx) || defined(STM32F439xx) || defined(STM32F479xx)
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -204,12 +204,6 @@ static void CRYP_DMAError(DMA_HandleTypeDef *hdma)
   hcryp->State= HAL_CRYP_STATE_READY;
   HAL_CRYP_ErrorCallback(hcryp);
 }
-
-// [ILG]
-#if defined ( __GNUC__ )
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-#endif
 
 /**
   * @brief  Writes the Key in Key registers. 
@@ -309,11 +303,6 @@ static void CRYP_SetInitVector(CRYP_HandleTypeDef *hcryp, uint8_t *InitVector, u
   }
 }
 
-// [ILG]
-#if defined ( __GNUC__ )
-#pragma GCC diagnostic pop
-#endif
-
 /**
   * @brief  Process Data: Writes Input data in polling mode and read the output data
   * @param  hcryp: pointer to a CRYP_HandleTypeDef structure that contains
@@ -322,7 +311,7 @@ static void CRYP_SetInitVector(CRYP_HandleTypeDef *hcryp, uint8_t *InitVector, u
   * @param  Ilength: Length of the Input buffer, must be a multiple of 16.
   * @param  Output: Pointer to the returned buffer
   * @param  Timeout: Timeout value
-  *     * @retval None
+  * @retval None
   */
 static HAL_StatusTypeDef CRYP_ProcessData(CRYP_HandleTypeDef *hcryp, uint8_t* Input, uint16_t Ilength, uint8_t* Output, uint32_t Timeout)
 {
@@ -698,12 +687,6 @@ HAL_StatusTypeDef HAL_CRYP_DeInit(CRYP_HandleTypeDef *hcryp)
   return HAL_OK;
 }
 
-// [ILG]
-#if defined ( __GNUC__ )
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-#endif
-
 /**
   * @brief  Initializes the CRYP MSP.
   * @param  hcryp: pointer to a CRYP_HandleTypeDef structure that contains
@@ -712,6 +695,8 @@ HAL_StatusTypeDef HAL_CRYP_DeInit(CRYP_HandleTypeDef *hcryp)
   */
 __weak void HAL_CRYP_MspInit(CRYP_HandleTypeDef *hcryp)
 {
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(hcryp);
   /* NOTE : This function Should not be modified, when the callback is needed,
             the HAL_CRYP_MspInit could be implemented in the user file
    */
@@ -725,15 +710,12 @@ __weak void HAL_CRYP_MspInit(CRYP_HandleTypeDef *hcryp)
   */
 __weak void HAL_CRYP_MspDeInit(CRYP_HandleTypeDef *hcryp)
 {
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(hcryp);
   /* NOTE : This function Should not be modified, when the callback is needed,
             the HAL_CRYP_MspDeInit could be implemented in the user file
    */
 }
-
-// [ILG]
-#if defined ( __GNUC__ )
-#pragma GCC diagnostic pop
-#endif
 
 /**
   * @}
@@ -1161,12 +1143,6 @@ HAL_StatusTypeDef HAL_CRYP_AESCTR_Decrypt(CRYP_HandleTypeDef *hcryp, uint8_t *pC
   /* Return function status */
   return HAL_OK;
 }
-
-// [ILG]
-#if defined ( __GNUC__ )
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wconversion"
-#endif
 
 /**
   * @brief  Initializes the CRYP peripheral in AES ECB encryption mode using Interrupt.
@@ -1847,11 +1823,6 @@ HAL_StatusTypeDef HAL_CRYP_AESCTR_Decrypt_IT(CRYP_HandleTypeDef *hcryp, uint8_t 
   return HAL_OK;
 }
 
-// [ILG]
-#if defined ( __GNUC__ )
-#pragma GCC diagnostic pop
-#endif
-
 /**
   * @brief  Initializes the CRYP peripheral in AES ECB encryption mode using DMA.
   * @param  hcryp: pointer to a CRYP_HandleTypeDef structure that contains
@@ -2322,13 +2293,13 @@ HAL_StatusTypeDef HAL_CRYP_DESECB_Encrypt(CRYP_HandleTypeDef *hcryp, uint8_t *pP
   * @brief  Initializes the CRYP peripheral in DES ECB decryption mode.
   * @param  hcryp: pointer to a CRYP_HandleTypeDef structure that contains
   *         the configuration information for CRYP module
-  * @param  pPlainData: Pointer to the plaintext buffer
-  * @param  Size: Length of the plaintext buffer, must be a multiple of 8
   * @param  pCypherData: Pointer to the cyphertext buffer
+  * @param  Size: Length of the plaintext buffer, must be a multiple of 8
+  * @param  pPlainData: Pointer to the plaintext buffer
   * @param  Timeout: Specify Timeout value  
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_CRYP_DESECB_Decrypt(CRYP_HandleTypeDef *hcryp, uint8_t *pPlainData, uint16_t Size, uint8_t *pCypherData, uint32_t Timeout)
+HAL_StatusTypeDef HAL_CRYP_DESECB_Decrypt(CRYP_HandleTypeDef *hcryp, uint8_t *pCypherData, uint16_t Size, uint8_t *pPlainData, uint32_t Timeout)
 {
   /* Process Locked */
   __HAL_LOCK(hcryp);
@@ -2343,7 +2314,7 @@ HAL_StatusTypeDef HAL_CRYP_DESECB_Decrypt(CRYP_HandleTypeDef *hcryp, uint8_t *pP
   __HAL_CRYP_ENABLE(hcryp);
   
   /* Write Plain Data and Get Cypher Data */
-  if(CRYP_ProcessData2Words(hcryp, pPlainData, Size, pCypherData, Timeout) != HAL_OK)
+  if(CRYP_ProcessData2Words(hcryp, pCypherData, Size, pPlainData, Timeout) != HAL_OK)
   {
     return HAL_TIMEOUT;
   }
@@ -2402,13 +2373,13 @@ HAL_StatusTypeDef HAL_CRYP_DESCBC_Encrypt(CRYP_HandleTypeDef *hcryp, uint8_t *pP
   * @brief  Initializes the CRYP peripheral in DES ECB decryption mode.
   * @param  hcryp: pointer to a CRYP_HandleTypeDef structure that contains
   *         the configuration information for CRYP module
-  * @param  pPlainData: Pointer to the plaintext buffer
-  * @param  Size: Length of the plaintext buffer, must be a multiple of 8
   * @param  pCypherData: Pointer to the cyphertext buffer
+  * @param  Size: Length of the plaintext buffer, must be a multiple of 8
+  * @param  pPlainData: Pointer to the plaintext buffer
   * @param  Timeout: Specify Timeout value  
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_CRYP_DESCBC_Decrypt(CRYP_HandleTypeDef *hcryp, uint8_t *pPlainData, uint16_t Size, uint8_t *pCypherData, uint32_t Timeout)
+HAL_StatusTypeDef HAL_CRYP_DESCBC_Decrypt(CRYP_HandleTypeDef *hcryp, uint8_t *pCypherData, uint16_t Size, uint8_t *pPlainData, uint32_t Timeout)
 {
   /* Process Locked */
   __HAL_LOCK(hcryp);
@@ -2423,7 +2394,7 @@ HAL_StatusTypeDef HAL_CRYP_DESCBC_Decrypt(CRYP_HandleTypeDef *hcryp, uint8_t *pP
   __HAL_CRYP_ENABLE(hcryp);
   
   /* Write Plain Data and Get Cypher Data */
-  if(CRYP_ProcessData2Words(hcryp, pPlainData, Size, pCypherData, Timeout) != HAL_OK)
+  if(CRYP_ProcessData2Words(hcryp, pCypherData, Size, pPlainData, Timeout) != HAL_OK)
   {
     return HAL_TIMEOUT;
   }
@@ -2437,12 +2408,6 @@ HAL_StatusTypeDef HAL_CRYP_DESCBC_Decrypt(CRYP_HandleTypeDef *hcryp, uint8_t *pP
   /* Return function status */
   return HAL_OK;
 }
-
-// [ILG]
-#if defined ( __GNUC__ )
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wconversion"
-#endif
 
 /**
   * @brief  Initializes the CRYP peripheral in DES ECB encryption mode using IT.
@@ -3481,11 +3446,6 @@ HAL_StatusTypeDef HAL_CRYP_TDESCBC_Decrypt_IT(CRYP_HandleTypeDef *hcryp, uint8_t
   return HAL_OK;
 }
 
-// [ILG]
-#if defined ( __GNUC__ )
-#pragma GCC diagnostic pop
-#endif
-
 /**
   * @brief  Initializes the CRYP peripheral in TDES ECB encryption mode using DMA.
   * @param  hcryp: pointer to a CRYP_HandleTypeDef structure that contains
@@ -3678,12 +3638,6 @@ HAL_StatusTypeDef HAL_CRYP_TDESCBC_Decrypt_DMA(CRYP_HandleTypeDef *hcryp, uint8_
   * @{
   */
 
-// [ILG]
-#if defined ( __GNUC__ )
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-#endif
-
 /**
   * @brief  Input FIFO transfer completed callbacks.
   * @param  hcryp: pointer to a CRYP_HandleTypeDef structure that contains
@@ -3692,6 +3646,8 @@ HAL_StatusTypeDef HAL_CRYP_TDESCBC_Decrypt_DMA(CRYP_HandleTypeDef *hcryp, uint8_
   */
 __weak void HAL_CRYP_InCpltCallback(CRYP_HandleTypeDef *hcryp)
 {
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(hcryp);
   /* NOTE : This function Should not be modified, when the callback is needed,
             the HAL_CRYP_InCpltCallback could be implemented in the user file
    */ 
@@ -3705,6 +3661,8 @@ __weak void HAL_CRYP_InCpltCallback(CRYP_HandleTypeDef *hcryp)
   */
 __weak void HAL_CRYP_OutCpltCallback(CRYP_HandleTypeDef *hcryp)
 {
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(hcryp);
   /* NOTE : This function Should not be modified, when the callback is needed,
             the HAL_CRYP_OutCpltCallback could be implemented in the user file
    */
@@ -3718,15 +3676,12 @@ __weak void HAL_CRYP_OutCpltCallback(CRYP_HandleTypeDef *hcryp)
   */
  __weak void HAL_CRYP_ErrorCallback(CRYP_HandleTypeDef *hcryp)
 {
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(hcryp);
   /* NOTE : This function Should not be modified, when the callback is needed,
             the HAL_CRYP_ErrorCallback could be implemented in the user file
    */ 
 }
-
- // [ILG]
- #if defined ( __GNUC__ )
- #pragma GCC diagnostic pop
- #endif
 
 /**
   * @}
@@ -3854,7 +3809,7 @@ HAL_CRYP_STATETypeDef HAL_CRYP_GetState(CRYP_HandleTypeDef *hcryp)
   * @}
   */
 
-#endif /* STM32F415xx || STM32F417xx || STM32F437xx || STM32F439xx */
+#endif /* STM32F415xx || STM32F417xx || STM32F437xx || STM32F439xx || STM32F479xx */
 
 #endif /* HAL_CRYP_MODULE_ENABLED */
 /**

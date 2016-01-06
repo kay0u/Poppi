@@ -2,8 +2,8 @@
   ******************************************************************************
   * @file    stm32f4xx_hal_smartcard.c
   * @author  MCD Application Team
-  * @version V1.3.1
-  * @date    25-March-2015
+  * @version V1.4.3
+  * @date    11-December-2015
   * @brief   SMARTCARD HAL module driver.
   *          This file provides firmware functions to manage the following 
   *          functionalities of the SMARTCARD peripheral:
@@ -192,12 +192,14 @@ static HAL_StatusTypeDef SMARTCARD_WaitOnFlagUntilTimeout(SMARTCARD_HandleTypeDe
       (++) Baud Rate
       (++) Word Length => Should be 9 bits (8 bits + parity)
       (++) Stop Bit
-      (++) Parity: => Should be enabled 
-   +-------------------------------------------------------------+
-   |   M bit |  PCE bit  |        SMARTCARD frame                |
-   |---------------------|---------------------------------------|
-   |    1    |    1      |    | SB | 8 bit data | PB | STB |     |
-   +-------------------------------------------------------------+
+      (++) Parity: => Should be enabled
+
+      (+++) +-------------------------------------------------------------+
+      (+++) |   M bit |  PCE bit  |        SMARTCARD frame                |
+      (+++) |---------------------|---------------------------------------|
+      (+++) |    1    |    1      |    | SB | 8 bit data | PB | STB |     |
+      (+++) +-------------------------------------------------------------+
+
       (++) USART polarity
       (++) USART phase
       (++) USART LastBit
@@ -326,12 +328,6 @@ HAL_StatusTypeDef HAL_SMARTCARD_DeInit(SMARTCARD_HandleTypeDef *hsc)
   return HAL_OK;
 }
 
-// [ILG]
-#if defined ( __GNUC__ )
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-#endif
-
 /**
   * @brief SMARTCARD MSP Init
   * @param  hsc: pointer to a SMARTCARD_HandleTypeDef structure that contains
@@ -340,6 +336,8 @@ HAL_StatusTypeDef HAL_SMARTCARD_DeInit(SMARTCARD_HandleTypeDef *hsc)
   */
  __weak void HAL_SMARTCARD_MspInit(SMARTCARD_HandleTypeDef *hsc)
 {
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(hsc);
   /* NOTE : This function Should not be modified, when the callback is needed,
             the HAL_SMARTCARD_MspInit could be implemented in the user file
    */
@@ -353,15 +351,12 @@ HAL_StatusTypeDef HAL_SMARTCARD_DeInit(SMARTCARD_HandleTypeDef *hsc)
   */
  __weak void HAL_SMARTCARD_MspDeInit(SMARTCARD_HandleTypeDef *hsc)
 {
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(hsc);
   /* NOTE : This function Should not be modified, when the callback is needed,
             the HAL_SMARTCARD_MspDeInit could be implemented in the user file
    */
 }
-
- // [ILG]
- #if defined ( __GNUC__ )
- #pragma GCC diagnostic pop
- #endif
 
 /**
   * @}
@@ -886,12 +881,6 @@ void HAL_SMARTCARD_IRQHandler(SMARTCARD_HandleTypeDef *hsc)
   }
 }
 
-// [ILG]
-#if defined ( __GNUC__ )
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-#endif
-
 /**
   * @brief Tx Transfer completed callbacks
   * @param  hsc: pointer to a SMARTCARD_HandleTypeDef structure that contains
@@ -900,6 +889,8 @@ void HAL_SMARTCARD_IRQHandler(SMARTCARD_HandleTypeDef *hsc)
   */
  __weak void HAL_SMARTCARD_TxCpltCallback(SMARTCARD_HandleTypeDef *hsc)
 {
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(hsc);
   /* NOTE : This function Should not be modified, when the callback is needed,
             the HAL_SMARTCARD_TxCpltCallback could be implemented in the user file
    */ 
@@ -913,6 +904,8 @@ void HAL_SMARTCARD_IRQHandler(SMARTCARD_HandleTypeDef *hsc)
   */
 __weak void HAL_SMARTCARD_RxCpltCallback(SMARTCARD_HandleTypeDef *hsc)
 {
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(hsc);
   /* NOTE : This function Should not be modified, when the callback is needed,
             the HAL_SMARTCARD_TxCpltCallback could be implemented in the user file
    */
@@ -926,15 +919,12 @@ __weak void HAL_SMARTCARD_RxCpltCallback(SMARTCARD_HandleTypeDef *hsc)
   */
  __weak void HAL_SMARTCARD_ErrorCallback(SMARTCARD_HandleTypeDef *hsc)
 {
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(hsc);
   /* NOTE : This function Should not be modified, when the callback is needed,
             the HAL_SMARTCARD_ErrorCallback could be implemented in the user file
    */ 
 }
-
- // [ILG]
- #if defined ( __GNUC__ )
- #pragma GCC diagnostic pop
- #endif
 
 /**
   * @}

@@ -1,11 +1,11 @@
 /**
   ******************************************************************************
-  * @file    stm32f401_discovery_gyroscope.c
+  * @file    stm32f411e_discovery_gyroscope.c
   * @author  MCD Application Team
-  * @version V2.1.3
-  * @date    02-March-2015
+  * @version V1.0.0
+  * @date    12-November-2015
   * @brief   This file provides a set of functions needed to manage the
-  *          MEMS gyroscope available on STM32F401-Discovery Kit.
+  *          MEMS gyroscope available on STM32F411E-Discovery Kit.
   ******************************************************************************
   * @attention
   *
@@ -36,43 +36,43 @@
   ******************************************************************************
   */
 /* Includes ------------------------------------------------------------------*/
-#include "../include/stm32f4_discovery_gyroscope.h"
+#include "BSP/stm32f411e_discovery_gyroscope.h"
 
 /** @addtogroup BSP
   * @{
   */ 
 
-/** @addtogroup STM32F401_DISCOVERY
+/** @addtogroup STM32F411E_DISCOVERY
   * @{
   */  
   
-/** @addtogroup STM32F401_DISCOVERY_GYROSCOPE
+/** @addtogroup STM32F411E_DISCOVERY_GYROSCOPE
   * @{
   */
 
 
-/** @defgroup STM32F401_DISCOVERY_GYROSCOPE_Private_TypesDefinitions
+/** @defgroup STM32F411E_DISCOVERY_GYROSCOPE_Private_TypesDefinitions
   * @{
   */ 
 /**
   * @}
   */
 
-/** @defgroup STM32F401_DISCOVERY_GYROSCOPE_Private_Defines
+/** @defgroup STM32F411E_DISCOVERY_GYROSCOPE_Private_Defines
   * @{
   */
 /**
   * @}
   */
 
-/** @defgroup STM32F401_DISCOVERY_GYROSCOPE_Private_Macros
+/** @defgroup STM32F411E_DISCOVERY_GYROSCOPE_Private_Macros
   * @{
   */
 /**
   * @}
   */ 
   
-/** @defgroup STM32F401_DISCOVERY_GYROSCOPE_Private_Variables
+/** @defgroup STM32F411E_DISCOVERY_GYROSCOPE_Private_Variables
   * @{
   */ 
 static GYRO_DrvTypeDef *GyroscopeDrv;
@@ -80,14 +80,14 @@ static GYRO_DrvTypeDef *GyroscopeDrv;
   * @}
   */
 
-/** @defgroup STM32F401_DISCOVERY_GYROSCOPE_Private_FunctionPrototypes
+/** @defgroup STM32F411E_DISCOVERY_GYROSCOPE_Private_FunctionPrototypes
   * @{
   */
 /**
   * @}
   */
 
-/** @defgroup STM32F401_DISCOVERY_GYROSCOPE_Private_Functions
+/** @defgroup STM32F411E_DISCOVERY_GYROSCOPE_Private_Functions
   * @{
   */
 

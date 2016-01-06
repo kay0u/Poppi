@@ -2,13 +2,13 @@
   ******************************************************************************
   * @file    l3gd20.h
   * @author  MCD Application Team
-  * @version V1.1.1
-  * @date    27-November-2014
+  * @version V2.0.0
+  * @date    26-June-2015
   * @brief   This file contains all the functions prototypes for the l3gd20.c driver.
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2014 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT(c) 2015 STMicroelectronics</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -45,7 +45,7 @@
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "gyro.h"
+#include "BSP/Common/gyro.h"
 
 /** @addtogroup BSP
   * @{
@@ -188,7 +188,7 @@
   * @{
   */   
 #define L3GD20_HIGHPASSFILTER_DISABLE      ((uint8_t)0x00)
-#define L3GD20_HIGHPASSFILTER_ENABLE	   ((uint8_t)0x10)
+#define L3GD20_HIGHPASSFILTER_ENABLE	     ((uint8_t)0x10)
 /**
   * @}
   */
@@ -269,12 +269,13 @@
 /**
   * @}
   */
- 
 /** @defgroup L3GD20_Exported_Functions
   * @{
   */
 /* Sensor Configuration Functions */ 
 void    L3GD20_Init(uint16_t InitStruct);
+void    L3GD20_DeInit(void);
+void    L3GD20_LowPower(uint16_t InitStruct);
 uint8_t L3GD20_ReadID(void);
 void    L3GD20_RebootCmd(void);
 
@@ -304,16 +305,16 @@ extern GYRO_DrvTypeDef L3gd20Drv;
 
 /**
   * @}
+  */
+
+/**
+  * @}
   */ 
   
 /**
   * @}
   */ 
 
-/**
-  * @}
-  */ 
-  
 #ifdef __cplusplus
   }
 #endif

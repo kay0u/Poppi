@@ -2,8 +2,8 @@
   ******************************************************************************
   * @file    stm32f4xx_hal_eth.c
   * @author  MCD Application Team
-  * @version V1.3.1
-  * @date    25-March-2015
+  * @version V1.4.3
+  * @date    11-December-2015
   * @brief   ETH HAL module driver.
   *          This file provides firmware functions to manage the following 
   *          functionalities of the Ethernet (ETH) peripheral:
@@ -112,15 +112,17 @@
 
 #ifdef HAL_ETH_MODULE_ENABLED
 
-#if defined(STM32F407xx) || defined(STM32F417xx) || defined(STM32F427xx) || defined(STM32F437xx) || defined(STM32F429xx) || defined(STM32F439xx)
+#if defined(STM32F407xx) || defined(STM32F417xx) || defined(STM32F427xx) || defined(STM32F437xx) ||\
+    defined(STM32F429xx) || defined(STM32F439xx) || defined(STM32F469xx) || defined(STM32F479xx)
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /** @defgroup ETH_Private_Constants ETH Private Constants
   * @{
   */
-#define LINKED_STATE_TIMEOUT_VALUE          ((uint32_t)2000)  /* 2000 ms */
-#define AUTONEGO_COMPLETED_TIMEOUT_VALUE    ((uint32_t)1000)  /* 1000 ms */
+#define ETH_TIMEOUT_SWRESET                ((uint32_t)500)  
+#define ETH_TIMEOUT_LINKED_STATE          ((uint32_t)5000)  
+#define ETH_TIMEOUT_AUTONEGO_COMPLETED    ((uint32_t)5000)  
 
 /**
   * @}
@@ -213,9 +215,24 @@ HAL_StatusTypeDef HAL_ETH_Init(ETH_HandleTypeDef *heth)
   /* After reset all the registers holds their respective reset values */
   (heth->Instance)->DMABMR |= ETH_DMABMR_SR;
   
+  /* Get tick */
+  tickstart = HAL_GetTick();
+  
   /* Wait for software reset */
   while (((heth->Instance)->DMABMR & ETH_DMABMR_SR) != (uint32_t)RESET)
   {
+    /* Check for the Timeout */
+    if((HAL_GetTick() - tickstart ) > ETH_TIMEOUT_SWRESET)
+    {     
+      heth->State= HAL_ETH_STATE_TIMEOUT;
+  
+      /* Process Unlocked */
+      __HAL_UNLOCK(heth);
+    
+      /* Note: The SWR is not performed if the ETH_RX_CLK or the ETH_TX_CLK are  
+         not available, please check your external PHY or the IO configuration */
+      return HAL_TIMEOUT;
+    }
   }
   
   /*-------------------------------- MAC Initialization ----------------------*/
@@ -248,9 +265,9 @@ HAL_StatusTypeDef HAL_ETH_Init(ETH_HandleTypeDef *heth)
     /* CSR Clock Range between 100-150 MHz */ 
     tmpreg1 |= (uint32_t)ETH_MACMIIAR_CR_Div62;
   }
-  else /* ((hclk >= 150000000)&&(hclk <= 168000000)) */
+  else /* ((hclk >= 150000000)&&(hclk <= 183000000)) */
   {
-    /* CSR Clock Range between 150-168 MHz */ 
+    /* CSR Clock Range between 150-183 MHz */ 
     tmpreg1 |= (uint32_t)ETH_MACMIIAR_CR_Div102;    
   }
   
@@ -288,7 +305,7 @@ HAL_StatusTypeDef HAL_ETH_Init(ETH_HandleTypeDef *heth)
       HAL_ETH_ReadPHYRegister(heth, PHY_BSR, &phyreg);
       
       /* Check for the Timeout */
-      if((HAL_GetTick() - tickstart ) > LINKED_STATE_TIMEOUT_VALUE)
+      if((HAL_GetTick() - tickstart ) > ETH_TIMEOUT_LINKED_STATE)
       {
         /* In case of write timeout */
         err = ETH_ERROR;
@@ -331,7 +348,7 @@ HAL_StatusTypeDef HAL_ETH_Init(ETH_HandleTypeDef *heth)
       HAL_ETH_ReadPHYRegister(heth, PHY_BSR, &phyreg);
       
       /* Check for the Timeout */
-      if((HAL_GetTick() - tickstart ) > AUTONEGO_COMPLETED_TIMEOUT_VALUE)
+      if((HAL_GetTick() - tickstart ) > ETH_TIMEOUT_AUTONEGO_COMPLETED)
       {
         /* In case of write timeout */
         err = ETH_ERROR;
@@ -586,12 +603,6 @@ HAL_StatusTypeDef HAL_ETH_DMARxDescListInit(ETH_HandleTypeDef *heth, ETH_DMADesc
   return HAL_OK;
 }
 
-// [ILG]
-#if defined ( __GNUC__ )
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-#endif
-
 /**
   * @brief  Initializes the ETH MSP.
   * @param  heth: pointer to a ETH_HandleTypeDef structure that contains
@@ -600,6 +611,8 @@ HAL_StatusTypeDef HAL_ETH_DMARxDescListInit(ETH_HandleTypeDef *heth, ETH_DMADesc
   */
 __weak void HAL_ETH_MspInit(ETH_HandleTypeDef *heth)
 {
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(heth);
   /* NOTE : This function Should not be modified, when the callback is needed,
   the HAL_ETH_MspInit could be implemented in the user file
   */
@@ -613,15 +626,12 @@ __weak void HAL_ETH_MspInit(ETH_HandleTypeDef *heth)
   */
 __weak void HAL_ETH_MspDeInit(ETH_HandleTypeDef *heth)
 {
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(heth);
   /* NOTE : This function Should not be modified, when the callback is needed,
   the HAL_ETH_MspDeInit could be implemented in the user file
   */
 }
-
-// [ILG]
-#if defined ( __GNUC__ )
-#pragma GCC diagnostic pop
-#endif
 
 /**
   * @}
@@ -989,12 +999,6 @@ void HAL_ETH_IRQHandler(ETH_HandleTypeDef *heth)
   }
 }
 
-// [ILG]
-#if defined ( __GNUC__ )
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-#endif
-
 /**
   * @brief  Tx Transfer completed callbacks.
   * @param  heth: pointer to a ETH_HandleTypeDef structure that contains
@@ -1003,6 +1007,8 @@ void HAL_ETH_IRQHandler(ETH_HandleTypeDef *heth)
   */
 __weak void HAL_ETH_TxCpltCallback(ETH_HandleTypeDef *heth)
 {
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(heth);
   /* NOTE : This function Should not be modified, when the callback is needed,
   the HAL_ETH_TxCpltCallback could be implemented in the user file
   */ 
@@ -1016,6 +1022,8 @@ __weak void HAL_ETH_TxCpltCallback(ETH_HandleTypeDef *heth)
   */
 __weak void HAL_ETH_RxCpltCallback(ETH_HandleTypeDef *heth)
 {
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(heth);
   /* NOTE : This function Should not be modified, when the callback is needed,
   the HAL_ETH_TxCpltCallback could be implemented in the user file
   */ 
@@ -1029,15 +1037,12 @@ __weak void HAL_ETH_RxCpltCallback(ETH_HandleTypeDef *heth)
   */
 __weak void HAL_ETH_ErrorCallback(ETH_HandleTypeDef *heth)
 {
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(heth);
   /* NOTE : This function Should not be modified, when the callback is needed,
   the HAL_ETH_TxCpltCallback could be implemented in the user file
   */ 
 }
-
-// [ILG]
-#if defined ( __GNUC__ )
-#pragma GCC diagnostic pop
-#endif
 
 /**
   * @brief  Reads a PHY register
@@ -1843,12 +1848,6 @@ static void ETH_MACDMAConfig(ETH_HandleTypeDef *heth, uint32_t err)
      ETH_MACAddressConfig(heth, ETH_MAC_ADDRESS0, heth->Init.MACAddr);
 }
 
-// [ILG]
-#if defined ( __GNUC__ )
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-#endif
-
 /**
   * @brief  Configures the selected MAC address.
   * @param  heth: pointer to a ETH_HandleTypeDef structure that contains
@@ -1879,11 +1878,6 @@ static void ETH_MACAddressConfig(ETH_HandleTypeDef *heth, uint32_t MacAddr, uint
   /* Load the selected MAC address low register */
   (*(__IO uint32_t *)((uint32_t)(ETH_MAC_ADDR_LBASE + MacAddr))) = tmpreg1;
 }
-
-// [ILG]
-#if defined ( __GNUC__ )
-#pragma GCC diagnostic pop
-#endif
 
 /**
   * @brief  Enables the MAC transmission.
@@ -2037,7 +2031,8 @@ static void ETH_FlushTransmitFIFO(ETH_HandleTypeDef *heth)
   * @}
   */
 
-#endif /* STM32F405xx || STM32F415xx || STM32F407xx || STM32F417xx || STM32F427xx || STM32F437xx || STM32F429xx || STM32F439xx */
+#endif /* STM32F405xx || STM32F415xx || STM32F407xx || STM32F417xx || STM32F427xx ||\
+          STM32F437xx || STM32F429xx || STM32F439xx || STM32F469xx || STM32F479xx */
 #endif /* HAL_ETH_MODULE_ENABLED */
 /**
   * @}

@@ -2,8 +2,8 @@
   ******************************************************************************
   * @file    stm32f4xx_hal_dma2d.c
   * @author  MCD Application Team
-  * @version V1.3.1
-  * @date    25-March-2015
+  * @version V1.4.3
+  * @date    11-December-2015
   * @brief   DMA2D HAL module driver.
   *          This file provides firmware functions to manage the following 
   *          functionalities of the DMA2D peripheral:
@@ -127,7 +127,7 @@
 
 #ifdef HAL_DMA2D_MODULE_ENABLED
 
-#if defined(STM32F427xx) || defined(STM32F437xx) || defined(STM32F429xx) || defined(STM32F439xx)
+#if defined(STM32F427xx) || defined(STM32F437xx) || defined(STM32F429xx) || defined(STM32F439xx) || defined(STM32F469xx) || defined(STM32F479xx)
 
 /* Private types -------------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -286,12 +286,6 @@ HAL_StatusTypeDef HAL_DMA2D_DeInit(DMA2D_HandleTypeDef *hdma2d)
   return HAL_OK;
 }
 
-// [ILG]
-#if defined ( __GNUC__ )
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-#endif
-
 /**
   * @brief  Initializes the DMA2D MSP.
   * @param  hdma2d: pointer to a DMA2D_HandleTypeDef structure that contains
@@ -300,6 +294,8 @@ HAL_StatusTypeDef HAL_DMA2D_DeInit(DMA2D_HandleTypeDef *hdma2d)
   */
 __weak void HAL_DMA2D_MspInit(DMA2D_HandleTypeDef* hdma2d)
 {
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(hdma2d);
   /* NOTE : This function Should not be modified, when the callback is needed,
             the HAL_DMA2D_MspInit could be implemented in the user file
    */ 
@@ -313,15 +309,12 @@ __weak void HAL_DMA2D_MspInit(DMA2D_HandleTypeDef* hdma2d)
   */
 __weak void HAL_DMA2D_MspDeInit(DMA2D_HandleTypeDef* hdma2d)
 {
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(hdma2d);
   /* NOTE : This function Should not be modified, when the callback is needed,
             the HAL_DMA2D_MspDeInit could be implemented in the user file
    */ 
 }
-
-// [ILG]
-#if defined ( __GNUC__ )
-#pragma GCC diagnostic pop
-#endif
 
 /**
   * @}
@@ -906,7 +899,7 @@ HAL_StatusTypeDef HAL_DMA2D_ConfigLayer(DMA2D_HandleTypeDef *hdma2d, uint32_t La
     if ((pLayerCfg->InputColorMode == CM_A4) || (pLayerCfg->InputColorMode == CM_A8))
     {
       /* Prepare the value to be wrote to the BGCOLR register */
-      tmp |= ((pLayerCfg->InputAlpha) & 0x00FFFFFF);
+      tmp = ((pLayerCfg->InputAlpha) & 0x00FFFFFF);
     
       /* Write to DMA2D BGCOLR register */
       hdma2d->Instance->BGCOLR = tmp;
@@ -952,7 +945,7 @@ HAL_StatusTypeDef HAL_DMA2D_ConfigLayer(DMA2D_HandleTypeDef *hdma2d, uint32_t La
     if ((pLayerCfg->InputColorMode == CM_A4) || (pLayerCfg->InputColorMode == CM_A8))
     {
       /* Prepare the value to be wrote to the FGCOLR register */
-      tmp |= ((pLayerCfg->InputAlpha) & 0x00FFFFFF);
+      tmp = ((pLayerCfg->InputAlpha) & 0x00FFFFFF);
     
       /* Write to DMA2D FGCOLR register */
       hdma2d->Instance->FGCOLR = tmp;
@@ -1264,7 +1257,7 @@ static void DMA2D_SetConfig(DMA2D_HandleTypeDef *hdma2d, uint32_t pdata, uint32_
 /**
   * @}
   */
-#endif /* STM32F427xx || STM32F437xx || STM32F429xx || STM32F439xx */
+#endif /* STM32F427xx || STM32F437xx || STM32F429xx || STM32F439xx || STM32F469xx || STM32F479xx */
 #endif /* HAL_DMA2D_MODULE_ENABLED */
 /**
   * @}

@@ -2,14 +2,14 @@
   ******************************************************************************
   * @file    lsm303dlhc.c
   * @author  MCD Application Team
-  * @version V1.0.1
-  * @date    20-November-2014
+  * @version V2.0.0
+  * @date    24-June-2015
   * @brief   This file provides a set of functions needed to manage the lsm303dlhc
   *          MEMS accelerometer.
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2014 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT(c) 2015 STMicroelectronics</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -36,7 +36,7 @@
   ******************************************************************************
   */
 /* Includes ------------------------------------------------------------------*/
-#include "../include/lsm303dlhc.h"
+#include <BSP/lsm303dlhc/lsm303dlhc.h>
 
 /** @addtogroup BSP
   * @{
@@ -80,8 +80,10 @@
 ACCELERO_DrvTypeDef Lsm303dlhcDrv =
 {
   LSM303DLHC_AccInit,
+  LSM303DLHC_AccDeInit,
   LSM303DLHC_AccReadID,
   LSM303DLHC_AccRebootCmd,
+  0,
   LSM303DLHC_AccZClickITConfig,
   0,
   0,
@@ -91,10 +93,6 @@ ACCELERO_DrvTypeDef Lsm303dlhcDrv =
   LSM303DLHC_AccFilterCmd,
   LSM303DLHC_AccReadXYZ
 };
-
-uint8_t tmpreg2A[8] = {0x00};
-uint8_t tmpreg3A = 0x00;
-uint8_t tmpregcfgA = 0x00;
 
 /**
   * @}
@@ -123,6 +121,15 @@ void LSM303DLHC_AccInit(uint16_t InitStruct)
   /* Write value to ACC MEMS CTRL_REG4 register */
   ctrl = (uint8_t) (InitStruct << 8);
   COMPASSACCELERO_IO_Write(ACC_I2C_ADDRESS, LSM303DLHC_CTRL_REG4_A, ctrl);
+}
+
+/**
+  * @brief  LSM303DLHC De-initialization.
+  * @param  None
+  * @retval None
+  */
+void LSM303DLHC_AccDeInit(void)
+{
 }
 
 /**
@@ -551,52 +558,6 @@ void LSM303DLHC_AccZClickITConfig(void)
   /* Enable simple click IT on Z axis, */
   LSM303DLHC_AccClickITEnable(LSM303DLHC_Z_SINGLE_CLICK);
 }
-
-#ifdef MAGNET
-/**
-  * @brief  Set LSM303DLHC Mag Initialization.
-  * @param  LSM303DLHC_InitStruct: pointer to a LSM303DLHC_MagInitTypeDef structure 
-  *         that contains the configuration setting for the LSM303DLHC.
-  * @retval None
-  */
-void LSM303DLHC_MagInit(LSM303DLHCMag_InitTypeDef *LSM303DLHC_InitStruct)
-{  
-  uint8_t cra_regm = 0x00, crb_regm = 0x00, mr_regm = 0x00;
-  
-  /* Configure MEMS: temp and Data rate */
-  cra_regm |= (uint8_t) (LSM303DLHC_InitStruct->Temperature_Sensor | LSM303DLHC_InitStruct->MagOutput_DataRate);
-  
-  /* Configure MEMS: full Scale */
-  crb_regm |= (uint8_t) (LSM303DLHC_InitStruct->MagFull_Scale);
-  
-  /* Configure MEMS: working mode */
-  mr_regm |= (uint8_t) (LSM303DLHC_InitStruct->Working_Mode);
-  
-  /* Write value to Mag MEMS CRA_REG register */
-  COMPASSACCELERO_IO_Write(MAG_I2C_ADDRESS, LSM303DLHC_CRA_REG_M, 1, &cra_regm);
-  
-  /* Write value to Mag MEMS CRB_REG register */
-  COMPASSACCELERO_IO_Write(MAG_I2C_ADDRESS, LSM303DLHC_CRB_REG_M, 1, &crb_regm);
-  
-  /* Write value to Mag MEMS MR_REG register */
-  COMPASSACCELERO_IO_Write(MAG_I2C_ADDRESS, LSM303DLHC_MR_REG_M, 1, &mr_regm);
-}
-
-/**
-  * @brief  Get status for Mag LSM303DLHC data
-  * @param  None
-  * @retval Data status in a LSM303DLHC Data register
-  */
-uint8_t LSM303DLHC_MagGetDataStatus(void)
-{
-  uint8_t tmpreg;
-  
-  /* Read Mag STATUS register */
-  COMPASSACCELERO_IO_Read(MAG_I2C_ADDRESS, LSM303DLHC_SR_REG_M, 1, &tmpreg);
-  
-  return tmpreg;
-}
-#endif /* MAGNET */
 
 /**
   * @}

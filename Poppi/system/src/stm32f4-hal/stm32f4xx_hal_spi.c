@@ -2,8 +2,8 @@
   ******************************************************************************
   * @file    stm32f4xx_hal_spi.c
   * @author  MCD Application Team
-  * @version V1.3.1
-  * @date    25-March-2015
+  * @version V1.4.3
+  * @date    11-December-2015
   * @brief   SPI HAL module driver.
   *    
   *          This file provides firmware functions to manage the following 
@@ -165,12 +165,6 @@ static HAL_StatusTypeDef SPI_WaitOnFlagUntilTimeout(SPI_HandleTypeDef *hspi, uin
   * @{
   */
 
-// [ILG]
-#if defined ( __GNUC__ )
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-#endif
-
 /**
   * @brief  Initializes the SPI according to the specified parameters 
   *         in the SPI_InitTypeDef and create the associated handle.
@@ -264,12 +258,6 @@ HAL_StatusTypeDef HAL_SPI_DeInit(SPI_HandleTypeDef *hspi)
   return HAL_OK;
 }
 
-// [ILG]
-#if defined ( __GNUC__ )
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-#endif
-
 /**
   * @brief SPI MSP Init
   * @param  hspi: pointer to a SPI_HandleTypeDef structure that contains
@@ -278,6 +266,8 @@ HAL_StatusTypeDef HAL_SPI_DeInit(SPI_HandleTypeDef *hspi)
   */
  __weak void HAL_SPI_MspInit(SPI_HandleTypeDef *hspi)
  {
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(hspi);
    /* NOTE : This function Should not be modified, when the callback is needed,
             the HAL_SPI_MspInit could be implemented in the user file
    */
@@ -291,15 +281,12 @@ HAL_StatusTypeDef HAL_SPI_DeInit(SPI_HandleTypeDef *hspi)
   */
  __weak void HAL_SPI_MspDeInit(SPI_HandleTypeDef *hspi)
 {
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(hspi);
   /* NOTE : This function Should not be modified, when the callback is needed,
             the HAL_SPI_MspDeInit could be implemented in the user file
    */
 }
-
- // [ILG]
- #if defined ( __GNUC__ )
- #pragma GCC diagnostic pop
- #endif
 
 /**
   * @}
@@ -479,12 +466,6 @@ HAL_StatusTypeDef HAL_SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *pData, uint
   }
 }
 
-// [ILG]
-#if defined ( __GNUC__ )
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wconversion"
-#endif
-
 /**
   * @brief  Receive an amount of data in blocking mode 
   * @param  hspi: pointer to a SPI_HandleTypeDef structure that contains
@@ -496,17 +477,7 @@ HAL_StatusTypeDef HAL_SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *pData, uint
   */
 HAL_StatusTypeDef HAL_SPI_Receive(SPI_HandleTypeDef *hspi, uint8_t *pData, uint16_t Size, uint32_t Timeout)
 {
-  // [ILG]
-  #if defined ( __GNUC__ )
-  #pragma GCC diagnostic push
-  #pragma GCC diagnostic ignored "-Wunused-but-set-variable"
-  #endif
   __IO uint16_t tmpreg;
-  // [ILG]
-  #if defined ( __GNUC__ )
-  #pragma GCC diagnostic pop
-  #endif
-
   uint32_t tmp = 0;
 
   if(hspi->State == HAL_SPI_STATE_READY)
@@ -682,17 +653,7 @@ HAL_StatusTypeDef HAL_SPI_Receive(SPI_HandleTypeDef *hspi, uint8_t *pData, uint1
   */
 HAL_StatusTypeDef HAL_SPI_TransmitReceive(SPI_HandleTypeDef *hspi, uint8_t *pTxData, uint8_t *pRxData, uint16_t Size, uint32_t Timeout)
 {
-  // [ILG]
-  #if defined ( __GNUC__ )
-  #pragma GCC diagnostic push
-  #pragma GCC diagnostic ignored "-Wunused-but-set-variable"
-  #endif
   __IO uint16_t tmpreg;
-  // [ILG]
-  #if defined ( __GNUC__ )
-  #pragma GCC diagnostic pop
-  #endif
-
   uint32_t tmpstate = 0, tmp = 0;
   
   tmpstate = hspi->State; 
@@ -933,11 +894,6 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive(SPI_HandleTypeDef *hspi, uint8_t *pTxD
     return HAL_BUSY;
   }
 }
-
-// [ILG]
-#if defined ( __GNUC__ )
-#pragma GCC diagnostic pop
-#endif
 
 /**
   * @brief  Transmit an amount of data in no-blocking mode with Interrupt
@@ -1601,12 +1557,6 @@ void HAL_SPI_IRQHandler(SPI_HandleTypeDef *hspi)
   }
 }
 
-// [ILG]
-#if defined ( __GNUC__ )
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-#endif
-
 /**
   * @brief Tx Transfer completed callbacks
   * @param  hspi: pointer to a SPI_HandleTypeDef structure that contains
@@ -1615,6 +1565,8 @@ void HAL_SPI_IRQHandler(SPI_HandleTypeDef *hspi)
   */
 __weak void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi)
 {
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(hspi);
   /* NOTE : This function Should not be modified, when the callback is needed,
             the HAL_SPI_TxCpltCallback could be implemented in the user file
    */
@@ -1628,6 +1580,8 @@ __weak void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi)
   */
 __weak void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
 {
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(hspi);
   /* NOTE : This function Should not be modified, when the callback is needed,
             the HAL_SPI_RxCpltCallback() could be implemented in the user file
    */
@@ -1641,6 +1595,8 @@ __weak void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
   */
 __weak void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
 {
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(hspi);
   /* NOTE : This function Should not be modified, when the callback is needed,
             the HAL_SPI_TxRxCpltCallback() could be implemented in the user file
    */
@@ -1654,6 +1610,8 @@ __weak void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
   */
 __weak void HAL_SPI_TxHalfCpltCallback(SPI_HandleTypeDef *hspi)
 {
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(hspi);
   /* NOTE : This function Should not be modified, when the callback is needed,
             the HAL_SPI_TxHalfCpltCallback could be implemented in the user file
    */
@@ -1667,6 +1625,8 @@ __weak void HAL_SPI_TxHalfCpltCallback(SPI_HandleTypeDef *hspi)
   */
 __weak void HAL_SPI_RxHalfCpltCallback(SPI_HandleTypeDef *hspi)
 {
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(hspi);
   /* NOTE : This function Should not be modified, when the callback is needed,
             the HAL_SPI_RxHalfCpltCallback() could be implemented in the user file
    */
@@ -1680,6 +1640,8 @@ __weak void HAL_SPI_RxHalfCpltCallback(SPI_HandleTypeDef *hspi)
   */
 __weak void HAL_SPI_TxRxHalfCpltCallback(SPI_HandleTypeDef *hspi)
 {
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(hspi);
   /* NOTE : This function Should not be modified, when the callback is needed,
             the HAL_SPI_TxRxHalfCpltCallback() could be implemented in the user file
    */
@@ -1693,17 +1655,14 @@ __weak void HAL_SPI_TxRxHalfCpltCallback(SPI_HandleTypeDef *hspi)
   */
  __weak void HAL_SPI_ErrorCallback(SPI_HandleTypeDef *hspi)
 {
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(hspi);
   /* NOTE : - This function Should not be modified, when the callback is needed,
             the HAL_SPI_ErrorCallback() could be implemented in the user file.
             - The ErrorCode parameter in the hspi handle is updated by the SPI processes
             and user can use HAL_SPI_GetError() API to check the latest error occurred.
    */
 }
-
- // [ILG]
- #if defined ( __GNUC__ )
- #pragma GCC diagnostic pop
- #endif
 
 /**
   * @}
@@ -1842,12 +1801,6 @@ static void SPI_TxISR(SPI_HandleTypeDef *hspi)
     SPI_TxCloseIRQHandler(hspi);
   }
 }
-
-// [ILG]
-#if defined ( __GNUC__ )
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wconversion"
-#endif
 
 /**
   * @brief  Interrupt Handler to close Rx transfer 
@@ -2047,16 +2000,7 @@ static void SPI_DMATransmitCplt(DMA_HandleTypeDef *hdma)
   */
 static void SPI_DMAReceiveCplt(DMA_HandleTypeDef *hdma)
 {
-  // [ILG]
-  #if defined ( __GNUC__ )
-  #pragma GCC diagnostic push
-  #pragma GCC diagnostic ignored "-Wunused-but-set-variable"
-  #endif
   __IO uint16_t tmpreg;
-  // [ILG]
-  #if defined ( __GNUC__ )
-  #pragma GCC diagnostic pop
-  #endif
   
   SPI_HandleTypeDef* hspi = ( SPI_HandleTypeDef* )((DMA_HandleTypeDef* )hdma)->Parent;
   /* DMA Normal mode */
@@ -2134,16 +2078,7 @@ static void SPI_DMAReceiveCplt(DMA_HandleTypeDef *hdma)
   */
 static void SPI_DMAEndTransmitReceive(SPI_HandleTypeDef *hspi)   
 {
-  // [ILG]
-  #if defined ( __GNUC__ )
-  #pragma GCC diagnostic push
-  #pragma GCC diagnostic ignored "-Wunused-but-set-variable"
-  #endif
   __IO uint16_t tmpreg;
-  // [ILG]
-  #if defined ( __GNUC__ )
-  #pragma GCC diagnostic pop
-  #endif
   
   /* Reset CRC Calculation */
   if(hspi->Init.CRCCalculation == SPI_CRCCALCULATION_ENABLE)
@@ -2193,7 +2128,7 @@ static void SPI_DMAEndTransmitReceive(SPI_HandleTypeDef *hspi)
 /**
   * @brief DMA SPI transmit receive process complete callback 
   * @param  hdma: pointer to a DMA_HandleTypeDef structure that contains
-  *               the configuration information for the specified DMA module.
+  *                the configuration information for the specified DMA module.
   * @retval None
   */
 static void SPI_DMATransmitReceiveCplt(DMA_HandleTypeDef *hdma)
@@ -2259,11 +2194,6 @@ static void SPI_DMAHalfTransmitReceiveCplt(DMA_HandleTypeDef *hdma)
 
   HAL_SPI_TxRxHalfCpltCallback(hspi);
 }
-
-// [ILG]
-#if defined ( __GNUC__ )
-#pragma GCC diagnostic pop
-#endif
 
 /**
   * @brief DMA SPI communication error callback 

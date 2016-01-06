@@ -2,14 +2,14 @@
   ******************************************************************************
   * @file    l3gd20.c
   * @author  MCD Application Team
-  * @version V1.1.1
-  * @date    27-November-2014
+  * @version V2.0.0
+  * @date    26-June-2015
   * @brief   This file provides a set of functions needed to manage the L3GD20,
   *          ST MEMS motion sensor, 3-axis digital output gyroscope.  
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2014 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT(c) 2015 STMicroelectronics</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -36,7 +36,7 @@
   ******************************************************************************
   */
 /* Includes ------------------------------------------------------------------*/
-#include "../include/l3gd20.h"
+#include <BSP/l3gd20/l3gd20.h>
 
 /** @addtogroup BSP
   * @{
@@ -80,8 +80,10 @@
 GYRO_DrvTypeDef L3gd20Drv =
 {
   L3GD20_Init,
+  L3GD20_DeInit,
   L3GD20_ReadID,
   L3GD20_RebootCmd,
+  L3GD20_LowPower,
   L3GD20_INT1InterruptConfig,
   L3GD20_EnableIT,
   L3GD20_DisableIT,
@@ -130,6 +132,17 @@ void L3GD20_Init(uint16_t InitStruct)
   GYRO_IO_Write(&ctrl, L3GD20_CTRL_REG4_ADDR, 1);
 }
 
+
+
+/**
+  * @brief L3GD20 De-initialization
+  * @param  None
+  * @retval None
+  */
+void L3GD20_DeInit(void)
+{
+}
+
 /**
   * @brief  Read ID address of L3GD20
   * @param  None
@@ -166,6 +179,20 @@ void L3GD20_RebootCmd(void)
   
   /* Write value to MEMS CTRL_REG5 register */
   GYRO_IO_Write(&tmpreg, L3GD20_CTRL_REG5_ADDR, 1);
+}
+
+/**
+  * @brief Set L3GD20 in low-power mode
+  * @param
+  * @retval  None
+  */
+void L3GD20_LowPower(uint16_t InitStruct)
+{
+  uint8_t ctrl = 0x00;
+
+  /* Write value to MEMS CTRL_REG1 register */
+  ctrl = (uint8_t) InitStruct;
+  GYRO_IO_Write(&ctrl, L3GD20_CTRL_REG1_ADDR, 1);
 }
 
 /**

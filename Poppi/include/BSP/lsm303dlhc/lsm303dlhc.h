@@ -2,13 +2,13 @@
   ******************************************************************************
   * @file    lsm303dlhc.h
   * @author  MCD Application Team
-  * @version V1.0.1
-  * @date    20-November-2014
+  * @version V2.0.0
+  * @date    24-June-2015
   * @brief   This file contains all the functions prototypes for the lsm303dlhc.c driver.
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2014 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT(c) 2015 STMicroelectronics</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -44,7 +44,7 @@
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "accelero.h"
+#include "BSP/Common/accelero.h"
 
 /** @addtogroup BSP
   * @{
@@ -445,6 +445,7 @@
   */
 /* ACC functions */
 void    LSM303DLHC_AccInit(uint16_t InitStruct);
+void    LSM303DLHC_AccDeInit(void);
 uint8_t LSM303DLHC_AccReadID(void);
 void    LSM303DLHC_AccRebootCmd(void);
 void    LSM303DLHC_AccFilterConfig(uint8_t FilterStruct);
@@ -462,13 +463,6 @@ void    LSM303DLHC_AccINT2InterruptDisable(uint8_t ITCombination, uint8_t ITAxes
 void    LSM303DLHC_AccClickITEnable(uint8_t ITClick);
 void    LSM303DLHC_AccClickITDisable(uint8_t ITClick);
 void    LSM303DLHC_AccZClickITConfig(void);
-
-#if 0
-/* MAG functions */
-void    LSM303DLHC_MagInit(LSM303DLHCMag_InitTypeDef *LSM303DLHC_InitStruct);
-uint8_t LSM303DLHC_MagGetDataStatus(void);
-void    LSM303DLHC_CompassReadAcc(int16_t* pData);
-#endif
 
 /* COMPASS / ACCELERO IO functions */
 void    COMPASSACCELERO_IO_Init(void);
