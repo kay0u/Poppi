@@ -15,12 +15,6 @@
 #include "../Leg.h"
 #include "../../Math/Vector3.h"
 
-enum LegPosition {
-	Idle,
-	Start,
-	End
-};
-
 struct LegStep {
 	LegStep(Leg &leg, LegPosition position);
 
@@ -39,9 +33,9 @@ public:
 	virtual void stop();
 	virtual void update();
 	virtual bool reachedTarget();
-
-	//Abstracts
-	virtual void walk() = 0;
+	virtual void executeMovement(Movement move);
+	virtual void waitForMoveEnd();
+	virtual void walk();
 
 protected:
 	Leg* (*m_legs)[LEG_COUNT];

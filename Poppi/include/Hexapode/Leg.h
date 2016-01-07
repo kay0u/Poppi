@@ -15,6 +15,13 @@
 #include "../Math/Vector3.h"
 #include "../Math/Trigo.h"
 
+
+enum LegPosition {
+	Idle,
+	Start,
+	End
+};
+
 class Leg {
 public:
 	Leg();
@@ -26,6 +33,7 @@ public:
 	bool hasReachedGoal();
 	Vector3 processIK(Vector3 pos);
 	void goTo(Vector3 pos);
+	void goTo(LegPosition pos);
 private:
 	//Servos
 	Servo m_gamma;

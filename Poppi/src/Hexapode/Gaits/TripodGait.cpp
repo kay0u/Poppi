@@ -34,6 +34,9 @@ TripodGait::TripodGait(Leg* (*legs)[LEG_COUNT]): Gait(legs)
 	mov3.push_back(LegStep(m_legs[0], End));
 	mov3.push_back(LegStep(m_legs[2], End));
 	mov3.push_back(LegStep(m_legs[4], End));
+	mov3.push_back(LegStep(m_legs[1], Start));
+	mov3.push_back(LegStep(m_legs[3], Start));
+	mov3.push_back(LegStep(m_legs[5], Start));
 
 	Movement mov4;
 	mov4.push_back(LegStep(m_legs[0], End));
@@ -42,6 +45,12 @@ TripodGait::TripodGait(Leg* (*legs)[LEG_COUNT]): Gait(legs)
 	mov4.push_back(LegStep(m_legs[1], Idle));
 	mov4.push_back(LegStep(m_legs[3], Idle));
 	mov4.push_back(LegStep(m_legs[5], Idle));
+
+	movements.push_back(mov0);
+	movements.push_back(mov1);
+	movements.push_back(mov2);
+	movements.push_back(mov3);
+	movements.push_back(mov4);
 }
 
 TripodGait::~TripodGait()
@@ -49,10 +58,8 @@ TripodGait::~TripodGait()
 
 }
 
-void TripodGait::walk()
-{
 
-}
+
 
 void TripodGait::update()
 {

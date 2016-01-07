@@ -81,3 +81,20 @@ void Leg::goTo(Vector3 pos)
     m_alpha.goTo(Vector3(rots.y, 0, 0));
     m_beta.goTo(Vector3(rots.z, 0, 0));
 }
+
+
+void Leg::goTo(LegPosition pos)
+{
+	switch(pos)
+	{
+	case Idle:
+		goTo(m_idlePosition);
+		break;
+	case Start:
+		goTo(m_startPosition);
+		break;
+	case End:
+		goTo(m_endPosition);
+		break;
+	}
+}

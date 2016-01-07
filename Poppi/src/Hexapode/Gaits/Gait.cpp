@@ -48,6 +48,30 @@ void Gait::stop()
 	stopped = true;
 }
 
+void Gait::walk()
+{
+	executeMovement(movements[0]);
+
+	while(!stopped)
+	{
+		for(int i(1); i < movements.size(); ++i)
+		{
+			executeMovement(movements[i]);
+			waitForMoveEnd();
+		}
+	}
+}
+
+void Gait::executeMovement(Movement move)
+{
+	for(int i(0); i < move.size(); ++i)
+		move[i].leg.goTo(move[i].position);
+}
+
+void Gait::waitForMoveEnd()
+{
+	//TODO Implement
+}
 
 void Gait::update()
 {
