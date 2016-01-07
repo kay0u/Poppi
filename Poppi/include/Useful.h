@@ -5,6 +5,7 @@
 #include "FreeRTOS.h"
 #include "cmsis_os.h"
 
+#define LEG_COUNT 6
 #define TWO_PI  6.2831853f
 #define HALF_PI 1.5707963f
 #define ABS(x)  (x < 0) ? (-x) : x

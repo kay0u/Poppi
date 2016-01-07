@@ -10,20 +10,30 @@
 #ifndef HEXAPODE_HEXAPODE_H_
 #define HEXAPODE_HEXAPODE_H_
 
-#include "Leg.h"
+#include "../Useful.h"
+#include "../Math/Vector3.h"
 
-#define LEG_COUNT 6
+#include "Leg.h"
+#include "Gaits/Gait.h"
+#include "Gaits/TripodGait.h"
 
 class Hexapode {
 public:
 	Hexapode();
 	virtual ~Hexapode();
-	virtual void initializeLegs();
-	virtual void setDirection(Vector3 goal);
+	void initializeLegs();
+	void setDirection(Vector3 goal);
+	void changeGait(Gait* newGait);
+	void update();
 
 protected:
-	Leg legs[LEG_COUNT];
+	Leg* m_legs[LEG_COUNT];
 	Vector3 m_direction;
+	Vector3 m_position;
+
+	//Gaits
+	Gait* m_activeGait;
+	TripodGait m_tripodGait;
 };
 
 #endif /* HEXAPODE_HEXAPODE_H_ */
