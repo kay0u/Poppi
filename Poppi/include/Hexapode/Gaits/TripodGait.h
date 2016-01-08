@@ -14,7 +14,7 @@
 class TripodGait : public Gait
 {
 public:
-	TripodGait(Leg* (*legs)[LEG_COUNT]);
+	TripodGait(Leg* (&legs)[LEG_COUNT]);
 	virtual ~TripodGait();
 	virtual void update();
 };

@@ -7,7 +7,7 @@
 
 #include "../../../include/Hexapode/Gaits/TripodGait.h"
 
-TripodGait::TripodGait(Leg* (*legs)[LEG_COUNT]): Gait(legs)
+TripodGait::TripodGait(Leg* (&legs)[LEG_COUNT]): Gait(legs)
 {
 	Movement mov0;
 	mov0.push_back(LegStep(m_legs[0], End));

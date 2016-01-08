@@ -8,7 +8,7 @@
 #include "../../include/Hexapode/Hexapode.h"
 
 Hexapode::Hexapode():
-m_tripodGait(&m_legs),
+m_tripodGait(m_legs),
 m_position(Vector3::zero)
 {
 	initializeLegs();

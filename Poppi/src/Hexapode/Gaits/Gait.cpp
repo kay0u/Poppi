@@ -8,7 +8,7 @@
 #include "../../../include/Useful.h"
 #include "../../../include/Hexapode/Gaits/Gait.h"
 
-Gait::Gait(Leg* (*legs)[LEG_COUNT]):
+Gait::Gait(Leg* (&legs)[LEG_COUNT]):
 m_legs(legs),
 m_direction(Vector3::zero),
 stopped(true)
@@ -16,7 +16,7 @@ stopped(true)
 
 }
 
-LegStep::LegStep(Leg &l, LegPosition pos):
+LegStep::LegStep(Leg *l, LegPosition pos):
 		leg(l)
 {
 	position = pos;
@@ -30,7 +30,7 @@ Gait::~Gait()
 void Gait::setDirection(Vector3 goal)
 {
 	for(int i(0); i < LEG_COUNT; ++i)
-		(*m_legs)[i]->setDirection(goal);
+		m_legs[i]->setDirection(goal);
 	stopped = m_direction == Vector3::zero;
 
 	if(!stopped)
@@ -65,7 +65,7 @@ void Gait::walk()
 void Gait::executeMovement(Movement move)
 {
 	for(int i(0); i < move.size(); ++i)
-		move[i].leg.goTo(move[i].position);
+		move[i].leg->goTo(move[i].position);
 }
 
 void Gait::waitForMoveEnd()

@@ -16,16 +16,16 @@
 #include "../../Math/Vector3.h"
 
 struct LegStep {
-	LegStep(Leg &leg, LegPosition position);
+	LegStep(Leg *leg, LegPosition position);
 
-	Leg &leg;
+	Leg *leg;
 	LegPosition position;
 };
 typedef std::vector<LegStep> Movement;
 
 class Gait {
 public:
-	Gait(Leg* (*legs)[LEG_COUNT]);
+	Gait(Leg* (&legs)[LEG_COUNT]);
 	virtual ~Gait();
 
 	virtual void setDirection(Vector3 direction);
@@ -38,7 +38,7 @@ public:
 	virtual void walk();
 
 protected:
-	Leg* (*m_legs)[LEG_COUNT];
+	Leg* (&m_legs)[LEG_COUNT];
 	Vector3 m_direction;
 	bool stopped;
 	std::vector<Movement> movements;
