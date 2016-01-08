@@ -31,17 +31,19 @@ public:
 	virtual void setDirection(Vector3 direction);
 	virtual void init(Vector3 direction);
 	virtual void stop();
-	virtual void update();
-	virtual bool reachedTarget();
 	virtual void executeMovement(Movement move);
 	virtual void waitForMoveEnd();
 	virtual void walk();
+	virtual bool isStopped();
+	virtual std::vector<Movement>& getMovements();
 
 protected:
 	Leg* (&m_legs)[LEG_COUNT];
 	Vector3 m_direction;
-	bool stopped;
-	std::vector<Movement> movements;
+	bool m_stopped;
+	std::vector<Movement> m_movements;
+	osThreadId m_moveThreadId;
+	osMutexId m_mutexId;
 };
 
 #endif /* HEXAPODE_GAITS_GAIT_H_ */

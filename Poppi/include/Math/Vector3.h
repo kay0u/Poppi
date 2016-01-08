@@ -29,7 +29,7 @@ public:
 	Vector3 operator*(float f);
 	Vector3 operator/(const Vector3& v2);
 	Vector3 operator/(float f);
-	inline bool operator == (const Vector3 &v) const;
+	bool operator == (const Vector3 &v) const;
 	Vector3& operator-=(const Vector3& v);
 	Vector3& operator+=(const Vector3& v);
 	Vector3& operator*=(const Vector3& v);

@@ -5,15 +5,16 @@
  *      Author: Vincent
  */
 
-#include "../../../include/Useful.h"
-#include "../../../include/Hexapode/Gaits/Gait.h"
+#include "Useful.h"
+#include "Hexapode/Gaits/Gait.h"
+
+static void walkThread(void const *argument);
 
 Gait::Gait(Leg* (&legs)[LEG_COUNT]):
 m_legs(legs),
 m_direction(Vector3::zero),
-stopped(true)
+m_stopped(true)
 {
-
 }
 
 LegStep::LegStep(Leg *l, LegPosition pos):
@@ -29,11 +30,14 @@ Gait::~Gait()
 
 void Gait::setDirection(Vector3 goal)
 {
+	osMutexWait(m_mutexId, 0);
 	for(int i(0); i < LEG_COUNT; ++i)
 		m_legs[i]->setDirection(goal);
-	stopped = m_direction == Vector3::zero;
+	osMutexRelease(m_mutexId);
 
-	if(!stopped)
+	m_stopped = m_direction == Vector3::zero;
+
+	if(!m_stopped)
 		walk();
 }
 
@@ -45,35 +49,56 @@ void Gait::init(Vector3 direction)
 void Gait::stop()
 {
 	m_direction = Vector3::zero;
-	stopped = true;
+	m_stopped = true;
+	osThreadTerminate(m_moveThreadId);
 }
 
-void Gait::walk()
+static void walkThread(void const *argument)
 {
-	executeMovement(movements[0]);
+	Gait* gait = (Gait*)argument;
+	std::vector<Movement>& movements = gait->getMovements();
+	gait->executeMovement(movements[0]);
 
-	while(!stopped)
+	for(;;)
 	{
-		for(int i(1); i < movements.size(); ++i)
+		for(uint32_t i(1); i < movements.size(); ++i)
 		{
-			executeMovement(movements[i]);
-			waitForMoveEnd();
+			gait->executeMovement(movements[i]);
+			gait->waitForMoveEnd();
 		}
 	}
 }
 
+std::vector<Movement>& Gait::getMovements()
+{
+	return m_movements;
+}
+
+void Gait::walk()
+{
+	osThreadDef(WalkThread, walkThread, osPriorityNormal, 1, configMINIMAL_STACK_SIZE);
+	osMutexDef(osMutex);
+	m_mutexId = osMutexCreate(osMutex(osMutex));
+	m_moveThreadId = osThreadCreate(osThread(WalkThread), NULL);
+}
+
 void Gait::executeMovement(Movement move)
 {
-	for(int i(0); i < move.size(); ++i)
+	osMutexWait(m_mutexId, 0);
+	for(uint32_t i(0); i < move.size(); ++i)
 		move[i].leg->goTo(move[i].position);
+	osMutexRelease(m_mutexId);
 }
 
 void Gait::waitForMoveEnd()
 {
-	//TODO Implement
+	osMutexWait(m_mutexId, 0);
+	printf("TA MERE LA PUUUUUTE\n");
+	osDelay(1000);
+	osMutexRelease(m_mutexId);
 }
 
-void Gait::update()
+bool Gait::isStopped()
 {
-
+	return m_stopped;
 }

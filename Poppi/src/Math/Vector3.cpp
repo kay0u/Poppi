@@ -1,5 +1,5 @@
 
-#include "../../include/Math/Vector3.h"
+#include "Math/Vector3.h"
 
 const Vector3 Vector3::zero = Vector3(0,0,0);
 const Vector3 Vector3::up = Vector3(0,0,0);

@@ -13,6 +13,7 @@ m_position(Vector3::zero)
 {
 	initializeLegs();
 	m_activeGait = &m_tripodGait;
+	printf("TA MERE LA PUUUUUTE\r\n");
 
 	for(int i(0);i < LEG_COUNT; ++i)
 		m_legs[i] = new Leg();
@@ -48,5 +49,5 @@ void Hexapode::changeGait(Gait* newGait)
 
 void Hexapode::update()
 {
-	m_activeGait->update();
+
 }

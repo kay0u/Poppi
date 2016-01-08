@@ -6,6 +6,8 @@
 #include "FreeRTOS.h"
 
 #include "../include/Useful.h"
+#include "Hexapode/Hexapode.h"
+#include "Math/Vector3.h"
 #include "../include/Imu.h"
 
 #include "Uart.hpp"
@@ -172,6 +174,8 @@ int main(void)
 	osThreadCreate(osThread(BPThread), NULL);
 	osThreadCreate(osThread(READThread), NULL);
 
+	Hexapode hexa;
+	hexa.setDirection(Vector3::up);
 
 	/* Start scheduler */
 	osKernelStart();

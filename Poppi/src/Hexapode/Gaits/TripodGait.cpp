@@ -5,7 +5,7 @@
  *      Author: Vincent
  */
 
-#include "../../../include/Hexapode/Gaits/TripodGait.h"
+#include "Hexapode/Gaits/TripodGait.h"
 
 TripodGait::TripodGait(Leg* (&legs)[LEG_COUNT]): Gait(legs)
 {
@@ -46,23 +46,14 @@ TripodGait::TripodGait(Leg* (&legs)[LEG_COUNT]): Gait(legs)
 	mov4.push_back(LegStep(m_legs[3], Idle));
 	mov4.push_back(LegStep(m_legs[5], Idle));
 
-	movements.push_back(mov0);
-	movements.push_back(mov1);
-	movements.push_back(mov2);
-	movements.push_back(mov3);
-	movements.push_back(mov4);
+	m_movements.push_back(mov0);
+	m_movements.push_back(mov1);
+	m_movements.push_back(mov2);
+	m_movements.push_back(mov3);
+	m_movements.push_back(mov4);
 }
 
 TripodGait::~TripodGait()
 {
 
-}
-
-
-
-
-void TripodGait::update()
-{
-	if(stopped)
-		return;
 }
