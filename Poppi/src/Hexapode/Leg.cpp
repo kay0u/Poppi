@@ -8,10 +8,12 @@
 #include "../../include/Hexapode/Leg.h"
 
 Leg::Leg() :
-m_femurLength(4),
 m_tibiaLength(4),
+m_femurLength(4),
+m_coxaLength(1),
 m_angleToHexapod(0),
-m_speed(2)
+m_speed(2),
+m_gotoDirCenterPosition(Vector3(3, 0, -3))
 {
 
 }
@@ -61,7 +63,7 @@ Vector3 Leg::processIK(Vector3 pos)
 {
 	m_goal = pos;
 
-	float distanceToTarget = Vector3::Distance(m_goal, Vector3::zero);
+	float distanceToTarget = Vector3::Distance(m_goal, Vector3(m_coxaLength, 0, 0));
 
 	float alpha1 = acos(-m_goal.y / distanceToTarget);
 	float alpha2 = acos((pow(m_tibiaLength, 2) - pow(m_femurLength, 2) - pow(distanceToTarget, 2)) / (-2 * m_femurLength * distanceToTarget));

@@ -36,11 +36,13 @@ public:
 	virtual void walk();
 	virtual bool isStopped();
 	virtual std::vector<Movement>& getMovements();
+	uint8_t getMoveLoopStart();
 
 protected:
 	Leg* (&m_legs)[LEG_COUNT];
 	Vector3 m_direction;
 	bool m_stopped;
+	uint8_t m_moveLoopStart;
 	std::vector<Movement> m_movements;
 	osThreadId m_moveThreadId;
 	osMutexId m_mutexId;

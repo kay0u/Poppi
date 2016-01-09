@@ -13,7 +13,8 @@ static void walkThread(void const *argument);
 Gait::Gait(Leg* (&legs)[LEG_COUNT]):
 m_legs(legs),
 m_direction(Vector3::zero),
-m_stopped(true)
+m_stopped(true),
+m_moveLoopStart(0)
 {
 }
 
@@ -58,10 +59,11 @@ static void walkThread(void const *argument)
 	Gait* gait = (Gait*)argument;
 	std::vector<Movement>& movements = gait->getMovements();
 	gait->executeMovement(movements[0]);
+	uint8_t loopStartIndex = gait->getMoveLoopStart();
 
 	for(;;)
 	{
-		for(uint32_t i(1); i < movements.size(); ++i)
+		for(uint32_t i(loopStartIndex); i < movements.size(); ++i)
 		{
 			gait->executeMovement(movements[i]);
 			gait->waitForMoveEnd();
@@ -74,12 +76,17 @@ std::vector<Movement>& Gait::getMovements()
 	return m_movements;
 }
 
+uint8_t Gait::getMoveLoopStart()
+{
+	return m_moveLoopStart;
+}
+
 void Gait::walk()
 {
 	osThreadDef(WalkThread, walkThread, osPriorityNormal, 1, configMINIMAL_STACK_SIZE);
 	osMutexDef(osMutex);
 	m_mutexId = osMutexCreate(osMutex(osMutex));
-	m_moveThreadId = osThreadCreate(osThread(WalkThread), NULL);
+	m_moveThreadId = osThreadCreate(osThread(WalkThread), (void*)this);
 }
 
 void Gait::executeMovement(Movement move)
