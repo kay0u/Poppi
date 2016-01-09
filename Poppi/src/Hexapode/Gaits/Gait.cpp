@@ -16,6 +16,8 @@ m_direction(Vector3::zero),
 m_stopped(true),
 m_moveLoopStart(0)
 {
+	osMutexDef(osMutex);
+	m_mutexId = osMutexCreate(osMutex(osMutex));
 }
 
 LegStep::LegStep(Leg *l, LegPosition pos):
@@ -100,7 +102,9 @@ void Gait::executeMovement(Movement move)
 void Gait::waitForMoveEnd()
 {
 	osMutexWait(m_mutexId, 0);
+#ifdef DEBUG
 	printf("TA MERE LA PUUUUUTE\n");
+#endif
 	osDelay(1000);
 	osMutexRelease(m_mutexId);
 }

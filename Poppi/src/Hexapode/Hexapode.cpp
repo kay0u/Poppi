@@ -15,7 +15,9 @@ m_position(Vector3::zero)
 		m_legs[i] = new Leg();
 	initializeLegs();
 	m_activeGait = &m_tripodGait;
+#ifdef DEBUG
 	printf("TA MERE LA PUUUUUTE\r\n");
+#endif
 }
 
 Hexapode::~Hexapode()
