@@ -18,12 +18,12 @@
 #ifndef UART_HPP
 #define UART_HPP
 
-#include "stm32f4xx.h"
 #include "stm32f4xx_hal.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <stm32f4xx.h>
 
 #define RX_BUFFER_SIZE 64
 

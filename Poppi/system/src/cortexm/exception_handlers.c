@@ -5,8 +5,8 @@
 
 // ----------------------------------------------------------------------------
 
+#include <cmsis_device.h>
 #include "cortexm/ExceptionHandlers.h"
-#include "cmsis_device.h"
 #include "arm/semihosting.h"
 #include "diag/Trace.h"
 #include <string.h>
