@@ -95,7 +95,8 @@ static void Print_Thread2(void const *argument)
 
 		serial_pc.read(aRxBuffer);
 		//if (status == HAL_OK)
-		serial_pc.printfln("%s", aRxBuffer);
+		//Pour faire plaisir à la série sur Unity, il faut envoyer "\r" et non "\r\n"
+		serial_pc.printf("%s\r", aRxBuffer);
 		osDelay(500);
 	}
 }
@@ -119,7 +120,8 @@ static void Print_Thread1(void const *argument)
 		// Print every 500 ms for 10 s 
 		while (count >= osKernelSysTick())
 		{
-			serial_pc.printfln("%f, %f", imu.getOrientation()[0], imu.getOrientation()[1]);
+			//Pour faire plaisir à la série sur Unity, il faut envoyer "\r" et non "\r\n"
+			serial_pc.printf("%f, %f\r", imu.getOrientation()[0], imu.getOrientation()[1]);
 
 			osDelay(500);
 		}
