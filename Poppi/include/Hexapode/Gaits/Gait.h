@@ -12,6 +12,7 @@
 
 #include "../../Useful.h"
 
+#include "LedController.h"
 #include "../Leg.h"
 #include "../../Math/Vector3.h"
 
@@ -32,11 +33,13 @@ public:
 	virtual void init(Vector3 direction);
 	virtual void stop();
 	virtual void executeMovement(Movement move);
-	virtual void waitForMoveEnd();
+	virtual void waitForMoveEnd() const;
 	virtual void walk();
 	virtual bool isStopped();
 	virtual std::vector<Movement>& getMovements();
 	uint8_t getMoveLoopStart();
+	void print() const;
+
 
 protected:
 	Leg* (&m_legs)[LEG_COUNT];

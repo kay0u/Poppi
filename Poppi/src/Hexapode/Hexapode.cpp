@@ -5,7 +5,7 @@
  *      Author: Vincent
  */
 
-#include "../../include/Hexapode/Hexapode.h"
+#include "Hexapode/Hexapode.h"
 
 Hexapode::Hexapode():
 m_tripodGait(m_legs),
@@ -15,9 +15,7 @@ m_position(Vector3::zero)
 		m_legs[i] = new Leg();
 	initializeLegs();
 	m_activeGait = &m_tripodGait;
-#ifdef DEBUG
-	printf("TA MERE LA PUUUUUTE\r\n");
-#endif
+	setDirection(Vector3::up);
 }
 
 Hexapode::~Hexapode()

@@ -8,8 +8,6 @@
 #include "Useful.h"
 #include "Hexapode/Gaits/Gait.h"
 
-static void walkThread(void const *argument);
-
 Gait::Gait(Leg* (&legs)[LEG_COUNT]):
 m_legs(legs),
 m_direction(Vector3::zero),
@@ -33,6 +31,8 @@ Gait::~Gait()
 
 void Gait::setDirection(Vector3 goal)
 {
+	printDebug("[Gait] setDirection\n\r");
+	m_direction = goal;
 	osMutexWait(m_mutexId, 0);
 	for(int i(0); i < LEG_COUNT; ++i)
 		m_legs[i]->setDirection(goal);
@@ -56,19 +56,28 @@ void Gait::stop()
 	osThreadTerminate(m_moveThreadId);
 }
 
-static void walkThread(void const *argument)
+void Gait::print() const
 {
-	Gait* gait = (Gait*)argument;
-	std::vector<Movement>& movements = gait->getMovements();
-	gait->executeMovement(movements[0]);
-	uint8_t loopStartIndex = gait->getMoveLoopStart();
+	printf("%i\r\n", m_stopped);
+}
 
+void walkThread(void const *argument)
+{
+	//const Gait* gait = static_cast<const Gait*>(argument);
+	/*std::vector<Movement>& movements = gait->getMovements();
+	printDebug("[Gait] walkThread %i\n\r", movements.size());
+	gait->executeMovement(movements[0]);
+	printDebug("[Gait] walkThread\n\r");
+	uint8_t loopStartIndex = gait->getMoveLoopStart();*/
+	//gait->print();
 	for(;;)
 	{
-		for(uint32_t i(loopStartIndex); i < movements.size(); ++i)
+		//for(uint32_t i(loopStartIndex); i < movements.size(); ++i)
 		{
-			gait->executeMovement(movements[i]);
-			gait->waitForMoveEnd();
+			//gait->executeMovement(movements[i]);
+			//gait->waitForMoveEnd();
+			osDelay(1000);
+			LedController::Instance().toggleAllLed();
 		}
 	}
 }
@@ -85,9 +94,8 @@ uint8_t Gait::getMoveLoopStart()
 
 void Gait::walk()
 {
-	osThreadDef(WalkThread, walkThread, osPriorityNormal, 1, configMINIMAL_STACK_SIZE);
-	osMutexDef(osMutex);
-	m_mutexId = osMutexCreate(osMutex(osMutex));
+	LedController::Instance().toggleAllLed();
+	osThreadDef(WalkThread, walkThread, osPriorityNormal, 0, configMINIMAL_STACK_SIZE);
 	m_moveThreadId = osThreadCreate(osThread(WalkThread), (void*)this);
 }
 
@@ -99,13 +107,11 @@ void Gait::executeMovement(Movement move)
 	osMutexRelease(m_mutexId);
 }
 
-void Gait::waitForMoveEnd()
+void Gait::waitForMoveEnd() const
 {
 	osMutexWait(m_mutexId, 0);
-#ifdef DEBUG
-	printf("TA MERE LA PUUUUUTE\n");
-#endif
 	osDelay(1000);
+	LedController::Instance().toggleLed(LedRed);
 	osMutexRelease(m_mutexId);
 }
 
