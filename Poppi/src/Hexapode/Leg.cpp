@@ -5,7 +5,7 @@
  *      Author: Vincent
  */
 
-#include "../../include/Hexapode/Leg.h"
+#include "Hexapode/Leg.h"
 
 Leg::Leg() :
 m_tibiaLength(4),
