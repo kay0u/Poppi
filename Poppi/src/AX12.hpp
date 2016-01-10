@@ -34,7 +34,8 @@ template<typename serial>
 class AX12 {
 private:
 	AX12();
-	virtual ~AX12();
+	//TODO IDK
+	//virtual ~AX12();
     int _ID;
     int _baud;
 
@@ -48,7 +49,7 @@ public:
         _ID = ID;
         _baud = baud;
         //TODO: check
-        serial::changeCommunicationMode(serial::communicationMode.TX);
+        serial::changeCommunicationMode(serial::communicationMode::TX);
     }
 
     /** Set the mode of the servo
@@ -445,7 +446,7 @@ private:
         if (_ID != 0xFE) {
 
         	//TODO check
-            serial::changeCommunicationMode(serial::communicationMode.RX);
+            serial::changeCommunicationMode(serial::communicationMode::RX);
 
 
             // response packet is always 6 + bytes
@@ -470,7 +471,7 @@ private:
             }
 
             //TODO check
-            serial::changeCommunicationMode(serial::communicationMode.TX);
+            serial::changeCommunicationMode(serial::communicationMode::TX);
 
             if (timeout == ((6+bytes)*10) ) {
                 return(-1);
@@ -591,7 +592,7 @@ private:
     	    if (_ID!=0xFE) {
 
     	    	//TODO check
-    	        serial::changeCommunicationMode(serial::communicationMode.RX);
+    	        serial::changeCommunicationMode(serial::communicationMode::RX);
 
     	        // response packet is always 6 bytes
     	        // 0xFF, 0xFF, ID, Length Error, Param(s) Checksum
@@ -614,7 +615,7 @@ private:
     	        }
 
     	        //TODO check
-    	        serial::changeCommunicationMode(serial::communicationMode.TX);
+    	        serial::changeCommunicationMode(serial::communicationMode::TX);
 
     	        // Build the TxPacket first in RAM, then we'll send in one go
     	#ifdef AX12_WRITE_DEBUG

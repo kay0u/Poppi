@@ -14,6 +14,8 @@
 #include "AX12.hpp"
 
 Uart<1> serial_pc;
+typedef Uart<2> serial_ax;
+
 #define RXBUFFERSIZE 64
 char aRxBuffer[RXBUFFERSIZE];
 
@@ -41,7 +43,9 @@ int main(void)
 	SystemClock_Config();
 
 	serial_pc.init(115200);
-
+	serial_ax::init(1000000);
+	AX12<serial_ax> ax(0);
+	ax.SetGoal(200);
 	// /!\ Attention, avec l'utilisation du printf il faut augmenter la stack size pour le thread.
 	osThreadDef(READThread, serialRead, osPriorityNormal, 1, configMINIMAL_STACK_SIZE + 200);
 	osThreadCreate(osThread(READThread), NULL);
