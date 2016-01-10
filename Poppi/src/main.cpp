@@ -25,7 +25,9 @@ static void serialRead(void const *argument)
 	{
 		//HAL_StatusTypeDef status;
 		//status = HAL_UART_Receive_IT(&serial_pc.UART, (uint8_t *) aRxBuffer, 10);
-
+		serial_ax::init(1000000);
+		AX12<serial_ax> ax(0);
+		ax.SetGoal(200);
 		serial_pc.read(aRxBuffer);
 		//if (status == HAL_OK)
 		//Pour faire plaisir à la série sur Unity, il faut envoyer "\r" et non "\r\n"
@@ -43,9 +45,7 @@ int main(void)
 	SystemClock_Config();
 
 	serial_pc.init(115200);
-	serial_ax::init(1000000);
-	AX12<serial_ax> ax(0);
-	ax.SetGoal(200);
+
 	// /!\ Attention, avec l'utilisation du printf il faut augmenter la stack size pour le thread.
 	osThreadDef(READThread, serialRead, osPriorityNormal, 1, configMINIMAL_STACK_SIZE + 200);
 	osThreadCreate(osThread(READThread), NULL);

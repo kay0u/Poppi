@@ -440,7 +440,7 @@ private:
 
         // Wait for the bytes to be transmitted
         //TODO check
-        osDelay(0.02);
+        osDelay(2);
 
         // Skip if the read was to the broadcast address
         if (_ID != 0xFE) {
@@ -583,7 +583,7 @@ private:
 
     	    // Wait for data to transmit
             //TODO check
-            osDelay(0.02);
+            osDelay(2);
 
     	    // make sure we have a valid return
     	    Status[4]=0x00;
