@@ -136,6 +136,11 @@ public:
 		READ_TIMEOUT = 0, READ_SUCCESS = 1
 	};
 
+	enum communicationMode{
+		RX = UART_MODE_RX,
+		TX = UART_MODE_TX,
+		RXTX = UART_MODE_TX_RX
+	};
 	/**
 	 * Initialize the UART  : set pins, enable clocks, set uart, enable interrupt
 	 *
@@ -198,7 +203,7 @@ public:
 		UART.Init.WordLength = UART_WORDLENGTH_8B; // octet comme taille élémentaire (standard)
 		UART.Init.StopBits = UART_STOPBITS_1; // bit de stop = 1 (standard)
 		UART.Init.Parity = UART_PARITY_NONE; // pas de bit de parité (standard)
-		UART.Init.Mode = UART_MODE_TX_RX;
+		UART.Init.Mode = communicationMode::RXTX;
 
 		if (HAL_UART_Init(&UART) != HAL_OK)
 			while(1);
@@ -206,6 +211,12 @@ public:
 		__HAL_UART_ENABLE_IT(&UART, UART_IT_RXNE);
 	}
 
+	static inline void changeCommunicationMode(communicationMode mode)
+	{
+		UART.Init.Mode = mode;
+		if (HAL_UART_Init(&UART) != HAL_OK)
+					while(1);
+	}
 	/**
 	 * Base function to send only one byte
 	 *
