@@ -224,7 +224,7 @@ public:
 	 *
 	 */
 	static inline void send_char(unsigned char c) {
-		HAL_UART_Transmit_IT(&UART, (uint8_t*) c, 1);
+		HAL_UART_Transmit(&UART, (uint8_t*) c, 1, 100);
 	}
 
 	/**
