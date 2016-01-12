@@ -114,6 +114,7 @@ extern "C"
 	*/
 	void HardFault_Handler(void)
 	{
+		LedController::Instance().ledOn(LedRed);
 		/* Go to infinite loop when Hard Fault exception occurs */
 		while (1)
 		{

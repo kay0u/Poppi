@@ -68,7 +68,6 @@ void LedController::toggleAllLed()
 {
 	toggleLed(LED3);
 	toggleLed(LED4);
-	toggleLed(LED5);
 	toggleLed(LED6);
 }
 
@@ -76,7 +75,6 @@ void LedController::allLedOff()
 {
 	ledOff(LED3);
 	ledOff(LED4);
-	ledOff(LED5);
 	ledOff(LED6);
 }
 
@@ -84,6 +82,5 @@ void LedController::allLedOn()
 {
 	ledOn(LED3);
 	ledOn(LED4);
-	ledOn(LED5);
 	ledOn(LED6);
 }
