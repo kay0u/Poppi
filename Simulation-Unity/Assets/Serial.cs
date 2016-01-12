@@ -8,13 +8,14 @@ using System.Collections;
 public class Serial : MonoBehaviour
 {
 
-  SerialPort serialPort;
-
   [SerializeField]
   private Dropdown serialPicker;
   [SerializeField]
   private int baudRate = 115200;
+  [SerializeField]
+  private AX12Manager ax12Manager;
 
+  SerialPort serialPort;
   List<string> portsNames;
   private string currentPortSelected;
   Coroutine coroutine;
@@ -63,22 +64,36 @@ public class Serial : MonoBehaviour
 
   private IEnumerator listenPort()
   {
-
+    string[] received = new string[0];
     while (true)
     {
       try
       {
-        string s = serialPort.ReadLine();
-        serialPort.WriteLine("test");
+        string read = serialPort.ReadLine();
+        received = read.Split(' ');
 
-        Debug.Log(s);
+        if (received.Length > 2)
+          forward(received);
+        Debug.Log(read);
       }
       catch (Exception e)
       {
         Debug.Log(e);
       }
+
       yield return new WaitForSeconds(0.2f);
     }
+  }
+
+  private void forward(string[] received)
+  {
+    if (received[0].CompareTo("move") == 0)
+      ax12Manager.SetGoal(int.Parse(received[1]), int.Parse(received[2]));
+  }
+
+  void printf(string s)
+  {
+    serialPort.WriteLine(s);
   }
 
   void OnApplicationQuit()

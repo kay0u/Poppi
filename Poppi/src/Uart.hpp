@@ -249,6 +249,7 @@ public:
 		}
 	}
 
+
 	template<class T>
 	static inline void print(T val, int16_t len) {
 		write(val, len);
@@ -272,7 +273,7 @@ public:
 		char buffer[64];
 		vsnprintf(buffer, 64, format, args);
 		write(buffer);
-		write("\r\n");
+		write("\r");
 		va_end(args);
 	}
 

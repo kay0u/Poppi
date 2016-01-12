@@ -12,6 +12,8 @@
 #include "cmsis_os.h"
 #include <math.h>
 
+#define UNITY
+
 #define AX12_REG_ID 0x3
 #define AX12_REG_BAUD 0x4
 #define AX12_REG_CW_LIMIT 0x06
@@ -127,7 +129,9 @@ public:
 
         // write the packet, return the error code
         int rVal = write(_ID, AX12_REG_GOAL_POSITION, 2, data, reg_flag);
-
+#ifdef UNITY
+        Uart<1>::printfln("move %d %d", _ID, degrees);
+#endif
         if (flags == 1) {
             // block until it comes to a halt
             while (isMoving()) {}
