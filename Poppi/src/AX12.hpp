@@ -12,8 +12,6 @@
 #include "cmsis_os.h"
 #include <math.h>
 
-#define AX12_WRITE_DEBUG
-
 #define AX12_REG_ID 0x3
 #define AX12_REG_BAUD 0x4
 #define AX12_REG_CW_LIMIT 0x06
@@ -50,7 +48,6 @@ public:
     AX12(int ID, int baud = 1000000) {
         _ID = ID;
         _baud = baud;
-        //TODO: check
         serial::changeCommunicationMode(serial::communicationMode::TX);
     }
 
@@ -579,7 +576,10 @@ private:
     	#endif
 
     	    // Transmit the packet in one burst with no pausing
-    	    serial::printf("%s", TxBuf);
+    	    serial::print(TxBuf, 7 + bytes);
+    	    //serial::printfln(" ");
+    	    //serial::printf("%s", TxBuf);
+
     	    /*for (int i = 0; i < (7 + bytes) ; i++) {
     	    	serial::send_char(TxBuf[i]);
     	    }*/
