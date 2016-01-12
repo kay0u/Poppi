@@ -12,6 +12,8 @@
 #include "cmsis_os.h"
 #include <math.h>
 
+#define AX12_WRITE_DEBUG
+
 #define AX12_REG_ID 0x3
 #define AX12_REG_BAUD 0x4
 #define AX12_REG_CW_LIMIT 0x06
@@ -577,9 +579,10 @@ private:
     	#endif
 
     	    // Transmit the packet in one burst with no pausing
-    	    for (int i = 0; i < (7 + bytes) ; i++) {
+    	    serial::printf("%s", TxBuf);
+    	    /*for (int i = 0; i < (7 + bytes) ; i++) {
     	    	serial::send_char(TxBuf[i]);
-    	    }
+    	    }*/
 
     	    // Wait for data to transmit
             //TODO check
