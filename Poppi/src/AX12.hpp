@@ -433,9 +433,7 @@ private:
     #endif
 
         // Transmit the packet in one burst with no pausing
-        for (int i = 0; i<8 ; i++) {
-        	serial::send_char(TxBuf[i]);
-        }
+	    serial::print(TxBuf, 7 + bytes);
 
         // Wait for the bytes to be transmitted
         //TODO check
@@ -577,12 +575,6 @@ private:
 
     	    // Transmit the packet in one burst with no pausing
     	    serial::print(TxBuf, 7 + bytes);
-    	    //serial::printfln(" ");
-    	    //serial::printf("%s", TxBuf);
-
-    	    /*for (int i = 0; i < (7 + bytes) ; i++) {
-    	    	serial::send_char(TxBuf[i]);
-    	    }*/
 
     	    // Wait for data to transmit
             //TODO check
