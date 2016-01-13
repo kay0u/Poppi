@@ -309,9 +309,7 @@ public:
     #endif
 
         // Transmit the packet in one burst with no pausing
-        for (int i = 0; i < 6 ; i++) {
-        	serial::send_char(TxBuf[i]);
-        }
+	    serial::print(TxBuf, 6);
 
         // This is a broadcast packet, so there will be no reply
         return;
@@ -437,7 +435,7 @@ private:
     #endif
 
         // Transmit the packet in one burst with no pausing
-	    serial::print(TxBuf, 7 + bytes);
+	    serial::print(TxBuf, 8);
 
         // Wait for the bytes to be transmitted
         //TODO check
