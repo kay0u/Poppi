@@ -11,10 +11,16 @@
 #include <math.h>
 
 #include "Servo.h"
-
 #include "../Math/Vector3.h"
 #include "../Math/Trigo.h"
 
+#define ANGLE_CENTER_OFFSET 150
+#define GAMMA_MINIMUM 50
+#define GAMMA_MAXIMUM 250
+#define ALPHA_MINIMUM 50
+#define ALPHA_MAXIMUM 50
+#define BETA_MINIMUM 50
+#define BETA_MAXIMUM 50
 
 enum LegPosition {
 	Idle,

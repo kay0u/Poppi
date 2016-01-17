@@ -69,9 +69,10 @@ public class Serial : MonoBehaviour
     {
       try
       {
-        string read = serialPort.ReadLine();
-        received = read.Split(' ');
+                serialPort.WriteLine("test");
 
+                string read = serialPort.ReadLine();
+        received = read.Split(' ');
         if (received.Length > 2)
           forward(received);
         Debug.Log(read);

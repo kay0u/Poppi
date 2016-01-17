@@ -10,9 +10,9 @@
 
 #include "FreeRTOS.h"
 #include "cmsis_os.h"
+#include "LedController.h"
 #include <math.h>
 
-#define UNITY
 
 #define AX12_REG_ID 0x3
 #define AX12_REG_BAUD 0x4
@@ -258,7 +258,10 @@ public:
     int isMoving(void) {
 
         char data[1];
+		LedController::Instance().toggleLed(LedBlue);
         read(_ID,AX12_REG_MOVING,1,data);
+        if(data[0] == 0)
+            LedController::Instance().toggleLed(LedGreen);
         return(data[0]);
     }
 
@@ -328,7 +331,7 @@ public:
     char data[2];
 
     int ErrorCode = read(_ID, AX12_REG_POSITION, 2, data);
-    short position = data[0] + (data[1] << 8);
+    int position = data[0] + (data[1] << 8);
     float angle = (position * 300)/1024;
 
     return (angle);

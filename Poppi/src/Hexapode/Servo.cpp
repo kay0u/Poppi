@@ -7,7 +7,11 @@
 
 #include "../../include/Hexapode/Servo.h"
 
-Servo::Servo() {
+Servo::Servo(float minAngle, float maxAngle):
+m_reachedTarget(true),
+m_maxAngle(maxAngle),
+m_minAngle(minAngle)
+{
 	// TODO Auto-generated constructor stub
 
 }
@@ -18,7 +22,7 @@ Servo::~Servo() {
 
 void Servo::goTo(Vector3 pos)
 {
-
+	printf("(%f, %f, %f)\n", pos.x, pos.y, pos.z);
 }
 
 void Servo::stop()

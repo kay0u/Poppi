@@ -8,9 +8,12 @@
 #include "Hexapode/Leg.h"
 
 Leg::Leg() :
+m_gamma(GAMMA_MINIMUM, GAMMA_MAXIMUM),
+m_alpha(ALPHA_MINIMUM, ALPHA_MAXIMUM),
+m_beta(BETA_MINIMUM, BETA_MAXIMUM),
 m_tibiaLength(4),
 m_femurLength(4),
-m_coxaLength(1),
+m_coxaLength(0),
 m_angleToHexapod(0),
 m_speed(2),
 m_gotoDirCenterPosition(Vector3(3, 0, -3))
@@ -27,6 +30,7 @@ void Leg::initRelativePosition(Vector3 dist, float angle)
 {
 	m_distanceToHexapod = dist;
 	m_angleToHexapod = Trigo::Deg2Rad * angle;
+	Vector3 res = processIK(hexapodSpaceToLocalSpace(Vector3(-0.4f, -3, 3.9f)));
 }
 
 Vector3 Leg::hexapodSpaceToLocalSpace(Vector3 pos)
@@ -69,7 +73,7 @@ Vector3 Leg::processIK(Vector3 pos)
 	float alpha2 = acos((pow(m_tibiaLength, 2) - pow(m_femurLength, 2) - pow(distanceToTarget, 2)) / (-2 * m_femurLength * distanceToTarget));
 	float beta1 = acos((pow(distanceToTarget, 2) - pow(m_tibiaLength, 2) - pow(m_femurLength, 2)) / (-2 * m_tibiaLength * m_femurLength));
 
-	float gammaGoal = Trigo::Rad2Deg * atan2(m_goal.x, m_goal.z);
+	float gammaGoal = Trigo::Rad2Deg * atan2(m_goal.x, m_goal.z) + ANGLE_CENTER_OFFSET;
 	float alphaGoal = -Trigo::Rad2Deg * (alpha1 + alpha2 - Trigo::Pi / 2);
 	float betaGoal = Trigo::Rad2Deg * (-beta1 + Trigo::Pi);
 	return Vector3(gammaGoal, alphaGoal, betaGoal);

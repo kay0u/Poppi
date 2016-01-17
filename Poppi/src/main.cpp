@@ -19,20 +19,30 @@ typedef Uart<2> serial_ax;
 #define RXBUFFERSIZE 64
 char aRxBuffer[RXBUFFERSIZE];
 
-static void serialRead(void const *argument)
+
+static void moveAx(void const *argument)
 {
+	serial_ax::init(1000000);
+	AX12<serial_ax> ax(1);
+	int angle = 250;
+	ax.SetGoal(angle);
 	for (;;)
 	{
+		if(angle > 300)
+			angle = 0;
 		//HAL_StatusTypeDef status;
 		//status = HAL_UART_Receive_IT(&serial_pc.UART, (uint8_t *) aRxBuffer, 10);
-		serial_ax::init(1000000);
-		AX12<serial_ax> ax(0);
-		ax.SetGoal(200);
-		serial_pc.read(aRxBuffer);
+		float pos = ax.GetPosition();
+		//printf("%f\r\n", pos);
+		//serial_pc.printf("%f\r", pos);
+		osDelay(500);
+
+		//serial_pc.read(aRxBuffer);
 		//if (status == HAL_OK)
 		//Pour faire plaisir à la série sur Unity, il faut envoyer "\r" et non "\r\n"
-		serial_pc.printf("%s\r", aRxBuffer);
-		osDelay(500);
+		//serial_pc.printf("%s\r", aRxBuffer);
+		//printDebug("angle %d\n\r", angle);
+		angle += 10;
 	}
 }
 
@@ -47,12 +57,10 @@ int main(void)
 	serial_pc.init(115200);
 
 	// /!\ Attention, avec l'utilisation du printf il faut augmenter la stack size pour le thread.
-	osThreadDef(READThread, serialRead, osPriorityNormal, 1, configMINIMAL_STACK_SIZE + 200);
-	osThreadCreate(osThread(READThread), NULL);
+	/*osThreadDef(MOVEThread, moveAx, osPriorityNormal, 1, configMINIMAL_STACK_SIZE + 500);
+	osThreadCreate(osThread(MOVEThread), NULL);*/
 
 	Hexapode hexa;
-	/*Uart<2>::init(100000);
-	ax12 = AX12<serial >(0);*/
 
 	/* Start scheduler */
 	osKernelStart();
