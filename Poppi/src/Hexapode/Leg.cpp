@@ -7,10 +7,10 @@
 
 #include "Hexapode/Leg.h"
 
-Leg::Leg() :
-m_gamma(GAMMA_MINIMUM, GAMMA_MAXIMUM),
-m_alpha(ALPHA_MINIMUM, ALPHA_MAXIMUM),
-m_beta(BETA_MINIMUM, BETA_MAXIMUM),
+Leg::Leg(int startAxId) :
+m_gamma(startAxId + 1, GAMMA_MINIMUM, GAMMA_MAXIMUM),
+m_alpha(startAxId + 2, ALPHA_MINIMUM, ALPHA_MAXIMUM),
+m_beta(startAxId + 3, BETA_MINIMUM, BETA_MAXIMUM),
 m_tibiaLength(4),
 m_femurLength(4),
 m_coxaLength(0),
@@ -30,7 +30,6 @@ void Leg::initRelativePosition(Vector3 dist, float angle)
 {
 	m_distanceToHexapod = dist;
 	m_angleToHexapod = Trigo::Deg2Rad * angle;
-	Vector3 res = processIK(hexapodSpaceToLocalSpace(Vector3(-0.4f, -3, 3.9f)));
 }
 
 Vector3 Leg::hexapodSpaceToLocalSpace(Vector3 pos)
@@ -73,34 +72,44 @@ Vector3 Leg::processIK(Vector3 pos)
 	float alpha2 = acos((pow(m_tibiaLength, 2) - pow(m_femurLength, 2) - pow(distanceToTarget, 2)) / (-2 * m_femurLength * distanceToTarget));
 	float beta1 = acos((pow(distanceToTarget, 2) - pow(m_tibiaLength, 2) - pow(m_femurLength, 2)) / (-2 * m_tibiaLength * m_femurLength));
 
-	float gammaGoal = Trigo::Rad2Deg * atan2(m_goal.x, m_goal.z) + ANGLE_CENTER_OFFSET;
+	float gammaGoal = Trigo::Rad2Deg * atan2(m_goal.x, m_goal.z);
 	float alphaGoal = -Trigo::Rad2Deg * (alpha1 + alpha2 - Trigo::Pi / 2);
 	float betaGoal = Trigo::Rad2Deg * (-beta1 + Trigo::Pi);
 	return Vector3(gammaGoal, alphaGoal, betaGoal);
 }
 
-void Leg::goTo(Vector3 pos)
+void Leg::goToIK(Vector3 pos)
 {
     Vector3 rots = processIK(pos);
-
-    m_gamma.goTo(Vector3(0, rots.x, 0));
-    m_alpha.goTo(Vector3(rots.y, 0, 0));
-    m_beta.goTo(Vector3(rots.z, 0, 0));
+    goToAngleIK(rots);
 }
 
+void Leg::goToAngleAx(Vector3 angles)
+{
+    m_gamma.goTo(angles.x);
+    m_alpha.goTo(angles.y);
+    m_beta.goTo(angles.z);
+}
+
+void Leg::goToAngleIK(Vector3 angles)
+{
+    m_gamma.goTo(angles.x + GAMMA_CENTER_OFFSET);
+    /*m_alpha.goTo(angles.y + ALPHA_CENTER_OFFSET);
+    m_beta.goTo(angles.z + BETA_CENTER_OFFSET);*/
+}
 
 void Leg::goTo(LegPosition pos)
 {
 	switch(pos)
 	{
 	case Idle:
-		goTo(m_idlePosition);
+		goToIK(m_idlePosition);
 		break;
 	case Start:
-		goTo(m_startPosition);
+		goToIK(m_startPosition);
 		break;
 	case End:
-		goTo(m_endPosition);
+		goToIK(m_endPosition);
 		break;
 	}
 }

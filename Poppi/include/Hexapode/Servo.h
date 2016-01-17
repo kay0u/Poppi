@@ -8,19 +8,22 @@
 #ifndef HEXAPODE_SERVO_H_
 #define HEXAPODE_SERVO_H_
 
+#include <math.h>
 #include "../Math/Vector3.h"
+#include "../Useful.h"
 #include "../../src/AX12.hpp"
 #include "../../src/Uart.hpp"
 
 class Servo {
 public:
-	Servo(float minAngle, float maxAngle);
+	Servo(int id, float minAngle, float maxAngle);
 	virtual ~Servo();
-	void goTo(Vector3 pos);
+	void goTo(float angle);
 	void stop();
 	bool reachedTarget();
 
 private:
+	AX12<serial_ax> m_ax;
 	bool m_reachedTarget;
 	const float m_minAngle;
 	const float m_maxAngle;

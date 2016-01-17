@@ -14,13 +14,15 @@
 #include "../Math/Vector3.h"
 #include "../Math/Trigo.h"
 
-#define ANGLE_CENTER_OFFSET 150
+#define GAMMA_CENTER_OFFSET 150
 #define GAMMA_MINIMUM 50
 #define GAMMA_MAXIMUM 250
+#define ALPHA_CENTER_OFFSET 60
 #define ALPHA_MINIMUM 50
-#define ALPHA_MAXIMUM 50
+#define ALPHA_MAXIMUM 190
+#define BETA_CENTER_OFFSET 150
 #define BETA_MINIMUM 50
-#define BETA_MAXIMUM 50
+#define BETA_MAXIMUM 250
 
 enum LegPosition {
 	Idle,
@@ -30,7 +32,7 @@ enum LegPosition {
 
 class Leg {
 public:
-	Leg();
+	Leg(int startAxId);
 	virtual ~Leg();
 	void initRelativePosition(Vector3 dist, float angle);
 	Vector3 hexapodSpaceToLocalSpace(Vector3 pos);
@@ -38,9 +40,12 @@ public:
 	void stop();
 	bool hasReachedGoal();
 	Vector3 processIK(Vector3 pos);
-	void goTo(Vector3 pos);
+	void goToIK(Vector3 pos);
 	void goTo(LegPosition pos);
+	void goToAngleAx(Vector3 angles);
+	void goToAngleIK(Vector3 angles);
 private:
+
 	//Servos
 	Servo m_gamma;						//Servo entre le corps et le coxa
 	Servo m_alpha;						//Servo entre le coxa et le femur

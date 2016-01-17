@@ -14,7 +14,6 @@
 #include "AX12.hpp"
 
 Uart<1> serial_pc;
-typedef Uart<2> serial_ax;
 
 #define RXBUFFERSIZE 64
 char aRxBuffer[RXBUFFERSIZE];
@@ -22,17 +21,20 @@ char aRxBuffer[RXBUFFERSIZE];
 
 static void moveAx(void const *argument)
 {
-	serial_ax::init(1000000);
-	AX12<serial_ax> ax(1);
-	int angle = 250;
-	ax.SetGoal(angle);
+	/*AX12<serial_ax> ax1(1);
+	AX12<serial_ax> ax2(2);
+	AX12<serial_ax> ax3(3);*/
+	int angle = 180;
+	/*ax1.SetGoal(60);
+	ax2.SetGoal(60);
+	ax3.SetGoal(150);*/
 	for (;;)
 	{
 		if(angle > 300)
 			angle = 0;
 		//HAL_StatusTypeDef status;
 		//status = HAL_UART_Receive_IT(&serial_pc.UART, (uint8_t *) aRxBuffer, 10);
-		float pos = ax.GetPosition();
+		//float pos = ax1.GetPosition();
 		//printf("%f\r\n", pos);
 		//serial_pc.printf("%f\r", pos);
 		osDelay(500);
@@ -60,6 +62,7 @@ int main(void)
 	/*osThreadDef(MOVEThread, moveAx, osPriorityNormal, 1, configMINIMAL_STACK_SIZE + 500);
 	osThreadCreate(osThread(MOVEThread), NULL);*/
 
+	serial_ax::init(1000000);
 	Hexapode hexa;
 
 	/* Start scheduler */
