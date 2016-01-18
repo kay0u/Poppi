@@ -63,7 +63,7 @@ int main(void)
 	osThreadCreate(osThread(MOVEThread), NULL);*/
 
 	serial_ax::init(1000000);
-	Hexapode hexa;
+	//Hexapode hexa;
 
 	/* Start scheduler */
 	osKernelStart();

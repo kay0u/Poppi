@@ -8,14 +8,19 @@
 #include "Useful.h"
 #include "Hexapode/Gaits/Gait.h"
 
-Gait::Gait(Leg* (&legs)[LEG_COUNT]):
+#define INCLUDE_vTaskSuspend                    1
+
+
+SemaphoreHandle_t xSemaphore = NULL;
+
+Gait::Gait(std::array<Leg*, LEG_COUNT> &legs):
 m_legs(legs),
 m_direction(Vector3::zero),
 m_stopped(true),
 m_moveLoopStart(0)
 {
-	osMutexDef(osMutex);
-	m_mutexId = osMutexCreate(osMutex(osMutex));
+	m_taskHandle = NULL;
+	xSemaphore = xSemaphoreCreateMutex();
 }
 
 LegStep::LegStep(Leg *l, LegPosition pos):
@@ -33,10 +38,8 @@ void Gait::setDirection(Vector3 goal)
 {
 	printDebug("[Gait] setDirection\n\r");
 	m_direction = goal;
-	osMutexWait(m_mutexId, 0);
 	for(int i(0); i < LEG_COUNT; ++i)
 		m_legs[i]->setDirection(goal);
-	osMutexRelease(m_mutexId);
 
 	m_stopped = m_direction == Vector3::zero;
 
@@ -52,8 +55,7 @@ void Gait::init(Vector3 direction)
 void Gait::stop()
 {
 	m_direction = Vector3::zero;
-	m_stopped = true;
-	osThreadTerminate(m_moveThreadId);
+	m_stopped = false;
 }
 
 void Gait::print() const
@@ -61,24 +63,41 @@ void Gait::print() const
 	printf("%i\r\n", m_stopped);
 }
 
-void walkThread(void const *argument)
+void walkTask(void *argument)
 {
-	//const Gait* gait = static_cast<const Gait*>(argument);
-	/*std::vector<Movement>& movements = gait->getMovements();
-	printDebug("[Gait] walkThread %i\n\r", movements.size());
-	gait->executeMovement(movements[0]);
-	printDebug("[Gait] walkThread\n\r");
-	uint8_t loopStartIndex = gait->getMoveLoopStart();*/
-	//gait->print();
-	for(;;)
+	if(xSemaphore != NULL)
 	{
-		//for(uint32_t i(loopStartIndex); i < movements.size(); ++i)
+		if( xSemaphoreTake( xSemaphore, ( TickType_t ) portMAX_DELAY ) == pdTRUE )
 		{
-			//gait->executeMovement(movements[i]);
-			//gait->waitForMoveEnd();
-			osDelay(1000);
-			LedController::Instance().toggleAllLed();
+			Gait* gait = static_cast<Gait*>(argument);
+			std::vector<Movement> &movements = gait->getMovements();
+			uint8_t loopStartIndex = gait->getMoveLoopStart();
+            xSemaphoreGive( xSemaphore );
+
+			for(uint8_t i(0); i < movements.size() && i < loopStartIndex; ++i)
+			{
+				if( xSemaphoreTake( xSemaphore, ( TickType_t ) portMAX_DELAY ) == pdTRUE )
+				{
+					gait->executeMovement(movements[i]);
+					gait->waitForMoveEnd();
+					xSemaphoreGive( xSemaphore );
+				}
+			}
+
+            for(;;)
+			{
+				for(uint8_t i(loopStartIndex); i < movements.size(); ++i)
+				{
+					if( xSemaphoreTake( xSemaphore, ( TickType_t ) portMAX_DELAY ) == pdTRUE )
+					{
+						gait->executeMovement(movements[i]);
+						gait->waitForMoveEnd();
+						xSemaphoreGive( xSemaphore );
+					}
+				}
+			}
 		}
+
 	}
 }
 
@@ -95,24 +114,19 @@ uint8_t Gait::getMoveLoopStart()
 void Gait::walk()
 {
 	LedController::Instance().toggleAllLed();
-	osThreadDef(WalkThread, walkThread, osPriorityNormal, 0, configMINIMAL_STACK_SIZE);
-	m_moveThreadId = osThreadCreate(osThread(WalkThread), (void*)this);
+	xTaskCreate(walkTask, "Walk task", configMINIMAL_STACK_SIZE + 200, this, osPriorityNormal,&m_taskHandle);
+	configASSERT(m_taskHandle);
 }
 
 void Gait::executeMovement(Movement move)
 {
-	osMutexWait(m_mutexId, 0);
 	for(uint32_t i(0); i < move.size(); ++i)
 		move[i].leg->goTo(move[i].position);
-	osMutexRelease(m_mutexId);
 }
 
 void Gait::waitForMoveEnd() const
 {
-	osMutexWait(m_mutexId, 0);
 	osDelay(1000);
-	LedController::Instance().toggleLed(LedRed);
-	osMutexRelease(m_mutexId);
 }
 
 bool Gait::isStopped()

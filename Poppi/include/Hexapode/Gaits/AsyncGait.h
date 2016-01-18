@@ -14,7 +14,7 @@
 class AsyncGait : public Gait
 {
 public:
-	AsyncGait(Leg* (&legs)[LEG_COUNT]);
+	AsyncGait(std::array<Leg*, LEG_COUNT> &legs);
 	virtual ~AsyncGait();
 };
 

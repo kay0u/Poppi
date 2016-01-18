@@ -7,7 +7,7 @@
 
 #include <Hexapode/Gaits/AsyncGait.h>
 
-AsyncGait::AsyncGait(Leg* (&legs)[LEG_COUNT]): Gait(legs)
+AsyncGait::AsyncGait(std::array<Leg*, LEG_COUNT> &legs): Gait(legs)
 {
 	//mov0 mov1 et mov2 servent à l'initialisation
 	m_moveLoopStart = 3;

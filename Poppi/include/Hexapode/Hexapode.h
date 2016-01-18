@@ -10,6 +10,8 @@
 #ifndef HEXAPODE_HEXAPODE_H_
 #define HEXAPODE_HEXAPODE_H_
 
+#include <array>
+
 #include "../Useful.h"
 #include "../Math/Vector3.h"
 
@@ -27,7 +29,7 @@ public:
 	void update();
 
 protected:
-	Leg* m_legs[LEG_COUNT];
+	std::array<Leg*, LEG_COUNT> m_legs;
 	Vector3 m_direction;
 	Vector3 m_position;
 

@@ -94,8 +94,8 @@ void Leg::goToAngleAx(Vector3 angles)
 void Leg::goToAngleIK(Vector3 angles)
 {
     m_gamma.goTo(angles.x + GAMMA_CENTER_OFFSET);
-    /*m_alpha.goTo(angles.y + ALPHA_CENTER_OFFSET);
-    m_beta.goTo(angles.z + BETA_CENTER_OFFSET);*/
+    m_alpha.goTo(angles.y + ALPHA_CENTER_OFFSET);
+    m_beta.goTo(angles.z + BETA_CENTER_OFFSET);
 }
 
 void Leg::goTo(LegPosition pos)
@@ -103,13 +103,16 @@ void Leg::goTo(LegPosition pos)
 	switch(pos)
 	{
 	case Idle:
-		goToIK(m_idlePosition);
+		printf("Go to idle \n");
+		//goToIK(m_idlePosition);
 		break;
 	case Start:
-		goToIK(m_startPosition);
+		printf("Go to start \n");
+		//goToIK(m_startPosition);
 		break;
 	case End:
-		goToIK(m_endPosition);
+		printf("Go to end \n");
+		//goToIK(m_endPosition);
 		break;
 	}
 }
