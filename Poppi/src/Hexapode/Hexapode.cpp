@@ -15,6 +15,7 @@ m_position(Vector3::zero)
 		m_legs[i] = new Leg(i*10);
 	initializeLegs();
 	m_activeGait = &m_tripodGait;
+	setDirection(Vector3::zero);
 }
 
 Hexapode::~Hexapode()
@@ -32,7 +33,7 @@ void Hexapode::initializeLegs()
 	m_legs[4]->initRelativePosition(Vector3(-4.5,0,-2.5), -240);
 	m_legs[5]->initRelativePosition(Vector3(-4.24,0, 2.59), -300);
 
-	m_legs[0]->goToAngleIK(Vector3(0, 0, 0));
+	//m_legs[0]->goToAngleIK(Vector3(0, 0, 0));
 }
 
 void Hexapode::setDirection(Vector3 goal)

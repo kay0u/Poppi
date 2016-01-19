@@ -8,7 +8,11 @@
 #ifndef HEXAPODE_GAITS_GAIT_H_
 #define HEXAPODE_GAITS_GAIT_H_
 
+#include <array>
 #include <vector>
+
+#include "FreeRTOS.h"
+#include "task.h"
 
 #include "../../Useful.h"
 
@@ -26,7 +30,7 @@ typedef std::vector<LegStep> Movement;
 
 class Gait {
 public:
-	Gait(Leg* (&legs)[LEG_COUNT]);
+	Gait(std::array<Leg*, LEG_COUNT> &legs);
 	virtual ~Gait();
 
 	virtual void setDirection(Vector3 direction);
@@ -42,13 +46,12 @@ public:
 
 
 protected:
-	Leg* (&m_legs)[LEG_COUNT];
+	std::array<Leg*, LEG_COUNT> &m_legs;
 	Vector3 m_direction;
 	bool m_stopped;
 	uint8_t m_moveLoopStart;
 	std::vector<Movement> m_movements;
-	osThreadId m_moveThreadId;
-	osMutexId m_mutexId;
+	TaskHandle_t m_taskHandle;
 };
 
 #endif /* HEXAPODE_GAITS_GAIT_H_ */

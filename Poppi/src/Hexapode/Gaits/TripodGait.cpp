@@ -7,7 +7,7 @@
 
 #include "Hexapode/Gaits/TripodGait.h"
 
-TripodGait::TripodGait(Leg* (&legs)[LEG_COUNT]): Gait(legs)
+TripodGait::TripodGait(std::array<Leg*, LEG_COUNT> &legs): Gait(legs)
 {
 	//mov0 sert à l'initialisation
 	m_moveLoopStart = 1;

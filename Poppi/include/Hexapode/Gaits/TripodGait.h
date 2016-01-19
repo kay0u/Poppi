@@ -14,7 +14,7 @@
 class TripodGait : public Gait
 {
 public:
-	TripodGait(Leg* (&legs)[LEG_COUNT]);
+	TripodGait(std::array<Leg*, LEG_COUNT> &legs);
 	virtual ~TripodGait();
 };
 
