@@ -59,19 +59,20 @@ private:
 	}
 
 	static inline void write(char* val) {
-		xSemaphoreTake(mutex, osWaitForever);
+		osMutexWait(mutex, osWaitForever);
 		while(*val != '\0')
 		{
 			osMessagePut(xQueueT, *val, osWaitForever);
 			val++;
 		}
 		USART1->CR1 |= USART_CR1_TXEIE;                     // Enable TXE interruption
+		osMutexRelease(mutex);
 		xSemaphoreGive(mutex);
 		//HAL_UART_Transmit_IT(&UART, (uint8_t*) val, strlen(val));
 	}
 
 	static inline void write(char* val, int16_t len) {
-		xSemaphoreTake(mutex, osWaitForever);
+		osMutexWait(mutex, osWaitForever);
 		for(int i = 0; i < len; i++)
 		{
 			osMessagePut(xQueueT, *val, osWaitForever);
@@ -82,7 +83,7 @@ private:
 	}
 
 	static inline void write(const char* val) {
-		xSemaphoreTake(mutex, osWaitForever);
+		osMutexWait(mutex, osWaitForever);
 		while(*val != '\0')
 		{
 			osMessagePut(xQueueT, *val, osWaitForever);
@@ -191,10 +192,10 @@ public:
 	 *
 	 */
 	static inline void send_char(unsigned char c) {
-		xSemaphoreTake(mutex, osWaitForever);
+		osMutexWait(mutex, osWaitForever);
 		osMessagePut(xQueueT, c, osWaitForever);
 		USART1->CR1 |= USART_CR1_TXEIE;                     // Enable TXE interruption
-		xSemaphoreGive(mutex);
+		osMutexRelease(mutex);
 	}
 
 	/**
