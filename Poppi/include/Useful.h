@@ -14,6 +14,7 @@
 #define ABS(x)  (x < 0) ? (-x) : x
 #define SQRE(x) ((x)*(x))
 
+typedef Uart<1> serial_pc;
 typedef Uart<2> serial_ax;
 
 // Converts degrees to radians.

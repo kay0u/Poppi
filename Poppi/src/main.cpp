@@ -13,8 +13,6 @@
 #include "Uart.hpp"
 #include "AX12.hpp"
 
-Uart<1> serial_pc;
-
 #define RXBUFFERSIZE 64
 char aRxBuffer[RXBUFFERSIZE];
 
@@ -28,22 +26,22 @@ static void moveAx(void const *argument)
 	/*ax1.SetGoal(60);
 	ax2.SetGoal(60);
 	ax3.SetGoal(150);*/
+	serial_pc::printf("test");
+
 	for (;;)
 	{
 		if(angle > 300)
 			angle = 0;
-		//HAL_StatusTypeDef status;
-		//status = HAL_UART_Receive_IT(&serial_pc.UART, (uint8_t *) aRxBuffer, 10);
 		//float pos = ax1.GetPosition();
-		//printf("%f\r\n", pos);
-		//serial_pc.printf("%f\r", pos);
-		osDelay(500);
 
-		//serial_pc.read(aRxBuffer);
-		//if (status == HAL_OK)
-		//Pour faire plaisir à la série sur Unity, il faut envoyer "\r" et non "\r\n"
-		//serial_pc.printf("%s\r", aRxBuffer);
-		//printDebug("angle %d\n\r", angle);
+		osDelay(500);
+		char c;
+		if (serial_pc::available())
+			serial_pc::read_char(c);
+		serial_pc::print(&c, 1);
+		c = ' ';
+		//serial_pc::read(aRxBuffer);
+		//serial_pc::printf("%s", aRxBuffer);
 		angle += 10;
 	}
 }
@@ -53,14 +51,13 @@ static void SystemClock_Config(void);
 int main(void)
 { 
 	HAL_Init();
-
 	SystemClock_Config();
 
-	serial_pc.init(115200);
+	serial_pc::init(115200);
 
 	// /!\ Attention, avec l'utilisation du printf il faut augmenter la stack size pour le thread.
-	/*osThreadDef(MOVEThread, moveAx, osPriorityNormal, 1, configMINIMAL_STACK_SIZE + 500);
-	osThreadCreate(osThread(MOVEThread), NULL);*/
+	osThreadDef(MOVEThread, moveAx, osPriorityNormal, 1, configMINIMAL_STACK_SIZE + 500);
+	osThreadCreate(osThread(MOVEThread), NULL);
 
 	serial_ax::init(1000000);
 	Hexapode hexa;

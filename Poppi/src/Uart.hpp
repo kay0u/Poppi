@@ -19,11 +19,14 @@
 #define UART_HPP
 
 #include "stm32f4xx_hal.h"
+#include <Useful.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdarg.h>
 #include <stm32f4xx.h>
+#include <FreeRTOS.h>
+#include <queue.h>
 
 #include "ltoa.h"
 
@@ -33,6 +36,10 @@ template<uint8_t USART_ID>
 class Uart {
 public:
 	static UART_HandleTypeDef UART;
+	static osMessageQId xQueueT;
+	static osMessageQId xQueueR;
+	static osMutexId mutex;
+
 private:
 
 	/**
@@ -52,15 +59,37 @@ private:
 	}
 
 	static inline void write(char* val) {
-		HAL_UART_Transmit(&UART, (uint8_t*) val, strlen(val), 100);
+		xSemaphoreTake(mutex, osWaitForever);
+		while(*val != '\0')
+		{
+			osMessagePut(xQueueT, *val, osWaitForever);
+			val++;
+		}
+		USART1->CR1 |= USART_CR1_TXEIE;                     // Enable TXE interruption
+		xSemaphoreGive(mutex);
+		//HAL_UART_Transmit_IT(&UART, (uint8_t*) val, strlen(val));
 	}
 
 	static inline void write(char* val, int16_t len) {
-		HAL_UART_Transmit(&UART, (uint8_t*) val, len, 100);
+		xSemaphoreTake(mutex, osWaitForever);
+		for(int i = 0; i < len; i++)
+		{
+			osMessagePut(xQueueT, *val, osWaitForever);
+			val++;
+		}
+		USART1->CR1 |= USART_CR1_TXEIE;                     // Enable TXE interruption
+		xSemaphoreGive(mutex);
 	}
 
 	static inline void write(const char* val) {
-		HAL_UART_Transmit(&UART, (uint8_t*) val, strlen(val), 100);
+		xSemaphoreTake(mutex, osWaitForever);
+		while(*val != '\0')
+		{
+			osMessagePut(xQueueT, *val, osWaitForever);
+			val++;
+		}
+		USART1->CR1 |= USART_CR1_TXEIE;                     // Enable TXE interruption
+		xSemaphoreGive(mutex);
 	}
 
 	static inline void send_ln() {
@@ -69,15 +98,6 @@ private:
 	}
 
 public:
-	struct ring_buffer {
-
-		ring_buffer() {
-		}
-		unsigned char buffer[RX_BUFFER_SIZE];
-		int head;
-		int tail;
-	};
-	static volatile ring_buffer rx_buffer_;
 
 	enum {
 		READ_TIMEOUT = 0, READ_SUCCESS = 1
@@ -97,8 +117,8 @@ public:
 
 		//General settings of pins TX/RX
 		GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-		GPIO_InitStruct.Pull = GPIO_PULLUP;
-		GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
+		GPIO_InitStruct.Pull = GPIO_NOPULL;
+		GPIO_InitStruct.Speed = GPIO_SPEED_FAST;
 
 		switch (USART_ID) {
 		case 1:
@@ -110,8 +130,8 @@ public:
 			__HAL_RCC_GPIOA_CLK_ENABLE();
 			__HAL_RCC_USART1_CLK_ENABLE();
 
-			NVIC_SetPriority(USART1_IRQn, 1);
-			NVIC_EnableIRQ(USART1_IRQn);
+			HAL_NVIC_SetPriority(USART1_IRQn, configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY, 1);
+			HAL_NVIC_EnableIRQ(USART1_IRQn);
 
 			HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 			break;
@@ -124,8 +144,8 @@ public:
 			__HAL_RCC_GPIOA_CLK_ENABLE();
 			__HAL_RCC_USART2_CLK_ENABLE();
 
-			NVIC_SetPriority(USART2_IRQn, 1);
-			NVIC_EnableIRQ(USART2_IRQn);
+			HAL_NVIC_SetPriority(USART2_IRQn, configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY, 1);
+			HAL_NVIC_EnableIRQ(USART2_IRQn);
 
 			HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 			break;
@@ -138,8 +158,8 @@ public:
 			__HAL_RCC_GPIOC_CLK_ENABLE();
 			__HAL_RCC_USART6_CLK_ENABLE();
 
-			NVIC_SetPriority(USART6_IRQn, 1);
-			NVIC_EnableIRQ(USART6_IRQn);
+			HAL_NVIC_SetPriority(USART6_IRQn, configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY, 1);
+			HAL_NVIC_EnableIRQ(USART6_IRQn);
 
 			HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 			break;
@@ -149,13 +169,15 @@ public:
 		UART.Init.BaudRate = baudrate;
 		UART.Init.WordLength = UART_WORDLENGTH_8B; // octet comme taille élémentaire (standard)
 		UART.Init.StopBits = UART_STOPBITS_1; // bit de stop = 1 (standard)
+		UART.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+		UART.Init.OverSampling = UART_OVERSAMPLING_16;
 		UART.Init.Parity = UART_PARITY_NONE; // pas de bit de parité (standard)
 		UART.Init.Mode = communicationMode::RXTX;
 
+	    __HAL_UART_ENABLE_IT(&UART, UART_IT_RXNE);
+
 		if (HAL_UART_Init(&UART) != HAL_OK)
 			while(1);
-
-		__HAL_UART_ENABLE_IT(&UART, UART_IT_RXNE);
 	}
 
 	static inline void changeCommunicationMode(communicationMode mode)
@@ -169,7 +191,10 @@ public:
 	 *
 	 */
 	static inline void send_char(unsigned char c) {
-		HAL_UART_Transmit(&UART, (uint8_t*) c, 1, 100);
+		xSemaphoreTake(mutex, osWaitForever);
+		osMessagePut(xQueueT, c, osWaitForever);
+		USART1->CR1 |= USART_CR1_TXEIE;                     // Enable TXE interruption
+		xSemaphoreGive(mutex);
 	}
 
 	/**
@@ -177,78 +202,38 @@ public:
 	 *
 	 */
 	static inline bool available(void) {
-		return (RX_BUFFER_SIZE + rx_buffer_.head - rx_buffer_.tail)
-				% RX_BUFFER_SIZE;
+		osEvent ev = osMessagePeek(xQueueR, 1);
+
+		return (ev.status == osEventMessage);
 	}
 
 	/**
 	 * Read one byte from the ring buffer with a timeout (~ in ms)
 	 *
 	 */
-	static inline uint8_t read_char(unsigned char &byte, uint16_t timeout = 0) {
-		uint16_t i = 0;
-		uint8_t j = 0;
+	static inline uint8_t read_char(unsigned char &byte, uint32_t timeout = osWaitForever) {
 
-		// Hack for timeout
-		if (timeout > 0)
-			timeout *= 26;
+		osEvent ev = osMessageGet(xQueueR, timeout);
 
-		while (!available()) {
-			if (timeout > 0) {
-				if (i > timeout)
-					return READ_TIMEOUT;
-				if (j == 0)
-					i++;
-				j++;
-			}
-		}
-
-		byte = rx_buffer_.buffer[rx_buffer_.tail];
-		rx_buffer_.tail = (rx_buffer_.tail + 1) % RX_BUFFER_SIZE;
+		if (ev.status == osEventMessage)
+			byte = ev.value.v;
 
 		return READ_SUCCESS;
 	}
 
 	/**
-		 * Read one byte from the ring buffer with a timeout (~ in ms)
-		 *
-		 */
-		static inline uint8_t read_char(char &byte, uint16_t timeout = 0) {
-			uint16_t i = 0;
-			uint8_t j = 0;
-
-			// Hack for timeout
-			if (timeout > 0)
-				timeout *= 26;
-
-			while (!available()) {
-				if (timeout > 0) {
-					if (i > timeout)
-						return READ_TIMEOUT;
-					if (j == 0)
-						i++;
-					j++;
-				}
-			}
-
-			byte = rx_buffer_.buffer[rx_buffer_.tail];
-			rx_buffer_.tail = (rx_buffer_.tail + 1) % RX_BUFFER_SIZE;
-
-			return READ_SUCCESS;
-		}
-
-	/**
-	 * Store one byte in the ring buffer
+	 * Read one byte from the ring buffer with a timeout (~ in ms)
 	 *
 	 */
-	static inline void store_char(unsigned char c) {
-		int i = (rx_buffer_.head + 1) % RX_BUFFER_SIZE;
-		if (i != rx_buffer_.tail) {
-			rx_buffer_.buffer[rx_buffer_.head] = c;
-			rx_buffer_.head = i;
-		}
-	}
+	static inline uint8_t read_char(char &byte, uint32_t timeout = osWaitForever) {
 
+		osEvent ev = osMessageGet(xQueueR, timeout);
+
+		if (ev.status == osEventMessage)
+			byte = ev.value.v;
+
+		return READ_SUCCESS;
+	}
 
 	template<class T>
 	static inline void print(T val, int16_t len) {
@@ -278,7 +263,7 @@ public:
 	}
 
 	template<class T>
-	static inline uint8_t read(T &val, uint16_t timeout = 0) {
+	static inline uint8_t read(T &val, uint32_t timeout = osWaitForever) {
 		static char buffer[20];
 		uint8_t status = read(buffer, timeout);
 		val = atol(buffer);
@@ -286,7 +271,7 @@ public:
 		return status;
 	}
 
-	static inline uint8_t read(float &val, uint16_t timeout = 0) {
+	static inline uint8_t read(float &val, uint32_t timeout = osWaitForever) {
 		static char buffer[20];
 		uint8_t status = read(buffer, timeout);
 		val = atof(buffer);
@@ -294,7 +279,7 @@ public:
 		return status;
 	}
 
-	static inline uint8_t read(char* string, uint16_t timeout = 0) {
+	static inline uint8_t read(char* string, uint32_t timeout = osWaitForever) {
 		static unsigned char buffer;
 		uint8_t i = 0;
 
@@ -321,8 +306,12 @@ public:
 
 };
 
-template<uint8_t ID>
-volatile typename Uart<ID>::ring_buffer Uart<ID>::rx_buffer_;
+osMessageQDef(osqueue, RX_BUFFER_SIZE, sizeof(char));
+osMutexDef(osmutex);
+template<uint8_t ID> osMessageQId Uart<ID>::xQueueR = osMessageCreate (osMessageQ(osqueue), NULL);
+template<uint8_t ID> osMessageQId Uart<ID>::xQueueT = osMessageCreate (osMessageQ(osqueue), NULL);
+template<uint8_t ID> osMutexId Uart<ID>::mutex = osMutexCreate(osMutex(osmutex));
+
 
 #endif  /* UART_HPP */
 
