@@ -209,3 +209,5 @@ Poppi/.settings/
 Poppi/VisualGDBCache/Poppi-Debug/MemoryUtilizationReport.xml
 Simulation-Unity/Library
 Simulation-Unity/Temp
+*.b#*
+*.s#*
