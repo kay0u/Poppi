@@ -1,11 +1,15 @@
-#include "../include/Imu.h"
+#include "Imu.h"
 #include "inttypes.h"
+
+#define M_PI		3.14159265358979323846
 
 Imu::Imu() :
 HPF(0.98f),
-LPF(0.02)
+LPF(0.02),
+m_orientation()
 {
 }
+#undef DEBUG
 
 /**
  * @brief  Initialize the accelerometer and the gyroscope.
@@ -83,6 +87,18 @@ float Imu::formatAccelRange(float accelAngle, float accelZ)
 float* Imu::getOrientation() {
 	computeAngles();
 	return m_orientation;
+}
+
+float* Imu::getGyroscope()
+{
+	readGyr();
+	return m_gyroValues;
+}
+
+double* Imu::getAccelerometer()
+{
+	readAcc();
+	return m_accelAngle;
 }
 
 /**

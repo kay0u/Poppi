@@ -32,6 +32,11 @@
 #define AX12_CW 1
 #define AX12_CCW
 
+//#define UNITY
+//#define AX12_WRITE_DEBUG
+//#define AX12_READ_DEBUG
+//#define AX12_DEBUG
+
 template<typename serial>
 class AX12 {
 private:
@@ -130,7 +135,7 @@ public:
         // write the packet, return the error code
         int rVal = write(_ID, AX12_REG_GOAL_POSITION, 2, data, reg_flag);
 #ifdef UNITY
-        Uart<1>::printfln("move %d %d", _ID, degrees);
+        Uart<1>::printfln("AX12 move %d %d", _ID, degrees);
 #endif
         if (flags == 1) {
             // block until it comes to a halt
@@ -561,7 +566,7 @@ private:
     	#endif
 
     	    // data
-    	    for (char i=0; i<bytes ; i++) {
+    	    for (uint8_t i=0; i<bytes ; i++) {
     	        TxBuf[6+i] = data[i];
     	        sum += TxBuf[6+i];
 

@@ -69,13 +69,12 @@ public class Serial : MonoBehaviour
     {
       try
       {
-                serialPort.WriteLine("test");
-
-                string read = serialPort.ReadLine();
+        //serialPort.WriteLine("test");
+        string read = serialPort.ReadLine();
+        Debug.Log(read);
         received = read.Split(' ');
         if (received.Length > 2)
           forward(received);
-        Debug.Log(read);
       }
       catch (Exception e)
       {
@@ -88,8 +87,8 @@ public class Serial : MonoBehaviour
 
   private void forward(string[] received)
   {
-    if (received[0].CompareTo("move") == 0)
-      ax12Manager.SetGoal(int.Parse(received[1]), int.Parse(received[2]));
+    if (received[0].CompareTo("AX12") == 0)
+			ax12Manager.Receive(received);
   }
 
   void printf(string s)

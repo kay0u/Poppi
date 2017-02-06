@@ -4,7 +4,6 @@
 #include <stm32f4xx_hal.h>
 
 #include "FreeRTOS.h"
-
 #include "../include/Useful.h"
 #include "Hexapode/Hexapode.h"
 #include "LedController.h"
@@ -16,30 +15,82 @@
 #define RXBUFFERSIZE 64
 char aRxBuffer[RXBUFFERSIZE];
 
+static void gyro(void const *argument)
+{
+	Imu imu;
+	imu.init();
+
+	/* Gyroscope variables */
+	float* Buffer;
+	float Xval, Yval = 0x00;
+
+	for (;;)
+	{
+		/* Read Gyroscope Angular data */
+		Buffer = imu.getGyroscope();
+
+		Xval = ABS((Buffer[0]));
+		Yval = ABS((Buffer[1]));
+
+		if(Xval>Yval)
+		{
+			if(Buffer[0] > 5000.0f)
+			{
+				/* LED5 On */
+				LedController::Instance().ledOn(LED5);
+			}
+			else if(Buffer[0] < -5000.0f)
+			{
+				/* LED4 On */
+				LedController::Instance().ledOn(LED4);
+			}
+		}
+		else
+		{
+			if(Buffer[1] < -5000.0f)
+			{
+				/* LED6 On */
+				LedController::Instance().ledOn(LED6);
+			}
+			else if(Buffer[1] > 5000.0f)
+			{
+				/* LED3 On */
+				LedController::Instance().ledOn(LED3);
+			}
+		}
+		osDelay(10);
+
+		LedController::Instance().ledOff(LED3);
+		LedController::Instance().ledOff(LED4);
+		LedController::Instance().ledOff(LED5);
+		LedController::Instance().ledOff(LED6);
+	}
+}
 
 static void moveAx(void const *argument)
 {
-	/*AX12<serial_ax> ax1(1);
-	AX12<serial_ax> ax2(2);
-	AX12<serial_ax> ax3(3);*/
+	serial_ax::init(1000000);
+
+	AX12<serial_ax> ax1(1);
+
 	int angle = 180;
-	/*ax1.SetGoal(60);
-	ax2.SetGoal(60);
-	ax3.SetGoal(150);*/
-	serial_pc::printf("test");
 
 	for (;;)
 	{
 		if(angle > 300)
 			angle = 0;
-		//float pos = ax1.GetPosition();
+		ax1.SetGoal(angle);
+		float pos = ax1.GetPosition();
+		serial_pc::printfln("%f", pos);
 
 		osDelay(500);
-		char c;
-		if (serial_pc::available())
+		//char c;
+		/*if (serial_pc::available())
 			serial_pc::read_char(c);
 		serial_pc::print(&c, 1);
-		c = ' ';
+		c = ' ';*/
+		//serial_pc::printfln("test");
+
 		//serial_pc::read(aRxBuffer);
 		//serial_pc::printf("%s", aRxBuffer);
 		angle += 10;
@@ -49,18 +100,20 @@ static void moveAx(void const *argument)
 static void SystemClock_Config(void);
 
 int main(void)
-{ 
+{
 	HAL_Init();
 	SystemClock_Config();
 
 	serial_pc::init(115200);
 
 	// /!\ Attention, avec l'utilisation du printf il faut augmenter la stack size pour le thread.
-	osThreadDef(MOVEThread, moveAx, osPriorityNormal, 1, configMINIMAL_STACK_SIZE + 500);
+	osThreadDef(MOVEThread, moveAx, osPriorityNormal, 1, configMINIMAL_STACK_SIZE + 1000);
 	osThreadCreate(osThread(MOVEThread), NULL);
 
-	serial_ax::init(1000000);
-	//Hexapode hexa;
+	//osThreadDef(GYROThread, gyro, osPriorityNormal, 1, configMINIMAL_STACK_SIZE);
+	//osThreadCreate(osThread(GYROThread), NULL);
+
+	//serial_pc::printfln("test");
 
 	/* Start scheduler */
 	osKernelStart();

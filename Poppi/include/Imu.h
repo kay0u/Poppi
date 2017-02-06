@@ -20,6 +20,9 @@ public:
 	void printAngles();
 	void init();
 	float* getOrientation();
+	float* getGyroscope();
+	double* getAccelerometer();
+
 
 private:
 	void readAcc();
@@ -41,5 +44,6 @@ private:
 
 	//Absolute orientation
 	float m_orientation[2];
+
 };
 
