@@ -6,7 +6,7 @@
 #include <BSP/stm32f411e_discovery.h>
 #include "FreeRTOS.h"
 #include "cmsis_os.h"
-#include "../src/Uart.hpp"
+#include "src/Uart.hpp"
 
 #define LEG_COUNT 6
 #define TWO_PI  6.2831853f
@@ -14,8 +14,8 @@
 #define ABS(x)  (x < 0) ? (-x) : x
 #define SQRE(x) ((x)*(x))
 
-typedef Uart<1> serial_pc;
-typedef Uart<2> serial_ax;
+using serial_pc = Uart<1>;
+using serial_ax = Uart<2>;
 
 // Converts degrees to radians.
 #define DEGREETORADIAN(angleDegrees) (angleDegrees * M_PI / 180.0)

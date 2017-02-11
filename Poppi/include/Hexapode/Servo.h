@@ -9,10 +9,10 @@
 #define HEXAPODE_SERVO_H_
 
 #include <math.h>
-#include "../Math/Vector3.h"
-#include "../Useful.h"
-#include "../../src/AX12.hpp"
-#include "../../src/Uart.hpp"
+#include "Math/Vector3.h"
+#include "Useful.h"
+#include "src/Uart.hpp"
+#include "AX12.h"
 
 class Servo {
 public:

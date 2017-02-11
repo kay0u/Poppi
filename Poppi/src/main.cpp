@@ -10,10 +10,7 @@
 #include "../include/Imu.h"
 
 #include "Uart.hpp"
-#include "AX12.hpp"
-
-#define RXBUFFERSIZE 64
-char aRxBuffer[RXBUFFERSIZE];
+#include "AX12.h"
 
 static void gyro(void const *argument)
 {
@@ -58,7 +55,7 @@ static void gyro(void const *argument)
 				LedController::Instance().ledOn(LED3);
 			}
 		}
-		osDelay(10);
+		osDelay(100);
 
 		LedController::Instance().ledOff(LED3);
 		LedController::Instance().ledOff(LED4);
@@ -69,10 +66,10 @@ static void gyro(void const *argument)
 
 static void moveAx(void const *argument)
 {
-	serial_ax::init(1000000);
 
 	AX12<serial_ax> ax1(1);
 
+	
 	int angle = 180;
 
 	for (;;)
@@ -80,11 +77,13 @@ static void moveAx(void const *argument)
 		if(angle > 300)
 			angle = 0;
 		ax1.SetGoal(angle);
-
 		osDelay(1000);
-		serial_pc::printfln("isMoving: %d", ax1.isMoving());
-		float pos = ax1.GetPosition();
-		serial_pc::printfln("goal: %d, real: %f", angle, pos);
+		
+
+		//serial_pc::printfln("isMoving: %d", ax1.isMoving());
+		//float pos = ax1.GetPosition();
+		//serial_pc::printfln("goal: %d, real: %f", angle, pos);
+		//osDelay(1000);
 
 		angle += 10;
 	}

@@ -15,8 +15,7 @@
  * Orange: RX
  */
 
-#ifndef UART_HPP
-#define UART_HPP
+#pragma once
 
 #include "stm32f4xx_hal.h"
 #include <Useful.h>
@@ -304,7 +303,16 @@ public:
 
 		return READ_SUCCESS;
 	}
-
+	
+	static inline void lockMutex()
+	{
+		osMutexWait(mutex, osWaitForever);
+	}
+	
+	static inline void releaseMutex()
+	{
+		osMutexRelease(mutex);
+	}
 };
 
 osMessageQDef(osqueue, RX_BUFFER_SIZE, sizeof(char));
@@ -312,7 +320,4 @@ osMutexDef(osmutex);
 template<uint8_t ID> osMessageQId Uart<ID>::xQueueR = osMessageCreate (osMessageQ(osqueue), NULL);
 template<uint8_t ID> osMessageQId Uart<ID>::xQueueT = osMessageCreate (osMessageQ(osqueue), NULL);
 template<uint8_t ID> osMutexId Uart<ID>::mutex = osMutexCreate(osMutex(osmutex));
-
-
-#endif  /* UART_HPP */
 
