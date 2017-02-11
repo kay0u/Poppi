@@ -55,7 +55,7 @@ public:
     AX12(int ID, int baud = 1000000) {
         _ID = ID;
         _baud = baud;
-        serial::changeCommunicationMode(serial::communicationMode::TX);
+		serial::changeCommunicationMode(serial::communicationMode::TX);
     }
 
     /** Set the mode of the servo
@@ -385,12 +385,12 @@ private:
         Status[4] = 0xFE; // return code
 
     #ifdef AX12_READ_DEBUG
-        printf("\nread(%d,0x%x,%d,data)\n",ID,start,bytes);
+	    serial_pc::printf("\nread(%d,0x%x,%d,data)\n", ID, start, bytes);
     #endif
 
         // Build the TxPacket first in RAM, then we'll send in one go
     #ifdef AX12_READ_DEBUG
-        printf("\nInstruction Packet\n  Header : 0xFF, 0xFF\n");
+	    serial_pc::printf("\nInstruction Packet\n  Header : 0xFF, 0xFF\n");
     #endif
 
         TxBuf[0] = 0xff;
@@ -401,7 +401,7 @@ private:
         sum += TxBuf[2];
 
     #ifdef AX12_READ_DEBUG
-        printf("  ID : %d\n",TxBuf[2]);
+	    serial_pc::printf("  ID : %d\n", TxBuf[2]);
     #endif
 
         // Packet Length
@@ -409,7 +409,7 @@ private:
         sum += TxBuf[3];            // Accululate the packet sum
 
     #ifdef AX12_READ_DEBUG
-        printf("  Length : 0x%x\n",TxBuf[3]);
+	    serial_pc::printf("  Length : 0x%x\n", TxBuf[3]);
     #endif
 
         // Instruction - Read
@@ -417,7 +417,7 @@ private:
         sum += TxBuf[4];
 
     #ifdef AX12_READ_DEBUG
-        printf("  Instruction : 0x%x\n",TxBuf[4]);
+	    serial_pc::printf("  Instruction : 0x%x\n", TxBuf[4]);
     #endif
 
         // Start Address
@@ -425,7 +425,7 @@ private:
         sum += TxBuf[5];
 
     #ifdef AX12_READ_DEBUG
-        printf("  Start Address : 0x%x\n",TxBuf[5]);
+	    serial_pc::printf("  Start Address : 0x%x\n", TxBuf[5]);
     #endif
 
         // Bytes to read
@@ -433,27 +433,28 @@ private:
         sum += TxBuf[6];
 
     #ifdef AX12_READ_DEBUG
-        printf("  No bytes : 0x%x\n",TxBuf[6]);
+	    serial_pc::printf("  No bytes : 0x%x\n", TxBuf[6]);
     #endif
 
         // Checksum
         TxBuf[7] = 0xFF - sum;
     #ifdef AX12_READ_DEBUG
-        printf("  Checksum : 0x%x\n",TxBuf[7]);
+	    serial_pc::printf("  Checksum : 0x%x\n", TxBuf[7]);
     #endif
 
         // Transmit the packet in one burst with no pausing
-	    serial::print(TxBuf, 8);
+	    serial::changeCommunicationMode(serial::communicationMode::TX);
+        serial::print(TxBuf, 8);
+	    osDelay((6 + bytes) * 1000.0 / _baud);
 
         // Wait for the bytes to be transmitted
         //TODO check
-        osDelay(2);
-
+        //osDelay(2);
         // Skip if the read was to the broadcast address
         if (_ID != 0xFE) {
 
         	//TODO check
-            serial::changeCommunicationMode(serial::communicationMode::RX);
+	        serial::changeCommunicationMode(serial::communicationMode::RX);
 
 
             // response packet is always 6 + bytes
@@ -466,7 +467,7 @@ private:
             while ((timeout < ((6+bytes)*10)) && (plen<(6+bytes))) {
 
                 if (serial::available()) {
-                	serial::read_char(Status[plen]);
+                    serial::read_char(Status[plen]);
                     plen++;
                     timeout = 0;
                 }
@@ -478,30 +479,30 @@ private:
             }
 
             //TODO check
-            serial::changeCommunicationMode(serial::communicationMode::TX);
+	        serial::changeCommunicationMode(serial::communicationMode::TX);
 
-            if (timeout == ((6+bytes)*10) ) {
+	        if (timeout == ((6 + bytes) * 10)) {
                 return(-1);
             }
 
             // Copy the data from Status into data for return
-            for (int i=0; i < Status[3]-2 ; i++) {
+	        for (int i = 0; i < Status[3] - 2; i++) {
                 data[i] = Status[5+i];
             }
 
     #ifdef AX12_READ_DEBUG
-            printf("\nStatus Packet\n");
-            printf("  Header : 0x%x\n",Status[0]);
-            printf("  Header : 0x%x\n",Status[1]);
-            printf("  ID : 0x%x\n",Status[2]);
-            printf("  Length : 0x%x\n",Status[3]);
-            printf("  Error Code : 0x%x\n",Status[4]);
+	        serial_pc::printf("\nStatus Packet\n");
+	        serial_pc::printf("  Header : 0x%x\n", Status[0]);
+	        serial_pc::printf("  Header : 0x%x\n", Status[1]);
+	        serial_pc::printf("  ID : 0x%x\n", Status[2]);
+	        serial_pc::printf("  Length : 0x%x\n", Status[3]);
+	        serial_pc::printf("  Error Code : 0x%x\n", Status[4]);
 
             for (int i=0; i < Status[3]-2 ; i++) {
-                printf("  Data : 0x%x\n",Status[5+i]);
+	            serial_pc::printf("  Data : 0x%x\n", Status[5 + i]);
             }
 
-            printf("  Checksum : 0x%x\n",Status[5+(Status[3]-2)]);
+	        serial_pc::printf("  Checksum : 0x%x\n", Status[5 + (Status[3] - 2)]);
     #endif
 
         } // if (ID!=0xFE)
@@ -517,12 +518,12 @@ private:
     	    char Status[6];
 
     	#ifdef AX12_WRITE_DEBUG
-    	    printf("\nwrite(%d,0x%x,%d,data,%d)\n",ID,start,bytes,flag);
+			serial_pc::printf("\nwrite(%d,0x%x,%d,data,%d)\n", ID, start, bytes, flag);
     	#endif
 
     	    // Build the TxPacket first in RAM, then we'll send in one go
     	#ifdef AX12_WRITE_DEBUG
-    	    printf("\nInstruction Packet\n  Header : 0xFF, 0xFF\n");
+			serial_pc::printf("\nInstruction Packet\n  Header : 0xFF, 0xFF\n");
     	#endif
 
     	    TxBuf[0] = 0xff;
@@ -533,7 +534,7 @@ private:
     	    sum += TxBuf[2];
 
     	#ifdef AX12_WRITE_DEBUG
-    	    printf("  ID : %d\n",TxBuf[2]);
+			serial_pc::printf("  ID : %d\n", TxBuf[2]);
     	#endif
 
     	    // packet Length
@@ -541,7 +542,7 @@ private:
     	    sum += TxBuf[3];
 
     	#ifdef AX12_WRITE_DEBUG
-    	    printf("  Length : %d\n",TxBuf[3]);
+			serial_pc::printf("  Length : %d\n", TxBuf[3]);
     	#endif
 
     	    // Instruction
@@ -554,7 +555,7 @@ private:
     	    }
 
     	#ifdef AX12_WRITE_DEBUG
-    	    printf("  Instruction : 0x%x\n",TxBuf[4]);
+			serial_pc::printf("  Instruction : 0x%x\n", TxBuf[4]);
     	#endif
 
     	    // Start Address
@@ -562,7 +563,7 @@ private:
     	    sum += TxBuf[5];
 
     	#ifdef AX12_WRITE_DEBUG
-    	    printf("  Start : 0x%x\n",TxBuf[5]);
+			serial_pc::printf("  Start : 0x%x\n", TxBuf[5]);
     	#endif
 
     	    // data
@@ -571,7 +572,7 @@ private:
     	        sum += TxBuf[6+i];
 
     	#ifdef AX12_WRITE_DEBUG
-    	        printf("  Data : 0x%x\n",TxBuf[6+i]);
+	    	    serial_pc::printf("  Data : 0x%x\n", TxBuf[6 + i]);
     	#endif
 
     	    }
@@ -580,15 +581,16 @@ private:
     	    TxBuf[6+bytes] = 0xFF - sum;
 
     	#ifdef AX12_WRITE_DEBUG
-    	    printf("  Checksum : 0x%x\n",TxBuf[6+bytes]);
+			serial_pc::printf("  Checksum : 0x%x\n", TxBuf[6 + bytes]);
     	#endif
 
     	    // Transmit the packet in one burst with no pausing
-    	    serial::print(TxBuf, 7 + bytes);
-
+			serial::changeCommunicationMode(serial::communicationMode::TX);
+			serial::print(TxBuf, 7 + bytes);
+			osDelay((7 + bytes)*1000.0 / _baud) ;
     	    // Wait for data to transmit
             //TODO check
-            osDelay(2);
+            //osDelay(2);
 
     	    // make sure we have a valid return
     	    Status[4]=0x00;
@@ -597,7 +599,7 @@ private:
     	    if (_ID!=0xFE) {
 
     	    	//TODO check
-    	        serial::changeCommunicationMode(serial::communicationMode::RX);
+	    	    serial::changeCommunicationMode(serial::communicationMode::RX);
 
     	        // response packet is always 6 bytes
     	        // 0xFF, 0xFF, ID, Length Error, Param(s) Checksum
@@ -605,7 +607,7 @@ private:
     	        // the packet back, i.e. 60 bit periods, round up to 100
     	        int timeout = 0;
     	        int plen = 0;
-    	        while ((timeout < 100) && (plen<6)) {
+	    	    while ((timeout < (60)) && (plen < 6)) {
 
     	            if (serial::available()) {
     	            	serial::read_char(Status[plen]);
@@ -620,15 +622,15 @@ private:
     	        }
 
     	        //TODO check
-    	        serial::changeCommunicationMode(serial::communicationMode::TX);
+	    	    serial::changeCommunicationMode(serial::communicationMode::TX);
 
     	        // Build the TxPacket first in RAM, then we'll send in one go
     	#ifdef AX12_WRITE_DEBUG
-    	        printf("\nStatus Packet\n  Header : 0x%X, 0x%X\n",Status[0],Status[1]);
-    	        printf("  ID : %d\n",Status[2]);
-    	        printf("  Length : %d\n",Status[3]);
-    	        printf("  Error : 0x%x\n",Status[4]);
-    	        printf("  Checksum : 0x%x\n",Status[5]);
+	    	    serial_pc::printf("\nStatus Packet\n  Header : 0x%X, 0x%X\n", Status[0], Status[1]);
+	    	    serial_pc::printf("  ID : %d\n", Status[2]);
+	    	    serial_pc::printf("  Length : %d\n", Status[3]);
+	    	    serial_pc::printf("  Error : 0x%x\n", Status[4]);
+	    	    serial_pc::printf("  Checksum : 0x%x\n", Status[5]);
     	#endif
 
 

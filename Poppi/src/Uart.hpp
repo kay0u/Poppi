@@ -117,8 +117,8 @@ public:
 
 		//General settings of pins TX/RX
 		GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-		GPIO_InitStruct.Pull = GPIO_NOPULL;
-		GPIO_InitStruct.Speed = GPIO_SPEED_FAST;
+		GPIO_InitStruct.Pull = GPIO_PULLUP;
+		GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
 
 		switch (USART_ID) {
 		case 1:
@@ -174,10 +174,11 @@ public:
 		UART.Init.Parity = UART_PARITY_NONE; // pas de bit de parité (standard)
 		UART.Init.Mode = communicationMode::RXTX;
 
-	    __HAL_UART_ENABLE_IT(&UART, UART_IT_RXNE);
-
+		__HAL_UART_ENABLE_IT(&UART, UART_IT_RXNE);                     // Enable RXNE interruption
+		
 		if (HAL_UART_Init(&UART) != HAL_OK)
 			while(1);
+		
 	}
 
 	static inline void changeCommunicationMode(communicationMode mode)

@@ -80,19 +80,12 @@ static void moveAx(void const *argument)
 		if(angle > 300)
 			angle = 0;
 		ax1.SetGoal(angle);
+
+		osDelay(1000);
+		serial_pc::printfln("isMoving: %d", ax1.isMoving());
 		float pos = ax1.GetPosition();
-		serial_pc::printfln("%f", pos);
+		serial_pc::printfln("goal: %d, real: %f", angle, pos);
 
-		osDelay(500);
-		//char c;
-		/*if (serial_pc::available())
-			serial_pc::read_char(c);
-		serial_pc::print(&c, 1);
-		c = ' ';*/
-		//serial_pc::printfln("test");
-
-		//serial_pc::read(aRxBuffer);
-		//serial_pc::printf("%s", aRxBuffer);
 		angle += 10;
 	}
 }
@@ -107,13 +100,11 @@ int main(void)
 	serial_pc::init(115200);
 
 	// /!\ Attention, avec l'utilisation du printf il faut augmenter la stack size pour le thread.
-	osThreadDef(MOVEThread, moveAx, osPriorityNormal, 1, configMINIMAL_STACK_SIZE + 1000);
+	osThreadDef(MOVEThread, moveAx, osPriorityRealtime, 1, configMINIMAL_STACK_SIZE + 1000);
 	osThreadCreate(osThread(MOVEThread), NULL);
 
-	//osThreadDef(GYROThread, gyro, osPriorityNormal, 1, configMINIMAL_STACK_SIZE);
-	//osThreadCreate(osThread(GYROThread), NULL);
-
-	//serial_pc::printfln("test");
+	osThreadDef(GYROThread, gyro, osPriorityNormal, 1, configMINIMAL_STACK_SIZE);
+	osThreadCreate(osThread(GYROThread), NULL);
 
 	/* Start scheduler */
 	osKernelStart();
