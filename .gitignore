@@ -211,3 +211,5 @@ Simulation-Unity/Library
 Simulation-Unity/Temp
 *.b#*
 *.s#*
+*.db
+*.opendb
