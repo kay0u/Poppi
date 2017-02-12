@@ -106,10 +106,6 @@ public:
 	*/
 	bool isTorqueEnable();
 	
-	/*Send the broadcast "trigger" command, to activate any outstanding registered commands
-	*/
-	void trigger();
-	
 	/** Read the goal angle of the servo
 	*
 	* @returns float in the range 0.0-300.0
@@ -155,6 +151,10 @@ public:
 	* @returns bool isLedOn
 	*/
 	bool GetLED();
+	
+	/*Send the broadcast "trigger" command, to activate any outstanding registered commands
+	*/
+	void trigger();
 	
 private:
 	int _ID;
@@ -214,6 +214,17 @@ PUNCH_H // 0x31 */
 	const Register REG_PRESENT_VOLTAGE = Register(0x2A, 1);
 	const Register REG_PRESENT_TEMPERATURE = Register(0x2B, 1);
 	const Register REG_MOVING = Register(0x2E, 1);
+	
+	enum Instruction
+	{
+		PING = 0x01, // No execution. It is used when controller is ready to receive Status Packet
+		READ_DATA = 0x02, // This command reads data from Dynamixel
+		WRITE_DATA = 0x03, // This command writes data to Dynamixel
+		REG_WRITE = 0x04,
+		ACTION = 0x05,
+		RESET = 0x06,
+		SYNC_WRITE = 0x83
+	};
 	
 	
 private:
