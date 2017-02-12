@@ -5,23 +5,18 @@
 #include "Useful.h"
 
 template<typename serial>
-AX12<serial>::AX12()
-{
-}
-
-
-template<typename serial>
 AX12<serial>::~AX12()
 {
 }
 
 
 template<typename serial>
-AX12<serial>::AX12(int ID, int baud)
+AX12<serial>::AX12(int ID, int baud, Mode mode, bool shouldWaitForTrigger)
 {
 	_ID = ID;
 	_baud = baud;
-	_mode = Mode::Join;
+	_mode = mode;
+	_shouldWaitForTrigger = shouldWaitForTrigger;
 	serial::init(baud);
 	serial::changeCommunicationMode(serial::communicationMode::TX);
 	SetMode(_mode);
@@ -52,57 +47,59 @@ void AX12<serial>::SetMode(Mode mode) {
 template<typename serial>
 int  AX12<serial>::SetBaudrate(int baud) {
 
-	//TODO: check
-	int flag = 0;
 	char data[1];
-	data[0] = baud;
+	data[0] = _baud;
 
 #ifdef AX12_DEBUG
-	printf("Setting Baud rate to %d\n", baud);
+	serial_pc::printfln("Setting Baud rate to %d", baud);
 #endif
 
-	return (write(0xFE, AX12_REG_BAUD, 1, data, flag));
+	int rVal = write(0xFE, REG_BAUD, data, 0);
+
+	_baud = baud;
+	
+	return rVal;
 }
 
+template<typename serial>
+int  AX12<serial>::SetTorque(bool torqueEnable) {
+
+	char data[1];
+	data[0] = torqueEnable;
+
+#ifdef AX12_DEBUG
+	serial_pc::printfln("Setting Torque to %d", baud);
+#endif
+
+	return write(_ID, REG_TORQUE_ENABLE, data, _shouldWaitForTrigger);
+}
 
 template<typename serial>
-int AX12<serial>::SetGoal(int degrees, int flags) {
+int AX12<serial>::SetGoalPosition(int degrees) {
 
-	char reg_flag = 0;
 	char data[2];
-
-	// set the flag is only the register bit is set in the flag
-	if (flags == 0x2) {
-		reg_flag = 1;
-	}
 
 	// 1023 / 300 * degrees
 	short goal = (1023 * degrees) / 300;
 #ifdef AX12_DEBUG
-	printf("SetGoal to 0x%x\n", goal);
+	serial_pc::printfln("SetGoal to 0x%x", goal);
 #endif
 
 	data[0] = goal & 0xff; // bottom 8 bits
 	data[1] = goal >> 8;   // top 8 bits
 
 	// write the packet, return the error code
-	int rVal = write(_ID, AX12_REG_GOAL_POSITION, 2, data, reg_flag);
+	int rVal = write(_ID, REG_GOAL_POSITION, data, _shouldWaitForTrigger);
 #ifdef UNITY
-	Uart<1>::printfln("AX12 move %d %d", _ID, degrees);
+	serial_pc::printfln("AX12 move %d %d", _ID, degrees);
 #endif
-	if (flags == 1) {
-	// block until it comes to a halt
-		while (isMoving()) {}
-	}
-	return (rVal);
+	
+	return rVal;
 }
 
 
 template<typename serial>
 int AX12<serial>::SetSpeed(float speed) {
-
-	//TODO: check
-	int flag = 0;
 
 	// bit 10     = direction, 0 = CCW, 1=CW //If in Wheel mode
 	// bits 9-0   = Speed
@@ -118,18 +115,15 @@ int AX12<serial>::SetSpeed(float speed) {
 	data[1] = goal >> 8;   // top 8 bits
 
 	// write the packet, return the error code
-	int rVal = write(_ID, AX12_REG_MOVING_SPEED, 2, data, flag);
+	int rVal = write(_ID, REG_MOVING_SPEED, data, _shouldWaitForTrigger);
 
-	return (rVal);
+	return rVal;
 }
 
 
 template<typename serial>
 int AX12<serial>::SetClockwiseLimit(int degrees) {
 
-	//TODO: check
-	int flag = 0;
-
 	degrees = std::max(degrees, 0);
 	degrees = std::min(degrees, 300);
 		
@@ -139,23 +133,19 @@ int AX12<serial>::SetClockwiseLimit(int degrees) {
 	short limit = (1023 * degrees) / 300;
 
 #ifdef AX12_DEBUG
-	printf("SetCWLimit to 0x%x\n", limit);
+	serial_pc::printfln("SetClockwiseLimit to 0x%x", limit);
 #endif
 
 	data[0] = limit & 0xff; // bottom 8 bits
 	data[1] = limit >> 8;   // top 8 bits
 
 	// write the packet, return the error code
-	return (write(_ID, AX12_REG_CW_LIMIT, 2, data, flag));
-
+	return write(_ID, REG_Clockwise_LIMIT, data, _shouldWaitForTrigger);
 }
 
 template<typename serial>
 int AX12<serial>::SetCounterClockwiseLimit(int degrees) {
 
-	//TODO: check
-	int flag = 0;
-
 	degrees = std::max(degrees, 0);
 	degrees = std::min(degrees, 300);
 		
@@ -165,42 +155,57 @@ int AX12<serial>::SetCounterClockwiseLimit(int degrees) {
 	short limit = (1023 * degrees) / 300;
 
 #ifdef AX12_DEBUG
-	printf("SetCCWLimit to 0x%x\n", limit);
+	serial_pc::printfln("SetCounterClockwiseLimit to 0x%x", limit);
 #endif
 
 	data[0] = limit & 0xff; // bottom 8 bits
 	data[1] = limit >> 8;   // top 8 bits
 
 	// write the packet, return the error code
-	return (write(_ID, AX12_REG_CCW_LIMIT, 2, data, flag));
+	return write(_ID, REG_CounterClockwise_LIMIT, data, _shouldWaitForTrigger);
 }
 
 template<typename serial>
 int AX12<serial>::SetID(int currentID, int newID) {
 
-	//TODO: check
-	int flag = 0;
-
 	char data[1];
 	data[0] = newID;
 
 #ifdef AX12_DEBUG
-	printf("Setting ID from 0x%x to 0x%x\n", currentID, newID);
+	serial_pc::printfln("Setting ID from 0x%x to 0x%x", currentID, newID);
 #endif
 	_ID = newID;
 	//TODO: catch error
-	return (write(currentID, AX12_REG_ID, 1, data, flag));
+	return write(currentID, REG_ID, data, _shouldWaitForTrigger);
 
 }
 
+template<typename serial>
+int AX12<serial>::SetLED(bool ledOn) {
+	char data[1];
+	data[0] = ledOn;
+
+#ifdef AX12_DEBUG
+	serial_pc::printfln("SetLED to 0x%x", ledOn);
+#endif
+	
+	return write(_ID, REG_LED, data, _shouldWaitForTrigger);
+}
 
 template<typename serial>
 bool AX12<serial>::isMoving() {
-
 	char data[1];
-	read(_ID, AX12_REG_MOVING, 1, data);
+	read(_ID, REG_MOVING, data);
 	return (data[0] == 1);
 }
+
+template<typename serial>
+bool AX12<serial>::isTorqueEnable() {
+	char data[1];
+	read(_ID, REG_TORQUE_ENABLE, data);
+	return (data[0] == 1);
+}
+
 
 template<typename serial>
 void AX12<serial>::trigger() {
@@ -210,8 +215,9 @@ void AX12<serial>::trigger() {
 
 #ifdef AX12_TRIGGER_DEBUG
 	// Build the TxPacket first in RAM, then we'll send in one go
-	printf("\nTriggered\n");
-	printf("\nTrigger Packet\n  Header : 0xFF, 0xFF\n");
+	serial_pc::printfln("Triggered");
+	serial_pc::printfln("Trigger Packet");
+	serial_pc::printfln("  Header : 0xFF, 0xFF");
 #endif
 
 	TxBuf[0] = 0xFF;
@@ -222,7 +228,7 @@ void AX12<serial>::trigger() {
 	sum += TxBuf[2];
 
 #ifdef AX12_TRIGGER_DEBUG
-	printf("  ID : %d\n", TxBuf[2]);
+	serial_pc::printfln("  ID : %d", TxBuf[2]);
 #endif
 
 	// Length
@@ -230,24 +236,25 @@ void AX12<serial>::trigger() {
 	sum += TxBuf[3];
 
 #ifdef AX12_TRIGGER_DEBUG
-	printf("  Length %d\n", TxBuf[3]);
+	serial_pc::printfln("  Length %d", TxBuf[3]);
 #endif
 
 	// Instruction - ACTION
-	TxBuf[4] = 0x04;
+	TxBuf[4] = 0x05;
 	sum += TxBuf[4];
 
 #ifdef AX12_TRIGGER_DEBUG
-	printf("  Instruction 0x%X\n", TxBuf[4]);
+	serial_pc::printfln("  Instruction 0x%X", TxBuf[4]);
 #endif
 
 	// Checksum
 	TxBuf[5] = 0xFF - sum;
 #ifdef AX12_TRIGGER_DEBUG
-	printf("  Checksum 0x%X\n", TxBuf[5]);
+	serial_pc::printfln("  Checksum 0x%X", TxBuf[5]);
 #endif
 
 	// Transmit the packet in one burst with no pausing
+	serial::changeCommunicationMode(serial::communicationMode::TX);
 	serial::print(TxBuf, 6);
 
 	// This is a broadcast packet, so there will be no reply
@@ -255,33 +262,50 @@ void AX12<serial>::trigger() {
 }
 
 template<typename serial>
-float AX12<serial>::GetPosition() {
+float AX12<serial>::GetGoalPosition() {
 
 #ifdef AX12_DEBUG
-	printf("\nGetPosition(%d)", _ID);
+	serial_pc::printfln("GetGoalPosition(%d)", _ID);
 #endif
 
 	char data[2];
 
-	int ErrorCode = read(_ID, AX12_REG_POSITION, 2, data);
+	int ErrorCode = read(_ID, REG_GOAL_POSITION, data);
 	int position = data[0] + (data[1] << 8);
 	float angle = (position * 300) / 1024;
 
-	return (angle);
+	return angle;
 }
-	
+
 template<typename serial>
-float AX12<serial>::GetSpeed() {
+float AX12<serial>::GetPresentPosition() {
 
 #ifdef AX12_DEBUG
-	printf("\nGetPosition(%d)", _ID);
+	serial_pc::printfln("GetPresentPosition(%d)", _ID);
 #endif
 
 	char data[2];
 
-	int ErrorCode = read(_ID, AX12_REG_SPEED, 2, data);
+	int ErrorCode = read(_ID, REG_PRESENT_POSITION, data);
+	int position = data[0] + (data[1] << 8);
+	float angle = (position * 300) / 1024;
 
-	int speed = data[0] + (0x03 & data[1] << 8);
+	return angle;
+}
+	
+template<typename serial>
+float AX12<serial>::GetPresentSpeed() {
+
+#ifdef AX12_DEBUG
+	serial_pc::printfln("GetPresentSpeed(%d)", _ID);
+#endif
+
+	char data[2];
+
+	int ErrorCode = read(_ID, REG_PRESENT_SPEED, data);
+
+	float speed = data[0] + (0x03 & data[1] << 8);
+	speed /= 1023;
 	if (data[1] & 0x07)
 		speed *= -1;
 	
@@ -289,37 +313,67 @@ float AX12<serial>::GetSpeed() {
 }
 
 template<typename serial>
+float AX12<serial>::GetPresentLoad() {
+
+#ifdef AX12_DEBUG
+	serial_pc::printfln("GetPresentLoad(%d)", _ID);
+#endif
+
+	char data[2];
+
+	int ErrorCode = read(_ID, REG_PRESENT_LOAD, data);
+
+	float load = data[0] + (0x03 & data[1] << 8);
+	load /= 1023;
+	if (data[1] & 0x07)
+		load *= -1;
+	
+	return load;
+}
+
+template<typename serial>
 float AX12<serial>::GetTemp() {
 
 #ifdef AX12_DEBUG
-	printf("\nGetTemp(%d)", _ID);
+	serial_pc::printfln("GetTemp(%d)", _ID);
 #endif
 
 	char data[1];
-	int ErrorCode = read(_ID, AX12_REG_TEMP, 1, data);
+	int ErrorCode = read(_ID, REG_PRESENT_TEMPERATURE, data);
 	float temp = data[0];
 	return temp;
 }
 
-	/** Read the supply voltage of the servo
-	*
-	* @returns float voltage
-	*/
 template<typename serial>
 float AX12<serial>::GetVolts() {
 
 #ifdef AX12_DEBUG
-	printf("\nGetVolts(%d)", _ID);
+	serial_pc::printfln("GetVolts(%d)", _ID);
 #endif
 
 	char data[1];
-	int ErrorCode = read(_ID, AX12_REG_VOLTS, 1, data);
+	
+	int ErrorCode = read(_ID, REG_PRESENT_VOLTAGE, data);
 	float volts = data[0] / 10.0;
-	return (volts);
+	return volts;
 }
 
 template<typename serial>
-int AX12<serial>::read(int ID, int start, int bytes, char* data) {
+bool AX12<serial>::GetLED() {
+
+#ifdef AX12_DEBUG
+	serial_pc::printfln("GetVolts(%d)", _ID);
+#endif
+
+	char data[1];
+	
+	int ErrorCode = read(_ID, REG_LED, data);
+	bool volts = data[0] == 1;
+	return volts;
+}
+
+template<typename serial>
+	int AX12<serial>::read(int ID, Register reg, char* data) {
 
 	char PacketLength = 0x4;
 	char TxBuf[16];
@@ -329,12 +383,13 @@ int AX12<serial>::read(int ID, int start, int bytes, char* data) {
 	Status[4] = 0xFE; // return code
 
 #ifdef AX12_READ_DEBUG
-	serial_pc::printf("\nread(%d,0x%x,%d,data)\n", ID, start, bytes);
+	serial_pc::printfln("read(%d,0x%x,%d,data)", ID, start, bytes);
 #endif
 
 	// Build the TxPacket first in RAM, then we'll send in one go
 #ifdef AX12_READ_DEBUG
-	serial_pc::printf("\nInstruction Packet\n  Header : 0xFF, 0xFF\n");
+	serial_pc::printfln("Instruction Packet");
+	serial_pc::printfln("Header : 0xFF, 0xFF");
 #endif
 
 	TxBuf[0] = 0xff;
@@ -345,7 +400,7 @@ int AX12<serial>::read(int ID, int start, int bytes, char* data) {
 	sum += TxBuf[2];
 
 #ifdef AX12_READ_DEBUG
-	serial_pc::printf("  ID : %d\n", TxBuf[2]);
+	serial_pc::printfln("  ID : %d", TxBuf[2]);
 #endif
 
 	// Packet Length
@@ -353,7 +408,7 @@ int AX12<serial>::read(int ID, int start, int bytes, char* data) {
 	sum += TxBuf[3];            // Accululate the packet sum
 
 #ifdef AX12_READ_DEBUG
-	serial_pc::printf("  Length : 0x%x\n", TxBuf[3]);
+	serial_pc::printfln("  Length : 0x%x", TxBuf[3]);
 #endif
 
 	// Instruction - Read
@@ -361,29 +416,29 @@ int AX12<serial>::read(int ID, int start, int bytes, char* data) {
 	sum += TxBuf[4];
 
 #ifdef AX12_READ_DEBUG
-	serial_pc::printf("  Instruction : 0x%x\n", TxBuf[4]);
+	serial_pc::printfln("  Instruction : 0x%x", TxBuf[4]);
 #endif
 
 	// Start Address
-	TxBuf[5] = start;
+	TxBuf[5] = reg.address;
 	sum += TxBuf[5];
 
 #ifdef AX12_READ_DEBUG
-	serial_pc::printf("  Start Address : 0x%x\n", TxBuf[5]);
+	serial_pc::printfln("  Start Address : 0x%x", TxBuf[5]);
 #endif
 
 	// Bytes to read
-	TxBuf[6] = bytes;
+	TxBuf[6] = reg.length;
 	sum += TxBuf[6];
 
 #ifdef AX12_READ_DEBUG
-	serial_pc::printf("  No bytes : 0x%x\n", TxBuf[6]);
+	serial_pc::printfln("  No bytes : 0x%x", TxBuf[6]);
 #endif
 
 	// Checksum
 	TxBuf[7] = 0xFF - sum;
 #ifdef AX12_READ_DEBUG
-	serial_pc::printf("  Checksum : 0x%x\n", TxBuf[7]);
+	serial_pc::printfln("  Checksum : 0x%x", TxBuf[7]);
 #endif
 
 	// Transmit the packet in one burst with no pausing
@@ -393,10 +448,10 @@ int AX12<serial>::read(int ID, int start, int bytes, char* data) {
 	serial::lockMutex();
 		
 	// Wait for the bytes to be transmitted
-	osDelay((6 + bytes) * 1000.0 / _baud);
+	osDelay((6 + reg.length) * 1000.0 / _baud);
 
 	// Skip if the read was to the broadcast address
-	if (_ID != 0xFE) {
+	if (ID != 0xFE) {
 
 		serial::changeCommunicationMode(serial::communicationMode::RX);
 
@@ -408,7 +463,7 @@ int AX12<serial>::read(int ID, int start, int bytes, char* data) {
 
 		int timeout = 0;
 		int plen = 0;
-		while ((timeout < ((6 + bytes) * 10)) && (plen < (6 + bytes))) {
+		while ((timeout < ((6 + reg.length) * 10)) && (plen < (6 + reg.length))) {
 
 			if (serial::available()) {
 				serial::releaseMutex();
@@ -426,7 +481,7 @@ int AX12<serial>::read(int ID, int start, int bytes, char* data) {
 			
 		serial::changeCommunicationMode(serial::communicationMode::TX);
 
-		if (timeout == ((6 + bytes) * 10)) {
+		if (timeout == ((6 + reg.length) * 10)) {
 			return (-1);
 		}
 
@@ -436,18 +491,19 @@ int AX12<serial>::read(int ID, int start, int bytes, char* data) {
 		}
 
 #ifdef AX12_READ_DEBUG
-		serial_pc::printf("\nStatus Packet\n");
-		serial_pc::printf("  Header : 0x%x\n", Status[0]);
-		serial_pc::printf("  Header : 0x%x\n", Status[1]);
-		serial_pc::printf("  ID : 0x%x\n", Status[2]);
-		serial_pc::printf("  Length : 0x%x\n", Status[3]);
-		serial_pc::printf("  Error Code : 0x%x\n", Status[4]);
+		serial_pc::printfln("");
+		serial_pc::printfln("Status Packet");
+		serial_pc::printfln("  Header : 0x%x", Status[0]);
+		serial_pc::printfln("  Header : 0x%x", Status[1]);
+		serial_pc::printfln("  ID : 0x%x", Status[2]);
+		serial_pc::printfln("  Length : 0x%x", Status[3]);
+		serial_pc::printfln("  Error Code : 0x%x", Status[4]);
 
 		for (int i = 0; i < Status[3] - 2; i++) {
-			serial_pc::printf("  Data : 0x%x\n", Status[5 + i]);
+			serial_pc::printfln("  Data : 0x%x", Status[5 + i]);
 		}
 
-		serial_pc::printf("  Checksum : 0x%x\n", Status[5 + (Status[3] - 2)]);
+		serial_pc::printfln("  Checksum : 0x%x", Status[5 + (Status[3] - 2)]);
 #endif
 
 	}
@@ -456,7 +512,7 @@ int AX12<serial>::read(int ID, int start, int bytes, char* data) {
 }
 
 template<typename serial>
-int AX12<serial>::write(int ID, int start, int bytes, char* data, int flag) {
+	int AX12<serial>::write(int ID, Register reg, char* data, bool shouldWaitForTrigger) {
 // 0xff, 0xff, ID, Length, Intruction(write), Address, Param(s), Checksum
 
 	char TxBuf[16];
@@ -464,12 +520,13 @@ int AX12<serial>::write(int ID, int start, int bytes, char* data, int flag) {
 	char Status[6];
 
 #ifdef AX12_WRITE_DEBUG
-	serial_pc::printf("\nwrite(%d,0x%x,%d,data,%d)\n", ID, start, bytes, flag);
+	serial_pc::printfln("write(%d,0x%x,%d,data,%d)", ID, start, bytes, _shouldWaitForTrigger);
 #endif
 
 	// Build the TxPacket first in RAM, then we'll send in one go
 #ifdef AX12_WRITE_DEBUG
-	serial_pc::printf("\nInstruction Packet\n  Header : 0xFF, 0xFF\n");
+	serial_pc::printfln("Instruction Packet");
+	serial_pc::printfln("Header : 0xFF, 0xFF");
 #endif
 
 	TxBuf[0] = 0xff;
@@ -480,19 +537,19 @@ int AX12<serial>::write(int ID, int start, int bytes, char* data, int flag) {
 	sum += TxBuf[2];
 
 #ifdef AX12_WRITE_DEBUG
-	serial_pc::printf("  ID : %d\n", TxBuf[2]);
+	serial_pc::printfln("  ID : %d", TxBuf[2]);
 #endif
 
 	// packet Length
-	TxBuf[3] = 3 + bytes;
+	TxBuf[3] = 3 + reg.length;
 	sum += TxBuf[3];
 
 #ifdef AX12_WRITE_DEBUG
-	serial_pc::printf("  Length : %d\n", TxBuf[3]);
+	serial_pc::printfln("  Length : %d", TxBuf[3]);
 #endif
 
 	// Instruction
-	if (flag == 1) {
+	if (shouldWaitForTrigger) {
 		TxBuf[4] = 0x04;
 		sum += TxBuf[4];
 	}
@@ -502,49 +559,49 @@ int AX12<serial>::write(int ID, int start, int bytes, char* data, int flag) {
 	}
 
 #ifdef AX12_WRITE_DEBUG
-	serial_pc::printf("  Instruction : 0x%x\n", TxBuf[4]);
+	serial_pc::printfln("  Instruction : 0x%x", TxBuf[4]);
 #endif
 
 	// Start Address
-	TxBuf[5] = start;
+	TxBuf[5] = reg.address;
 	sum += TxBuf[5];
 
 #ifdef AX12_WRITE_DEBUG
-	serial_pc::printf("  Start : 0x%x\n", TxBuf[5]);
+	serial_pc::printfln("  Start : 0x%x", TxBuf[5]);
 #endif
 
 	// data
-	for (uint8_t i = 0; i < bytes; i++) {
+	for (uint8_t i = 0; i < reg.length; i++) {
 		TxBuf[6 + i] = data[i];
 		sum += TxBuf[6 + i];
 
 #ifdef AX12_WRITE_DEBUG
-		serial_pc::printf("  Data : 0x%x\n", TxBuf[6 + i]);
+		serial_pc::printfln("  Data : 0x%x", TxBuf[6 + i]);
 #endif
 
 	}
 
 	// checksum
-	TxBuf[6 + bytes] = 0xFF - sum;
+	TxBuf[6 + reg.length] = 0xFF - sum;
 
 #ifdef AX12_WRITE_DEBUG
-	serial_pc::printf("  Checksum : 0x%x\n", TxBuf[6 + bytes]);
+	serial_pc::printfln("  Checksum : 0x%x", TxBuf[6 + bytes]);
 #endif
 
 	// Transmit the packet in one burst with no pausing
 	serial::changeCommunicationMode(serial::communicationMode::TX);
-	serial::print(TxBuf, 7 + bytes);
+	serial::print(TxBuf, 7 + reg.length);
 		
 	serial::lockMutex();
 		
 	// Wait for data to transmit
-	osDelay((7 + bytes) * 1000.0 / _baud);
+	osDelay((7 + reg.length) * 1000.0 / _baud);
 
 	// make sure we have a valid return
 	Status[4] = 0x00;
 
 			// we'll only get a reply if it was not broadcast
-	if (_ID != 0xFE) {
+	if (ID != 0xFE) {
 
 		serial::changeCommunicationMode(serial::communicationMode::RX);
 
@@ -573,11 +630,13 @@ int AX12<serial>::write(int ID, int start, int bytes, char* data, int flag) {
 		serial::changeCommunicationMode(serial::communicationMode::TX);
 		// Build the TxPacket first in RAM, then we'll send in one go
 #ifdef AX12_WRITE_DEBUG
-		serial_pc::printf("\nStatus Packet\n  Header : 0x%X, 0x%X\n", Status[0], Status[1]);
-		serial_pc::printf("  ID : %d\n", Status[2]);
-		serial_pc::printf("  Length : %d\n", Status[3]);
-		serial_pc::printf("  Error : 0x%x\n", Status[4]);
-		serial_pc::printf("  Checksum : 0x%x\n", Status[5]);
+		serial_pc::printfln("");
+		serial_pc::printfln("Status Packet");
+		serial_pc::printfln("  Header : 0x%X, 0x%X", Status[0], Status[1]);
+		serial_pc::printfln("  ID : %d", Status[2]);
+		serial_pc::printfln("  Length : %d", Status[3]);
+		serial_pc::printfln("  Error : 0x%x", Status[4]);
+		serial_pc::printfln("  Checksum : 0x%x", Status[5]);
 #endif
 
 

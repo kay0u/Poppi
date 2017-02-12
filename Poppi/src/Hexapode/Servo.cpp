@@ -25,7 +25,7 @@ void Servo::goTo(float angle)
 {
 	angle = fmax(fmin(angle, m_maxAngle), m_minAngle);
 	printf("%f \n", angle);
-	m_ax.SetGoal(angle);
+	m_ax.SetGoalPosition(angle);
 	printf("%f \n", angle);
 }
 

@@ -1,6 +1,7 @@
 #pragma once
 
 //#define UNITY
+//#define AX12_TRIGGER_DEBUG
 //#define AX12_WRITE_DEBUG
 //#define AX12_READ_DEBUG
 //#define AX12_DEBUG
@@ -14,6 +15,7 @@ public:
 		Join, //Positional, default
 		Wheel //Continuous rotation
 	};
+	AX12() = delete;
 	
 	~AX12();
 	
@@ -21,7 +23,7 @@ public:
 	*
 	* @param int ID, the Bus ID of the servo 1-255
 	*/
-	AX12(int ID, int baud = 1000000);
+	AX12(int ID, int baud = 1000000, Mode mode = Mode::Join, bool shouldWaitForTrigger = false);
 	
 	/** Set the mode of the servo
 	* @param mode
@@ -44,27 +46,26 @@ public:
 	*/
 	int SetBaudrate(int baud);
 	
+	/** Set torque either enable or disable
+	*/
+	int SetTorque(bool torqueEnable);
+	
 	/** Set goal angle in integer degrees, in positional mode
 	*
 	* @param degrees 0-300
-	* @param flags, defaults to 0
-	*    flags[0] = blocking, return when goal position reached
-	*    flags[1] = register, activate with a broadcast trigger
-	*
 	*/
-	int SetGoal(int degrees, int flags = 0);
+	int SetGoalPosition(int degrees);
 	
 	/** Set the speed of the servo
 	*
 	* If the mode is Joint
 	* @param speed 0-1.0
-	*    The unit is about 0.111rpm.
 	*    If it is set to 0, it means the maximum rpm of the motor is used without controlling the speed.
-	*    If it is 1023, it is about 114rpm.
+	*    If it is 1.0, it is about 114rpm.
 	* If the mode is Wheel
 	* @param speed, -1.0 to 1.0
-	*   -1.0 = full speed counter clock wise
-	*    1.0 = full speed clock wise
+	*   -1.0 = full speed clock wise
+	*    1.0 = full speed counter clock wise
 	*/
 	int SetSpeed(float speed);
 	
@@ -90,27 +91,52 @@ public:
 	*/
 	int SetID(int currentID, int newID);
 	
+	/** Set the state of the led
+	* @param ledOn true or false
+	*/
+	int SetLED(bool ledOn);
+	
 	/** Poll to see if the servo is moving
 	*
 	* @returns true is the servo is moving
 	*/
 	bool isMoving();
 	
+	/** Poll to see if the torque is enable
+	*/
+	bool isTorqueEnable();
+	
 	/*Send the broadcast "trigger" command, to activate any outstanding registered commands
 	*/
 	void trigger();
+	
+	/** Read the goal angle of the servo
+	*
+	* @returns float in the range 0.0-300.0
+	*/
+	float GetGoalPosition();
 	
 	/** Read the current angle of the servo
 	*
 	* @returns float in the range 0.0-300.0
 	*/
-	float GetPosition();
+	float GetPresentPosition();
+	
+	/** Read the current load of the servo
+	*
+	* @returns float load
+	*   -1.0 = full load clock wise
+	*    1.0 = full load counter clock wise
+	*/
+	float GetPresentLoad();
 	
 	/** Read the current speed of the servo
 	*
 	* @returns float velocity
+	*   -1.0 = full speed clock wise
+	*    1.0 = full speed counter clock wise
 	*/
-	float GetSpeed();
+	float GetPresentSpeed();
 	
 	/** Read the temperature of the servo
 	*
@@ -124,28 +150,74 @@ public:
 	*/
 	float GetVolts();
 	
-private:
-	AX12();
-	int read(int ID, int start, int bytes, char* data);
-	int write(int ID, int start, int bytes, char* data, int flag);
+	/**  Read the state of the led
+	*
+	* @returns bool isLedOn
+	*/
+	bool GetLED();
 	
 private:
 	int _ID;
 	int _baud;
 	Mode _mode;
+	bool _shouldWaitForTrigger;
 	
-	const int AX12_REG_ID  = 0x3;
-	const int AX12_REG_BAUD = 0x4;
-	const int AX12_REG_CW_LIMIT = 0x06;
-	const int AX12_REG_CCW_LIMIT = 0x08;
-	const int AX12_REG_GOAL_POSITION = 0x1E;
-	const int AX12_REG_TORQUE_ENABLE = 0x18;
-	const int AX12_REG_MOVING_SPEED = 0X20;
-	const int AX12_REG_PRESENT_SPEED = 0x26;
-	const int AX12_REG_VOLTS = 0x2A;
-	const int AX12_REG_TEMP = 0x2B;
-	const int AX12_REG_MOVING = 0x2E;
-	const int AX12_REG_POSITION = 0x24;
-	const int AX12_REG_SPEED = 0x26;
+	/*
+//EEPROM
+LIMIT_TEMPERATURE, // 0x0B
+DOWN_LIMIT_VOLTAGE, // 0x0C
+UP_LIMIT_VOLTAGE, // 0x0D
+MAX_TORQUE_L, // 0x0E
+MAX_TORQUE_H, // 0x0F
+STATUS_RETURN_LEVEL, // 0x10
+
+//RAM
+CW_COMPLIANCE_MARGIN, // 0x1A
+CCW_COMPLIANCE_MARGIN, // 0x1B
+CW_COMPLIANCE_SLOPE, // 0x1C
+CCW_COMPLIANCE_SLOPE, // 0x1D
+TORQUE_LIMIT_L, // 0x22
+TORQUE_LIMIT_H, // 0x23
+REGISTERED_INSTRUCTION, // 0x2C
+LOCK, // 0x2F
+PUNCH_L, // 0x30
+PUNCH_H // 0x31 */
+	
+	struct Register
+	{
+		Register(unsigned addr, unsigned len)
+			: address(addr)
+			, length(len)
+		{
+			address = addr;
+			length = len;
+		}
+		unsigned address;
+		unsigned length;
+	};
+	
+	//EEPROM Kept after reboot
+	const Register REG_ID = Register(0x3, 1);
+	const Register REG_BAUD = Register(0x4, 1);
+	const Register REG_Clockwise_LIMIT = Register(0x06, 2);
+	const Register REG_CounterClockwise_LIMIT = Register(0x08, 2);
+	
+	//RAM Reset after reboot
+	const Register REG_TORQUE_ENABLE = Register(0x18, 1);
+	const Register REG_LED = Register(0x19, 1);
+	const Register REG_GOAL_POSITION = Register(0x1E, 2);
+	const Register REG_MOVING_SPEED = Register(0X20, 2);
+	//TORQUE_LIMIT
+	const Register REG_PRESENT_POSITION = Register(0x24, 2);
+	const Register REG_PRESENT_SPEED = Register(0x26, 2);
+	const Register REG_PRESENT_LOAD = Register(0x28, 2);
+	const Register REG_PRESENT_VOLTAGE = Register(0x2A, 1);
+	const Register REG_PRESENT_TEMPERATURE = Register(0x2B, 1);
+	const Register REG_MOVING = Register(0x2E, 1);
+	
+	
+private:
+	int read(int ID, Register reg, char* data);
+	int write(int ID, Register reg, char* data, bool shouldWaitForTrigger);
 };
 
