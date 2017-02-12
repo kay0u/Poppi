@@ -23,6 +23,8 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <array>
+#include <vector>
 #include <stm32f4xx.h>
 #include <FreeRTOS.h>
 #include <queue.h>
@@ -67,6 +69,27 @@ private:
 		UART.Instance->CR1 |= USART_CR1_TXEIE;                     // Enable TXE interruption
 		osMutexRelease(mutex);
 		//HAL_UART_Transmit_IT(&UART, (uint8_t*) val, strlen(val));
+	}
+	
+	template<std::size_t size>
+	static inline void write(std::array<char, size> val)
+	{
+		osMutexWait(mutex, osWaitForever);
+		for (auto& e : val)
+			osMessagePut(xQueueT, e, osWaitForever);
+			
+		UART.Instance->CR1 |= USART_CR1_TXEIE;                     // Enable TXE interruption
+		osMutexRelease(mutex);
+	}
+	
+	static inline void write(std::vector<char> val)
+	{
+		osMutexWait(mutex, osWaitForever);
+		for (auto& e : val)
+			osMessagePut(xQueueT, e, osWaitForever);
+			
+		UART.Instance->CR1 |= USART_CR1_TXEIE;                     // Enable TXE interruption
+		osMutexRelease(mutex);
 	}
 
 	static inline void write(char* val, int16_t len) {
@@ -238,6 +261,17 @@ public:
 	template<class T>
 	static inline void print(T val, int16_t len) {
 		write(val, len);
+	}
+	
+	template<std::size_t size>
+	static inline void print(std::array<char, size> buff)
+	{
+		write(buff);
+	}
+	
+	static inline void print(std::vector<char> buff)
+	{
+		write(buff);
 	}
 
 	static inline void printf(const char *format, ...)

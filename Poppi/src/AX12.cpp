@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <cmath>
 #include "Useful.h"
+#include <vector>
+#include <array>
 
 template<typename serial>
 AX12<serial>::~AX12()
@@ -318,11 +320,11 @@ bool AX12<serial>::GetLED() {
 }
 
 template<typename serial>
-	int AX12<serial>::read(int ID, Register reg, char* data) {
+int AX12<serial>::read(int ID, Register reg, char* data) {
 
-	char TxBuf[16];
+	std::array<char, 8> TxBuf;
 	char sum = 0;
-	char Status[16];
+	std::vector<char> Status(6 + reg.length);
 
 	Status[4] = 0xFE; // return code
 
@@ -387,12 +389,12 @@ template<typename serial>
 
 	// Transmit the packet in one burst with no pausing
 	serial::changeCommunicationMode(serial::communicationMode::TX);
-	serial::print(TxBuf, 8);
+	serial::print(TxBuf);
 		
 	serial::lockMutex();
 		
 	// Wait for the bytes to be transmitted
-	osDelay((6 + reg.length) * 1000.0 / _baud);
+	osDelay(TxBuf.size() * 1000.0 / _baud);
 
 	// Skip if the read was to the broadcast address
 	if (ID != 0xFE) {
@@ -407,7 +409,7 @@ template<typename serial>
 
 		int timeout = 0;
 		int plen = 0;
-		while ((timeout < ((6 + reg.length) * 10)) && (plen < (6 + reg.length))) {
+		while ((timeout < (Status.size() * 10)) && (plen < Status.size())) {
 
 			if (serial::available()) {
 				serial::releaseMutex();
@@ -425,7 +427,7 @@ template<typename serial>
 			
 		serial::changeCommunicationMode(serial::communicationMode::TX);
 
-		if (timeout == ((6 + reg.length) * 10)) {
+		if (timeout == (Status.size() * 10)) {
 			return (-1);
 		}
 
@@ -459,10 +461,10 @@ template<typename serial>
 int AX12<serial>::write(int ID, Register reg, char* data, bool shouldWaitForTrigger) {
 // 0xff, 0xff, ID, Length, Intruction(write), Address, Param(s), Checksum
 
-	char TxBuf[16];
+	std::vector<char> TxBuf(7 + reg.length);
 	char sum = 0;
-	char Status[6];
-
+	std::array<char, 6> Status;
+	
 #ifdef AX12_WRITE_DEBUG
 	serial_pc::printfln("write(%d,0x%x,%d,data,%d)", ID, start, bytes, _shouldWaitForTrigger);
 #endif
@@ -528,12 +530,12 @@ int AX12<serial>::write(int ID, Register reg, char* data, bool shouldWaitForTrig
 
 	// Transmit the packet in one burst with no pausing
 	serial::changeCommunicationMode(serial::communicationMode::TX);
-	serial::print(TxBuf, 7 + reg.length);
+	serial::print(TxBuf);
 		
 	serial::lockMutex();
 		
 	// Wait for data to transmit
-	osDelay((7 + reg.length) * 1000.0 / _baud);
+	osDelay(TxBuf.size() * 1000.0 / _baud);
 
 	// make sure we have a valid return
 	Status[4] = 0x00;
@@ -588,9 +590,8 @@ int AX12<serial>::write(int ID, Register reg, char* data, bool shouldWaitForTrig
 template<typename serial>
 void AX12<serial>::trigger() {
 
-		char TxBuf[16];
-		char sum = 0;
-		char Status[6];
+	std::array<char, 6> TxBuf;
+	char sum = 0;
 
 #ifdef AX12_TRIGGER_DEBUG
 			// Build the TxPacket first in RAM, then we'll send in one go
@@ -634,7 +635,7 @@ void AX12<serial>::trigger() {
 
 		// Transmit the packet in one burst with no pausing
 		serial::changeCommunicationMode(serial::communicationMode::TX);
-		serial::print(TxBuf, 6);
+		serial::print(TxBuf);
 		
 		// This is a broadcast packet, so there will be no reply
 		return;
