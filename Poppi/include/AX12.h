@@ -52,6 +52,12 @@ public:
 	*/
 	int SetTorque(bool torqueEnable);
 	
+	/** Set the max torque
+	*
+	* @param limitTorque 0-1
+	*/
+	int SetTorqueLimit(float limitTorque);
+	
 	/** Set goal angle in integer degrees, in positional mode
 	*
 	* @param degrees 0-300
@@ -136,11 +142,17 @@ public:
 	*/
 	float GetPresentSpeed();
 	
+	/** Reat the limit torque
+	*
+	* @returns float limit torque
+	*/
+	float GetTorqueLimit();
+	
 	/** Read the temperature of the servo
 	*
 	* @returns float temperature
 	*/
-	float GetTemp();
+	float GetTemperature();
 	
 	/** Read the supply voltage of the servo
 	*
@@ -212,7 +224,7 @@ PUNCH_H // 0x31 */
 	const Register REG_LED = Register(0x19, 1);
 	const Register REG_GOAL_POSITION = Register(0x1E, 2);
 	const Register REG_MOVING_SPEED = Register(0X20, 2);
-	//TORQUE_LIMIT
+	const Register REG_TORQUE_LIMIT = Register(0x22, 2);
 	const Register REG_PRESENT_POSITION = Register(0x24, 2);
 	const Register REG_PRESENT_SPEED = Register(0x26, 2);
 	const Register REG_PRESENT_LOAD = Register(0x28, 2);
@@ -233,7 +245,7 @@ PUNCH_H // 0x31 */
 	
 	
 private:
-	int read(int ID, Register reg, char* data);
-	int write(int ID, Register reg, char* data, bool shouldWaitForTrigger);
+	int read(int ID, Register reg, unsigned char* data);
+	int write(int ID, Register reg, unsigned char* data, bool shouldWaitForTrigger);
 };
 

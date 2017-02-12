@@ -49,7 +49,7 @@ void AX12<serial>::SetMode(Mode mode) {
 template<typename serial>
 int  AX12<serial>::SetBaudrate(int baud) {
 
-	char data[1];
+	unsigned char data[1];
 	data[0] = _baud;
 
 #ifdef AX12_DEBUG
@@ -66,20 +66,37 @@ int  AX12<serial>::SetBaudrate(int baud) {
 template<typename serial>
 int  AX12<serial>::SetTorque(bool torqueEnable) {
 
-	char data[1];
+	unsigned char data[1];
 	data[0] = torqueEnable;
 
 #ifdef AX12_DEBUG
-	serial_pc::printfln("Setting Torque to %d", baud);
+	serial_pc::printfln("Setting Torque to %d", torqueEnable);
 #endif
 
 	return write(_ID, REG_TORQUE_ENABLE, data, _shouldWaitForTrigger);
 }
 
 template<typename serial>
+int AX12<serial>::SetTorqueLimit(float limitTorque) {
+	
+	unsigned char data[2];
+	int torque = (0x3ff * std::abs(limitTorque));
+
+	data[0] = torque & 0xff; // bottom 8 bits
+	data[1] = torque >> 8;   // top 8 bits
+
+#ifdef AX12_DEBUG
+	serial_pc::printfln("Setting Torque limit to %f", limitTorque);
+#endif
+
+	return write(_ID, REG_TORQUE_LIMIT, data, _shouldWaitForTrigger);
+}
+
+
+template<typename serial>
 int AX12<serial>::SetGoalPosition(int degrees) {
 
-	char data[2];
+	unsigned char data[2];
 
 	// 1023 / 300 * degrees
 	short goal = (1023 * degrees) / 300;
@@ -99,13 +116,12 @@ int AX12<serial>::SetGoalPosition(int degrees) {
 	return rVal;
 }
 
-
 template<typename serial>
 int AX12<serial>::SetSpeed(float speed) {
 
 	// bit 10     = direction, 0 = CCW, 1=CW //If in Wheel mode
 	// bits 9-0   = Speed
-	char data[2];
+	unsigned char data[2];
 
 	int goal = (0x3ff * std::abs(speed));
 
@@ -129,7 +145,7 @@ int AX12<serial>::SetClockwiseLimit(int degrees) {
 	degrees = std::max(degrees, 0);
 	degrees = std::min(degrees, 300);
 		
-	char data[2];
+	unsigned char data[2];
 
 	// 1023 / 300 * degrees
 	short limit = (1023 * degrees) / 300;
@@ -151,7 +167,7 @@ int AX12<serial>::SetCounterClockwiseLimit(int degrees) {
 	degrees = std::max(degrees, 0);
 	degrees = std::min(degrees, 300);
 		
-	char data[2];
+	unsigned char data[2];
 
 	// 1023 / 300 * degrees
 	short limit = (1023 * degrees) / 300;
@@ -170,7 +186,7 @@ int AX12<serial>::SetCounterClockwiseLimit(int degrees) {
 template<typename serial>
 int AX12<serial>::SetID(int currentID, int newID) {
 
-	char data[1];
+	unsigned char data[1];
 	data[0] = newID;
 
 #ifdef AX12_DEBUG
@@ -184,7 +200,7 @@ int AX12<serial>::SetID(int currentID, int newID) {
 
 template<typename serial>
 int AX12<serial>::SetLED(bool ledOn) {
-	char data[1];
+	unsigned char data[1];
 	data[0] = ledOn;
 
 #ifdef AX12_DEBUG
@@ -196,14 +212,14 @@ int AX12<serial>::SetLED(bool ledOn) {
 
 template<typename serial>
 bool AX12<serial>::isMoving() {
-	char data[1];
+	unsigned char data[1];
 	read(_ID, REG_MOVING, data);
 	return (data[0] == 1);
 }
 
 template<typename serial>
 bool AX12<serial>::isTorqueEnable() {
-	char data[1];
+	unsigned char data[1];
 	read(_ID, REG_TORQUE_ENABLE, data);
 	return (data[0] == 1);
 }
@@ -215,7 +231,7 @@ float AX12<serial>::GetGoalPosition() {
 	serial_pc::printfln("GetGoalPosition(%d)", _ID);
 #endif
 
-	char data[2];
+	unsigned char data[2];
 
 	int ErrorCode = read(_ID, REG_GOAL_POSITION, data);
 	int position = data[0] + (data[1] << 8);
@@ -231,7 +247,7 @@ float AX12<serial>::GetPresentPosition() {
 	serial_pc::printfln("GetPresentPosition(%d)", _ID);
 #endif
 
-	char data[2];
+	unsigned char data[2];
 
 	int ErrorCode = read(_ID, REG_PRESENT_POSITION, data);
 	int position = data[0] + (data[1] << 8);
@@ -247,11 +263,11 @@ float AX12<serial>::GetPresentSpeed() {
 	serial_pc::printfln("GetPresentSpeed(%d)", _ID);
 #endif
 
-	char data[2];
+	unsigned char data[2];
 
 	int ErrorCode = read(_ID, REG_PRESENT_SPEED, data);
 
-	float speed = data[0] + (0x03 & data[1] << 8);
+	float speed = data[0] + ((0x03 & data[1]) << 8);
 	speed /= 1023;
 	if (data[1] & 0x07)
 		speed *= -1;
@@ -266,11 +282,11 @@ float AX12<serial>::GetPresentLoad() {
 	serial_pc::printfln("GetPresentLoad(%d)", _ID);
 #endif
 
-	char data[2];
+	unsigned char data[2];
 
 	int ErrorCode = read(_ID, REG_PRESENT_LOAD, data);
 
-	float load = data[0] + (0x03 & data[1] << 8);
+	float load = data[0] + ((0x03 & data[1]) << 8);
 	load /= 1023;
 	if (data[1] & 0x07)
 		load *= -1;
@@ -279,13 +295,31 @@ float AX12<serial>::GetPresentLoad() {
 }
 
 template<typename serial>
-float AX12<serial>::GetTemp() {
+float AX12<serial>::GetTorqueLimit() {
+	
+	#ifdef AX12_DEBUG
+	serial_pc::printfln("GetTorqueLimit(%d)", _ID);
+	#endif
+
+	unsigned char data[2];
+
+	int ErrorCode = read(_ID, REG_TORQUE_LIMIT, data);
+
+	float torqueLimit = data[0] + ((0x03 & data[1]) << 8);
+	torqueLimit /= 1023;
+	
+	return torqueLimit;
+}
+
+
+template<typename serial>
+float AX12<serial>::GetTemperature() {
 
 #ifdef AX12_DEBUG
 	serial_pc::printfln("GetTemp(%d)", _ID);
 #endif
 
-	char data[1];
+	unsigned char data[1];
 	int ErrorCode = read(_ID, REG_PRESENT_TEMPERATURE, data);
 	float temp = data[0];
 	return temp;
@@ -298,7 +332,7 @@ float AX12<serial>::GetVolts() {
 	serial_pc::printfln("GetVolts(%d)", _ID);
 #endif
 
-	char data[1];
+	unsigned char data[1];
 	
 	int ErrorCode = read(_ID, REG_PRESENT_VOLTAGE, data);
 	float volts = data[0] / 10.0;
@@ -312,7 +346,7 @@ bool AX12<serial>::GetLED() {
 	serial_pc::printfln("GetVolts(%d)", _ID);
 #endif
 
-	char data[1];
+	unsigned char data[1];
 	
 	int ErrorCode = read(_ID, REG_LED, data);
 	bool volts = data[0] == 1;
@@ -320,7 +354,7 @@ bool AX12<serial>::GetLED() {
 }
 
 template<typename serial>
-int AX12<serial>::read(int ID, Register reg, char* data) {
+int AX12<serial>::read(int ID, Register reg, unsigned char* data) {
 
 	_txBuf.resize(8);
 	char sum = 0;
@@ -458,7 +492,7 @@ int AX12<serial>::read(int ID, Register reg, char* data) {
 }
 
 template<typename serial>
-int AX12<serial>::write(int ID, Register reg, char* data, bool shouldWaitForTrigger) {
+int AX12<serial>::write(int ID, Register reg, unsigned char* data, bool shouldWaitForTrigger) {
 // 0xff, 0xff, ID, Length, Intruction(write), Address, Param(s), Checksum
 
 	_txBuf.resize(7 + reg.length);
