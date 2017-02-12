@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 //#define UNITY
 //#define AX12_TRIGGER_DEBUG
 //#define AX12_WRITE_DEBUG
@@ -162,6 +164,9 @@ private:
 	Mode _mode;
 	bool _shouldWaitForTrigger;
 	
+	std::vector<char> _txBuf;
+	std::vector<char> _rxBuf;
+	
 	/*
 //EEPROM
 LIMIT_TEMPERATURE, // 0x0B
@@ -220,10 +225,10 @@ PUNCH_H // 0x31 */
 		PING = 0x01, // No execution. It is used when controller is ready to receive Status Packet
 		READ_DATA = 0x02, // This command reads data from Dynamixel
 		WRITE_DATA = 0x03, // This command writes data to Dynamixel
-		REG_WRITE = 0x04,
-		ACTION = 0x05,
-		RESET = 0x06,
-		SYNC_WRITE = 0x83
+		REG_WRITE = 0x04, // It is similar to WRITE_DATA, but it remains in the standby state without being executed until the ACTION command arrives.
+		ACTION = 0x05, // This command initiates motions registered with REG_WRITE
+		RESET = 0x06, // This command restores the state of Dynamixel to the factory default setting.
+		SYNC_WRITE = 0x83 // This command is used to control several Dynamixels simultaneously at a time.
 	};
 	
 	
