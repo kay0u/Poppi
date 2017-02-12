@@ -453,8 +453,6 @@ int AX12<serial>::read(int ID, Register reg, unsigned char* data) {
 				timeout = 0;
 			}
 
-			// wait for the bit period
-			osDelay(1000.0 / _baud);
 			timeout++;
 		}
 		serial::releaseMutex();
@@ -597,8 +595,6 @@ int AX12<serial>::write(int ID, Register reg, unsigned char* data, bool shouldWa
 				timeout = 0;
 			}
 				
-			// wait for the bit period
-			osDelay(1000.0 / _baud);
 			timeout++;
 		}
 		serial::releaseMutex();
