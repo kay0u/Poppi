@@ -138,12 +138,13 @@ public class Leg : MonoBehaviour
         goal = pos;
         sphereGoal.localPosition = goal;
         float distanceToTarget = Vector3.Distance(goal, Vector3.zero);
+
         float alpha1 = Mathf.Acos(-goal.y / distanceToTarget);
         float alpha2 = Mathf.Acos((Mathf.Pow(tibiaLength, 2) - Mathf.Pow(femurLength, 2) - Mathf.Pow(distanceToTarget, 2)) / (-2 * femurLength * distanceToTarget));
         float beta1 = Mathf.Acos((Mathf.Pow(distanceToTarget, 2) - Mathf.Pow(tibiaLength, 2) - Mathf.Pow(femurLength, 2)) / (-2 * tibiaLength * femurLength));
 
-        float gammaGoal = Mathf.Rad2Deg * Mathf.Atan2(goal.x, goal.z) + 150;
-        float alphaGoal = -Mathf.Rad2Deg * (alpha1 + alpha2 - Mathf.PI / 2) + 60;
+        float gammaGoal = Mathf.Rad2Deg * Mathf.Atan2(goal.x, goal.z);
+        float alphaGoal = -Mathf.Rad2Deg * (alpha1 + alpha2 - Mathf.PI / 2);
         float betaGoal = Mathf.Rad2Deg * (-beta1 + Mathf.PI);
         return new Vector3(gammaGoal, alphaGoal, betaGoal);
     }
@@ -151,6 +152,7 @@ public class Leg : MonoBehaviour
     public void goTo(Vector3 pos)
     {
         Vector3 rots = processIK(pos);
+
         gamma.goTo(new Vector3(0, rots.x, 0));
         alpha.goTo(new Vector3(rots.y, 0, 0));
         beta.goTo(new Vector3(rots.z, 0, 0));
@@ -159,7 +161,7 @@ public class Leg : MonoBehaviour
     public void goToInTime(Vector3 pos, float time)
     {
         Vector3 rots = processIK(pos);
-        
+
         gamma.goToInTime(new Vector3(0, rots.x, 0), time);
         alpha.goToInTime(new Vector3(rots.y, 0, 0), time);
         beta.goToInTime(new Vector3(rots.z, 0, 0), time);

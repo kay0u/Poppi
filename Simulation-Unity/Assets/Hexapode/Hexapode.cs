@@ -44,7 +44,7 @@ public class Hexapode : MonoBehaviour
         leg5.initRelativePosition(leg5.transform.position, -240);
         leg6.initRelativePosition(leg6.transform.position, -300);
 
-        //goToStanStill();
+        goToStanStill();
         StartCoroutine(goToPositionTripodCoroutine());
     }
 	
@@ -76,11 +76,13 @@ public class Hexapode : MonoBehaviour
     public void requestTripodTransition()
     {
         StopAllCoroutines();
+        StartCoroutine(goToPositionTripodCoroutine());
     }
 
     public void requestPairTransitiod()
     {
         StopAllCoroutines();
+        StartCoroutine(goToPositionPairCoroutine());
     }
 
     IEnumerator goToPositionTripodCoroutine()
