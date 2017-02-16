@@ -68,11 +68,10 @@ private:
 		}
 		UART.Instance->CR1 |= USART_CR1_TXEIE;                     // Enable TXE interruption
 		osMutexRelease(mutex);
-		//HAL_UART_Transmit_IT(&UART, (uint8_t*) val, strlen(val));
 	}
 	
 	template<std::size_t size>
-	static inline void write(std::array<char, size> val)
+	static inline void write(std::array<char, size>& val)
 	{
 		osMutexWait(mutex, osWaitForever);
 		for (auto& e : val)
@@ -82,7 +81,28 @@ private:
 		osMutexRelease(mutex);
 	}
 	
-	static inline void write(std::vector<char> val)
+	static inline void write(std::vector<char>& val)
+	{
+		osMutexWait(mutex, osWaitForever);
+		for (auto& e : val)
+			osMessagePut(xQueueT, e, osWaitForever);
+			
+		UART.Instance->CR1 |= USART_CR1_TXEIE;                     // Enable TXE interruption
+		osMutexRelease(mutex);
+	}
+	
+	template<std::size_t size>
+	static inline void write(std::array<unsigned char, size>& val)
+	{
+		osMutexWait(mutex, osWaitForever);
+		for (auto& e : val)
+			osMessagePut(xQueueT, e, osWaitForever);
+			
+		UART.Instance->CR1 |= USART_CR1_TXEIE;                     // Enable TXE interruption
+		osMutexRelease(mutex);
+	}
+	
+	static inline void write(std::vector<unsigned char>& val)
 	{
 		osMutexWait(mutex, osWaitForever);
 		for (auto& e : val)
@@ -95,6 +115,17 @@ private:
 	static inline void write(char* val, int16_t len) {
 		osMutexWait(mutex, osWaitForever);
 		for(int i = 0; i < len; i++)
+		{
+			osMessagePut(xQueueT, *val, osWaitForever);
+			val++;
+		}
+		UART.Instance->CR1 |= USART_CR1_TXEIE;                     // Enable TXE interruption
+		osMutexRelease(mutex);
+	}
+	
+	static inline void write(unsigned char* val, int16_t len) {
+		osMutexWait(mutex, osWaitForever);
+		for (int i = 0; i < len; i++)
 		{
 			osMessagePut(xQueueT, *val, osWaitForever);
 			val++;
@@ -264,12 +295,23 @@ public:
 	}
 	
 	template<std::size_t size>
-	static inline void print(std::array<char, size> buff)
+	static inline void print(std::array<char, size>& buff)
 	{
 		write(buff);
 	}
 	
-	static inline void print(std::vector<char> buff)
+	static inline void print(std::vector<char>& buff)
+	{
+		write(buff);
+	}
+	
+	template<std::size_t size>
+		static inline void print(std::array<unsigned char, size>& buff)
+		{
+			write(buff);
+		}
+	
+	static inline void print(std::vector<unsigned char>& buff)
 	{
 		write(buff);
 	}

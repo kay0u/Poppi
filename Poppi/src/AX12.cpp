@@ -3,8 +3,6 @@
 #include <algorithm>
 #include <cmath>
 #include "Useful.h"
-#include <vector>
-#include <array>
 
 template<typename serial>
 AX12<serial>::~AX12()
@@ -49,7 +47,7 @@ void AX12<serial>::SetMode(Mode mode) {
 template<typename serial>
 int  AX12<serial>::SetBaudrate(int baud) {
 
-	unsigned char data[1];
+	std::array<unsigned char, 1> data;
 	data[0] = _baud;
 
 #ifdef AX12_DEBUG
@@ -66,7 +64,7 @@ int  AX12<serial>::SetBaudrate(int baud) {
 template<typename serial>
 int  AX12<serial>::SetTorque(bool torqueEnable) {
 
-	unsigned char data[1];
+	std::array<unsigned char, 1> data;
 	data[0] = torqueEnable;
 
 #ifdef AX12_DEBUG
@@ -79,7 +77,7 @@ int  AX12<serial>::SetTorque(bool torqueEnable) {
 template<typename serial>
 int AX12<serial>::SetTorqueLimit(float limitTorque) {
 	
-	unsigned char data[2];
+	std::array<unsigned char, 2> data;
 	int torque = (0x3ff * std::abs(limitTorque));
 
 	data[0] = torque & 0xff; // bottom 8 bits
@@ -96,7 +94,7 @@ int AX12<serial>::SetTorqueLimit(float limitTorque) {
 template<typename serial>
 int AX12<serial>::SetGoalPosition(int degrees) {
 
-	unsigned char data[2];
+	std::array<unsigned char, 2> data;
 
 	// 1023 / 300 * degrees
 	short goal = (1023 * degrees) / 300;
@@ -121,7 +119,7 @@ int AX12<serial>::SetSpeed(float speed) {
 
 	// bit 10     = direction, 0 = CCW, 1=CW //If in Wheel mode
 	// bits 9-0   = Speed
-	unsigned char data[2];
+	std::array<unsigned char, 2> data;
 
 	int goal = (0x3ff * std::abs(speed));
 
@@ -145,7 +143,7 @@ int AX12<serial>::SetClockwiseLimit(int degrees) {
 	degrees = std::max(degrees, 0);
 	degrees = std::min(degrees, 300);
 		
-	unsigned char data[2];
+	std::array<unsigned char, 2> data;
 
 	// 1023 / 300 * degrees
 	short limit = (1023 * degrees) / 300;
@@ -167,7 +165,7 @@ int AX12<serial>::SetCounterClockwiseLimit(int degrees) {
 	degrees = std::max(degrees, 0);
 	degrees = std::min(degrees, 300);
 		
-	unsigned char data[2];
+	std::array<unsigned char, 2> data;
 
 	// 1023 / 300 * degrees
 	short limit = (1023 * degrees) / 300;
@@ -186,7 +184,7 @@ int AX12<serial>::SetCounterClockwiseLimit(int degrees) {
 template<typename serial>
 int AX12<serial>::SetID(int currentID, int newID) {
 
-	unsigned char data[1];
+	std::array<unsigned char, 1> data;
 	data[0] = newID;
 
 #ifdef AX12_DEBUG
@@ -200,7 +198,8 @@ int AX12<serial>::SetID(int currentID, int newID) {
 
 template<typename serial>
 int AX12<serial>::SetLED(bool ledOn) {
-	unsigned char data[1];
+	
+	std::array<unsigned char, 1> data;
 	data[0] = ledOn;
 
 #ifdef AX12_DEBUG
@@ -354,9 +353,9 @@ bool AX12<serial>::GetLED() {
 }
 
 template<typename serial>
-int AX12<serial>::read(int ID, Register reg, unsigned char* data) {
+int AX12<serial>::read(int ID, const Register& reg, unsigned char* data) {
 
-	_txBuf.resize(8);
+	_txBuf.clear();
 	char sum = 0;
 	_rxBuf.resize(6 + reg.length);
 
@@ -372,51 +371,51 @@ int AX12<serial>::read(int ID, Register reg, unsigned char* data) {
 	serial_pc::printfln("Header : 0xFF, 0xFF");
 #endif
 
-	_txBuf[0] = 0xff;
-	_txBuf[1] = 0xff;
+	_txBuf.push_back(0xff);
+	_txBuf.push_back(0xff);
 
 	// ID
-	_txBuf[2] = ID;
-	sum += _txBuf[2];
+	_txBuf.push_back(ID);
+	sum += _txBuf.back();
 
 #ifdef AX12_READ_DEBUG
 	serial_pc::printfln("  ID : %d", TxBuf[2]);
 #endif
 
 	// Packet Length
-	_txBuf[3] = 0x4;    // Length = 4 : (0xFF, 0xFF, id, length)
-	sum += _txBuf[3];            // Accumulate the packet sum
+	_txBuf.push_back(0x4);    // Length = 4 : (0xFF, 0xFF, id, length)
+	sum += _txBuf.back();
 
 #ifdef AX12_READ_DEBUG
 	serial_pc::printfln("  Length : 0x%x", TxBuf[3]);
 #endif
 
 	// Instruction - Read
-	_txBuf[4] = Instruction::READ_DATA;
-	sum += _txBuf[4];
+	_txBuf.push_back(Instruction::READ_DATA);
+	sum += _txBuf.back();
 
 #ifdef AX12_READ_DEBUG
 	serial_pc::printfln("  Instruction : 0x%x", TxBuf[4]);
 #endif
 
 	// Start Address
-	_txBuf[5] = reg.address;
-	sum += _txBuf[5];
+	_txBuf.push_back(reg.address);
+	sum += _txBuf.back();
 
 #ifdef AX12_READ_DEBUG
 	serial_pc::printfln("  Start Address : 0x%x", TxBuf[5]);
 #endif
 
 	// Bytes to read
-	_txBuf[6] = reg.length;
-	sum += _txBuf[6];
+	_txBuf.push_back(reg.length);
+	sum += _txBuf.back();
 
 #ifdef AX12_READ_DEBUG
 	serial_pc::printfln("  No bytes : 0x%x", TxBuf[6]);
 #endif
 
 	// Checksum
-	_txBuf[7] = 0xFF - sum;
+	_txBuf.push_back(~sum);
 #ifdef AX12_READ_DEBUG
 	serial_pc::printfln("  Checksum : 0x%x", TxBuf[7]);
 #endif
@@ -490,10 +489,12 @@ int AX12<serial>::read(int ID, Register reg, unsigned char* data) {
 }
 
 template<typename serial>
-int AX12<serial>::write(int ID, Register reg, unsigned char* data, bool shouldWaitForTrigger) {
+template <std::size_t size>
+int AX12<serial>::write(int ID, const Register& reg, const std::array<unsigned char, size> &data, bool shouldWaitForTrigger) {
 // 0xff, 0xff, ID, Length, Intruction(write), Address, Param(s), Checksum
 
-	_txBuf.resize(7 + reg.length);
+	_txBuf.clear();
+	
 	char sum = 0;
 	_rxBuf.resize(6);
 	
@@ -507,36 +508,36 @@ int AX12<serial>::write(int ID, Register reg, unsigned char* data, bool shouldWa
 	serial_pc::printfln("  Header : 0xFF, 0xFF");
 #endif
 
-	_txBuf[0] = 0xff;
-	_txBuf[1] = 0xff;
+	_txBuf.push_back(0xff);
+	_txBuf.push_back(0xff);
 
 	// ID
-	_txBuf[2] = ID;
-	sum += _txBuf[2];
+	_txBuf.push_back(ID);
+	sum += _txBuf.back();
 
 #ifdef AX12_WRITE_DEBUG
 	serial_pc::printfln("  ID : %d", TxBuf[2]);
 #endif
 
 	// packet Length
-	_txBuf[3] = 3 + reg.length;
-	sum += _txBuf[3];
+	_txBuf.push_back(3 + reg.length);
+	sum += _txBuf.back();
 
 #ifdef AX12_WRITE_DEBUG
 	serial_pc::printfln("  Length : %d", TxBuf[3]);
 #endif
 
 	// Instruction
-	_txBuf[4] = shouldWaitForTrigger ? Instruction::REG_WRITE : Instruction::WRITE_DATA;
-	sum += _txBuf[4];
+	_txBuf.push_back(shouldWaitForTrigger ? Instruction::REG_WRITE : Instruction::WRITE_DATA);
+	sum += _txBuf.back();
 
 #ifdef AX12_WRITE_DEBUG
 	serial_pc::printfln("  Instruction : 0x%x", TxBuf[4]);
 #endif
 
 	// Start Address
-	_txBuf[5] = reg.address;
-	sum += _txBuf[5];
+	_txBuf.push_back(reg.address);
+	sum += _txBuf.back();
 
 #ifdef AX12_WRITE_DEBUG
 	serial_pc::printfln("  Start : 0x%x", TxBuf[5]);
@@ -544,8 +545,8 @@ int AX12<serial>::write(int ID, Register reg, unsigned char* data, bool shouldWa
 
 	// data
 	for (uint8_t i = 0; i < reg.length; i++) {
-		_txBuf[6 + i] = data[i];
-		sum += _txBuf[6 + i];
+		_txBuf.push_back(data[i]);
+		sum += _txBuf.back();
 
 #ifdef AX12_WRITE_DEBUG
 		serial_pc::printfln("  Data : 0x%x", TxBuf[6 + i]);
@@ -554,7 +555,7 @@ int AX12<serial>::write(int ID, Register reg, unsigned char* data, bool shouldWa
 	}
 
 	// checksum
-	_txBuf[6 + reg.length] = 0xFF - sum;
+	_txBuf.push_back(~sum);
 
 #ifdef AX12_WRITE_DEBUG
 	serial_pc::printfln("  Checksum : 0x%x", TxBuf[6 + bytes]);
@@ -620,7 +621,7 @@ int AX12<serial>::write(int ID, Register reg, unsigned char* data, bool shouldWa
 template<typename serial>
 void AX12<serial>::trigger() {
 
-	_txBuf.resize(6);
+	_txBuf.clear();
 	char sum = 0;
 
 #ifdef AX12_TRIGGER_DEBUG
@@ -630,35 +631,35 @@ void AX12<serial>::trigger() {
 	serial_pc::printfln("  Header : 0xFF, 0xFF");
 #endif
 
-	_txBuf[0] = 0xFF;
-	_txBuf[1] = 0xFF;
+	_txBuf.push_back(0xff);
+	_txBuf.push_back(0xff);
 
 	// ID - Broadcast
-	_txBuf[2] = 0xFE;
-	sum += _txBuf[2];
+	_txBuf.push_back(0xFE);
+	sum += _txBuf.back();
 
 #ifdef AX12_TRIGGER_DEBUG
 	serial_pc::printfln("  ID : %d", _rxBuf[2]);
 #endif
 
 	// Length
-	_txBuf[3] = 0x02;
-	sum += _txBuf[3];
+	_txBuf.push_back(0x02);
+	sum += _txBuf.back();
 
 #ifdef AX12_TRIGGER_DEBUG
 	serial_pc::printfln("  Length %d", _rxBuf[3]);
 #endif
 
 	// Instruction - ACTION
-	_txBuf[4] = Instruction::ACTION;
-	sum += _txBuf[4];
+	_txBuf.push_back(Instruction::ACTION);
+	sum += _txBuf.back();
 
 #ifdef AX12_TRIGGER_DEBUG
 	serial_pc::printfln("  Instruction 0x%X", _rxBuf[4]);
 #endif
 
 	// Checksum
-	_txBuf[5] = 0xFF - sum;
+	_txBuf.push_back(~sum);
 #ifdef AX12_TRIGGER_DEBUG
 	serial_pc::printfln("  Checksum 0x%X", _rxBuf[5]);
 #endif

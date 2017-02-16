@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <array>
 
 //#define UNITY
 //#define AX12_TRIGGER_DEBUG
@@ -170,6 +171,10 @@ public:
 	*/
 	void trigger();
 	
+	template <std::size_t size>
+	void syncWriteGoalAndSpeed(const std::array<uint8_t, size>& idList, const std::array<int, size>& goalList, const std::array<float, size>& speedList);
+	template <std::size_t size>
+	void syncWriteGoal(const std::array<uint8_t, size>& idList, const std::array<int, size>& goalList);
 private:
 	int _ID;
 	int _baud;
@@ -245,7 +250,118 @@ PUNCH_H // 0x31 */
 	
 	
 private:
-	int read(int ID, Register reg, unsigned char* data);
-	int write(int ID, Register reg, unsigned char* data, bool shouldWaitForTrigger);
+	int read(int ID, const Register& reg, unsigned char* data);
+	template <std::size_t size>
+	int write(int ID, const Register& reg, const std::array<unsigned char, size> &data, bool shouldWaitForTrigger);
 };
+
+template<typename serial>
+template <std::size_t size>
+void AX12<serial>::syncWriteGoalAndSpeed(const std::array<uint8_t, size>& idList, const std::array<int, size>& goalList, const std::array<float, size>& speedList)
+{
+	_txBuf.clear();
+	
+	//REG_MOVING_SPEED is next to REG_GOAL_POSITION, so if you write after REG_GOAL_POSITION.address + REG_GOAL_POSITION.length, you write in REG_MOVING_SPEED.address
+	int dataLength = REG_GOAL_POSITION.length + REG_MOVING_SPEED.length;
+	int nbAX = idList.size();
+	int length = (dataLength + 1) * nbAX + 4;  // (L + 1) X N + 4(L : Data Length per AX12, N : the number of AX12s)
+	unsigned char sum = 0;
+	
+	_txBuf.push_back(0xFF);
+	_txBuf.push_back(0xFF);
+	
+	//ID Broadcast
+	_txBuf.push_back(0xFE);
+	sum += _txBuf.back();
+	
+	_txBuf.push_back(length);
+	sum += _txBuf.back();
+	
+	_txBuf.push_back(Instruction::SYNC_WRITE);
+	sum += _txBuf.back();
+	
+	_txBuf.push_back(REG_GOAL_POSITION.address);
+	sum += _txBuf.back();
+	
+	_txBuf.push_back(dataLength);
+	sum += _txBuf.back();
+	
+	for (int i(0); i < idList.size(); i++)
+	{
+		_txBuf.push_back(idList[i]);
+		sum += _txBuf.back();
+		
+		int angle = (1023 * goalList[i]) / 300;
+		
+		_txBuf.push_back(angle & 0xff);
+		sum += _txBuf.back();
+		
+		_txBuf.push_back(angle >> 8);
+		sum += _txBuf.back();
+		
+		int goal = (0x3ff * std::abs(speedList[i]));
+
+		_txBuf.push_back(goal & 0xff);
+		sum += _txBuf.back();
+		
+		_txBuf.push_back(goal >> 8);
+		sum += _txBuf.back();
+	}
+	
+	_txBuf.push_back(~sum);
+	
+	serial::changeCommunicationMode(serial::communicationMode::TX);
+	serial::print(_txBuf);
+}
+
+template<typename serial>
+template <std::size_t size>
+void AX12<serial>::syncWriteGoal(const std::array<uint8_t, size>& idList, const std::array<int, size>& goalList)
+{
+	_txBuf.clear();
+	
+	//REG_MOVING_SPEED is next to REG_GOAL_POSITION, so if you write after REG_GOAL_POSITION.address + REG_GOAL_POSITION.length, you write in REG_MOVING_SPEED.address
+	int dataLength = REG_GOAL_POSITION.length/* + REG_MOVING_SPEED.length*/;
+	int nbAX = idList.size();
+	int length = (dataLength + 1) * nbAX + 4;  // (L + 1) X N + 4(L : Data Length per AX12, N : the number of AX12s)
+	unsigned char sum = 0;
+	
+	_txBuf.push_back(0xFF);
+	_txBuf.push_back(0xFF);
+	
+	//ID Broadcast
+	_txBuf.push_back(0xFE);
+	sum += _txBuf.back();
+	
+	_txBuf.push_back(length);
+	sum += _txBuf.back();
+	
+	_txBuf.push_back(Instruction::SYNC_WRITE);
+	sum += _txBuf.back();
+	
+	_txBuf.push_back(REG_GOAL_POSITION.address);
+	sum += _txBuf.back();
+	
+	_txBuf.push_back(dataLength);
+	sum += _txBuf.back();
+	
+	for (int i(0); i < idList.size(); i++)
+	{
+		_txBuf.push_back(idList[i]);
+		sum += _txBuf.back();
+		
+		int angle = (1023 * goalList[i]) / 300;
+		
+		_txBuf.push_back(angle & 0xff);
+		sum += _txBuf.back();
+		
+		_txBuf.push_back(angle >> 8);
+		sum += _txBuf.back();
+	}
+	
+	_txBuf.push_back(~sum);
+	
+	serial::changeCommunicationMode(serial::communicationMode::TX);
+	serial::print(_txBuf);
+}
 
