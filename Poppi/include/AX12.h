@@ -105,6 +105,13 @@ public:
 	*/
 	int SetLED(bool ledOn);
 	
+	/** Set minimum and maximum angle of the servo
+	*
+	* @param minAngle, 0-300
+	* @param maxAngle, 0-300
+	*/
+	int SetExtremum(int minAngle, int maxAngle);
+	
 	/** Poll to see if the servo is moving
 	*
 	* @returns true is the servo is moving

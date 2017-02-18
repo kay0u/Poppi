@@ -68,30 +68,19 @@ static void moveAx(void const *argument)
 {
 
 	AX12<serial_ax> ax1(1);
-	AX12<serial_ax> ax2(2);
-	std::array<uint8_t, 2> idList = { 1, 2 };
-	std::array<int, 2> goalList;
-	std::array<float, 2> speedList;
+	ax1.SetExtremum(10, 220);
 	int angle = 180;
 
 	for (;;)
 	{
 		if(angle > 300)
 			angle = 0;
-		goalList[0] = angle;
-		goalList[1] = angle;
-		speedList[0] = 1;
-		speedList[1] = 0.5;
-		ax1.syncWriteGoalAndSpeed(idList, goalList, speedList);
-		/*uint32_t time = xTaskGetTickCount();
 		ax1.SetGoalPosition(angle);
-		ax2.SetGoalPosition(angle);*/
 		serial_pc::printfln("ax1: %f", ax1.GetGoalPosition());
-		serial_pc::printfln("ax2: %f", ax2.GetGoalPosition());
 		//serial_pc::printfln("delta: %d", (xTaskGetTickCount() - time) * portTICK_RATE_MS);
-		osDelay(1000);
+		osDelay(500);
 
-		angle += 100;
+		angle += 10;
 	}
 }
 

@@ -49,9 +49,9 @@ void Imu::readAcc()
 	BSP_ACCELERO_GetXYZ(accelValues);
 
 	// Angle made by X axis acceleration vector relative to ground
-	m_accelAngle[0] = atan2f(accelValues[0], sqrt(SQRE(accelValues[1]) + SQRE(accelValues[2])));
+	m_accelAngle[0] = std::atan2(accelValues[0], std::sqrt(SQRE(accelValues[1]) + SQRE(accelValues[2])));
 	// Angle made by Y axis acceleration vector relative to ground
-	m_accelAngle[1] = atan2f(accelValues[1], sqrt(SQRE(accelValues[0]) + SQRE(accelValues[2])));
+	m_accelAngle[1] =  std::atan2(accelValues[1], std::sqrt(SQRE(accelValues[0]) + SQRE(accelValues[2])));
 
 	//Format angles
 	m_accelAngle[0] = formatAccelRange(m_accelAngle[0], accelValues[2]);

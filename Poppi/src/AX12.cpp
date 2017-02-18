@@ -210,6 +210,14 @@ int AX12<serial>::SetLED(bool ledOn) {
 }
 
 template<typename serial>
+int AX12<serial>::SetExtremum(int minAngle, int maxAngle) {
+	
+	int rVal = SetClockwiseLimit(minAngle);
+	rVal &= SetCounterClockwiseLimit(maxAngle);
+	return rVal;
+}
+
+template<typename serial>
 bool AX12<serial>::isMoving() {
 	unsigned char data[1];
 	read(_ID, REG_MOVING, data);
