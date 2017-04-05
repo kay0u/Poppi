@@ -1,0 +1,21 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Poppi", "Poppi\Poppi.vcxproj", "{FC8DD099-196A-41C4-89BE-E74F256085C9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|VisualGDB = Debug|VisualGDB
+		Release|VisualGDB = Release|VisualGDB
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FC8DD099-196A-41C4-89BE-E74F256085C9}.Debug|VisualGDB.ActiveCfg = Debug|VisualGDB
+		{FC8DD099-196A-41C4-89BE-E74F256085C9}.Debug|VisualGDB.Build.0 = Debug|VisualGDB
+		{FC8DD099-196A-41C4-89BE-E74F256085C9}.Release|VisualGDB.ActiveCfg = Release|VisualGDB
+		{FC8DD099-196A-41C4-89BE-E74F256085C9}.Release|VisualGDB.Build.0 = Release|VisualGDB
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
