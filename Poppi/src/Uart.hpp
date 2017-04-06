@@ -306,10 +306,10 @@ public:
 	}
 	
 	template<std::size_t size>
-		static inline void print(std::array<unsigned char, size>& buff)
-		{
-			write(buff);
-		}
+	static inline void print(std::array<unsigned char, size>& buff)
+	{
+		write(buff);
+	}
 	
 	static inline void print(std::vector<unsigned char>& buff)
 	{
