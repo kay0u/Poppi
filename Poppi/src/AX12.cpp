@@ -489,6 +489,8 @@ int AX12<serial>::read(int ID, const Register& reg, unsigned char* data) {
 #endif
 
 	}
+	else
+		serial::releaseMutex();
 
 	return (_rxBuf[4]);
 }
@@ -619,6 +621,8 @@ int AX12<serial>::write(int ID, const Register& reg, const std::array<unsigned c
 
 
 	}
+	else
+		serial::releaseMutex();
 
 	return _rxBuf[4]; // return error code
 }
