@@ -292,14 +292,14 @@
     <ClCompile Include="src\BSP\stm32f411e_discovery_gyroscope.c">
       <Filter>Source files\src\BSP</Filter>
     </ClCompile>
-    <ClCompile Include="src\BSP\l3gd20\l3gd20.c">
-      <Filter>Source files\src\BSP\l3gd20</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BSP\lsm303dlhc\lsm303dlhc.c">
-      <Filter>Source files\src\BSP\lsm303dlhc</Filter>
-    </ClCompile>
     <ClCompile Include="UnitySerial.cpp">
       <Filter>Source files\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BSP\Components\l3gd20\l3gd20.c">
+      <Filter>Source files\src\BSP\Components\l3gd20</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BSP\Components\lsm303dlhc\lsm303dlhc.c">
+      <Filter>Source files\src\BSP\Components\lsm303dlhc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -669,20 +669,11 @@
     <ClInclude Include="include\BSP\stm32f411e_discovery_gyroscope.h">
       <Filter>Header files\include\BSP</Filter>
     </ClInclude>
-    <ClInclude Include="include\BSP\Common\accelero.h">
-      <Filter>Header files\include\BSP\Common</Filter>
+    <ClInclude Include="include\BSP\Components\l3gd20\l3gd20.h">
+      <Filter>Header files\include\BSP\Components\l3gd20</Filter>
     </ClInclude>
-    <ClInclude Include="include\BSP\Common\magneto.h">
-      <Filter>Header files\include\BSP\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="include\BSP\Common\gyro.h">
-      <Filter>Header files\include\BSP\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="include\BSP\l3gd20\l3gd20.h">
-      <Filter>Header files\include\BSP\l3gd20</Filter>
-    </ClInclude>
-    <ClInclude Include="include\BSP\lsm303dlhc\lsm303dlhc.h">
-      <Filter>Header files\include\BSP\lsm303dlhc</Filter>
+    <ClInclude Include="include\BSP\Components\lsm303dlhc\lsm303dlhc.h">
+      <Filter>Header files\include\BSP\Components\lsm303dlhc</Filter>
     </ClInclude>
     <ClInclude Include="include\Math\Vector3.h">
       <Filter>Header files\include\Math</Filter>
@@ -692,6 +683,15 @@
     </ClInclude>
     <ClInclude Include="UnitySerial.h">
       <Filter>Header files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BSP\Components\Common\accelero.h">
+      <Filter>Header files\include\BSP\Components\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BSP\Components\Common\gyro.h">
+      <Filter>Header files\include\BSP\Components\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BSP\Components\Common\magneto.h">
+      <Filter>Header files\include\BSP\Components\Common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -756,26 +756,11 @@
     <Filter Include="Header files\include\Math">
       <UniqueIdentifier>{f7ea1e34-596c-4612-99d5-bee127b32999}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header files\include\BSP\Common">
-      <UniqueIdentifier>{5697ee86-5fdf-48c8-9b41-2823a10db4f0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header files\include\BSP\l3gd20">
-      <UniqueIdentifier>{a63a9e3a-b268-497d-ba67-4a835f6e521d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header files\include\BSP\lsm303dlhc">
-      <UniqueIdentifier>{044018b1-8c87-4f5e-8478-b3654feb0abe}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source files\src">
       <UniqueIdentifier>{35f687dc-643c-4f33-b028-d289d5c2f33e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source files\src\BSP">
       <UniqueIdentifier>{7a737e59-a5ac-4517-bd29-5fde6e35499b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source files\src\BSP\l3gd20">
-      <UniqueIdentifier>{909ea8c0-c4a8-4010-99e2-e562299c33e6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source files\src\BSP\lsm303dlhc">
-      <UniqueIdentifier>{b407c9c1-d051-4b2c-95ac-b726ea7342aa}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source files\src\Hexapode">
       <UniqueIdentifier>{0116fe5f-c8bd-4223-ad50-e5fe259c34ec}</UniqueIdentifier>
@@ -788,6 +773,27 @@
     </Filter>
     <Filter Include="VisualGDB settings">
       <UniqueIdentifier>{8a107513-a2bc-4f16-9420-f3a8ef65d17d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header files\include\BSP\Components">
+      <UniqueIdentifier>{5697ee86-5fdf-48c8-9b41-2823a10db4f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source files\src\BSP\Components">
+      <UniqueIdentifier>{ecda715e-430b-47d8-9d62-6fa06f0c834f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source files\src\BSP\Components\l3gd20">
+      <UniqueIdentifier>{909ea8c0-c4a8-4010-99e2-e562299c33e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source files\src\BSP\Components\lsm303dlhc">
+      <UniqueIdentifier>{b407c9c1-d051-4b2c-95ac-b726ea7342aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header files\include\BSP\Components\Common">
+      <UniqueIdentifier>{2e047453-41cd-4fb0-9b00-60ac233fad5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header files\include\BSP\Components\l3gd20">
+      <UniqueIdentifier>{a63a9e3a-b268-497d-ba67-4a835f6e521d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header files\include\BSP\Components\lsm303dlhc">
+      <UniqueIdentifier>{044018b1-8c87-4f5e-8478-b3654feb0abe}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

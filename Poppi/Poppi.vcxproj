@@ -35,12 +35,12 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|VisualGDB'">
     <ClCompile>
-      <AdditionalIncludeDirectories>include;%(ClCompile.AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;include/BSP;include/BSP/Components;include/BSP/Components/l3gd20;include/BSP/Components/lsm303dlhc;%(ClCompile.AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|VisualGDB'">
     <ClCompile>
-      <AdditionalIncludeDirectories>include;%(ClCompile.AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;include/BSP;include/BSP/Components;include/BSP/Components/l3gd20;include/BSP/Components/lsm303dlhc;%(ClCompile.AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -122,8 +122,8 @@
     <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_sdmmc.c" />
     <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_usb.c" />
     <ClCompile Include="src\AX12.cpp" />
-    <ClCompile Include="src\BSP\l3gd20\l3gd20.c" />
-    <ClCompile Include="src\BSP\lsm303dlhc\lsm303dlhc.c" />
+    <ClCompile Include="src\BSP\Components\l3gd20\l3gd20.c" />
+    <ClCompile Include="src\BSP\Components\lsm303dlhc\lsm303dlhc.c" />
     <ClCompile Include="src\BSP\stm32f411e_discovery.c" />
     <ClCompile Include="src\BSP\stm32f411e_discovery_accelerometer.c" />
     <ClCompile Include="src\BSP\stm32f411e_discovery_gyroscope.c" />
@@ -252,11 +252,11 @@
     <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_usb.h" />
     <ClInclude Include="FreeRTOSConfig.h" />
     <ClInclude Include="include\AX12.h" />
-    <ClInclude Include="include\BSP\Common\accelero.h" />
-    <ClInclude Include="include\BSP\Common\gyro.h" />
-    <ClInclude Include="include\BSP\Common\magneto.h" />
-    <ClInclude Include="include\BSP\l3gd20\l3gd20.h" />
-    <ClInclude Include="include\BSP\lsm303dlhc\lsm303dlhc.h" />
+    <ClInclude Include="include\BSP\Components\Common\accelero.h" />
+    <ClInclude Include="include\BSP\Components\Common\gyro.h" />
+    <ClInclude Include="include\BSP\Components\Common\magneto.h" />
+    <ClInclude Include="include\BSP\Components\l3gd20\l3gd20.h" />
+    <ClInclude Include="include\BSP\Components\lsm303dlhc\lsm303dlhc.h" />
     <ClInclude Include="include\BSP\stm32f411e_discovery.h" />
     <ClInclude Include="include\BSP\stm32f411e_discovery_accelerometer.h" />
     <ClInclude Include="include\BSP\stm32f411e_discovery_gyroscope.h" />
