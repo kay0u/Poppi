@@ -3,7 +3,6 @@
 #include <vector>
 #include <array>
 
-//#define UNITY
 //#define AX12_TRIGGER_DEBUG
 //#define AX12_WRITE_DEBUG
 //#define AX12_READ_DEBUG
@@ -182,6 +181,8 @@ public:
 	void syncWriteGoalAndSpeed(const std::array<uint8_t, size>& idList, const std::array<int, size>& goalList, const std::array<float, size>& speedList);
 	template <std::size_t size>
 	void syncWriteGoal(const std::array<uint8_t, size>& idList, const std::array<int, size>& goalList);
+	
+	static const int ID_BROADCAST = 0xfe;
 private:
 	int _ID;
 	int _baud;

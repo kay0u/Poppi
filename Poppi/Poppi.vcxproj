@@ -143,6 +143,7 @@
     <ClCompile Include="src\Time.cpp" />
     <ClCompile Include="src\Uart_def.cpp" />
     <ClCompile Include="src\Useful.cpp" />
+    <ClCompile Include="UnitySerial.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(BSP_ROOT)\FreeRTOS\Source\CMSIS_RTOS\cmsis_os.h" />
@@ -274,6 +275,7 @@
     <ClInclude Include="include\Time.h" />
     <ClInclude Include="include\Useful.h" />
     <ClInclude Include="src\Uart.hpp" />
+    <ClInclude Include="UnitySerial.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Poppi-Debug.vgdbsettings" />

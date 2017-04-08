@@ -298,6 +298,9 @@
     <ClCompile Include="src\BSP\lsm303dlhc\lsm303dlhc.c">
       <Filter>Source files\src\BSP\lsm303dlhc</Filter>
     </ClCompile>
+    <ClCompile Include="UnitySerial.cpp">
+      <Filter>Source files\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(BSP_ROOT)\FreeRTOS\Source\CMSIS_RTOS\cmsis_os.h">
@@ -342,7 +345,7 @@
     <ClInclude Include="$(BSP_ROOT)\FreeRTOS\Source\include\timers.h">
       <Filter>Header files\Device-specific files\FreeRTOS</Filter>
     </ClInclude>
-	    <ClInclude Include="$(BSP_ROOT)\FreeRTOS\Source\include\projdefs.h">
+    <ClInclude Include="$(BSP_ROOT)\FreeRTOS\Source\include\projdefs.h">
       <Filter>Header files\Device-specific files\FreeRTOS</Filter>
     </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\Include\arm_common_tables.h">
@@ -686,6 +689,9 @@
     </ClInclude>
     <ClInclude Include="src\Uart.hpp">
       <Filter>Source files\src</Filter>
+    </ClInclude>
+    <ClInclude Include="UnitySerial.h">
+      <Filter>Header files\include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

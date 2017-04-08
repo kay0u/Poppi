@@ -99,7 +99,7 @@ int AX12<serial>::SetGoalPosition(int degrees) {
 	// 1023 / 300 * degrees
 	short goal = (1023 * degrees) / 300;
 #ifdef AX12_DEBUG
-	serial_pc::printfln("SetGoal to 0x%x", goal);
+	serial_pc::printfln("SetGoal to %d", goal);
 #endif
 
 	data[0] = goal & 0xff; // bottom 8 bits
@@ -107,9 +107,6 @@ int AX12<serial>::SetGoalPosition(int degrees) {
 
 	// write the packet, return the error code
 	int rVal = write(_ID, REG_GOAL_POSITION, data, _shouldWaitForTrigger);
-#ifdef UNITY
-	serial_pc::printfln("AX12 move %d %d", _ID, degrees);
-#endif
 	
 	return rVal;
 }

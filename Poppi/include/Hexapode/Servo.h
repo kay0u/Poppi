@@ -5,13 +5,13 @@
  *      Author: Vincent
  */
 
+
 #ifndef HEXAPODE_SERVO_H_
 #define HEXAPODE_SERVO_H_
 
 #include <math.h>
 #include "Math/Vector3.h"
 #include "Useful.h"
-#include "src/Uart.hpp"
 #include "AX12.h"
 
 class Servo {
@@ -21,12 +21,15 @@ public:
 	void goTo(float angle);
 	void stop();
 	bool reachedTarget();
-
+	float getMaxAngle();
+	float getMinAngle();
+	
 private:
 	AX12<serial_ax> m_ax;
 	bool m_reachedTarget;
 	const float m_minAngle;
 	const float m_maxAngle;
+	const int m_axId;
 };
 
 #endif /* HEXAPODE_SERVO_H_ */
