@@ -22,6 +22,7 @@ Hexapode::~Hexapode()
 {
 	for(int i(0);i < LEG_COUNT; ++i)
 		delete m_legs[i];
+	delete m_tripodGait;
 }
 
 void Hexapode::initializeLegs()
