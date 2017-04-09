@@ -35,7 +35,7 @@ protected:
 
 	//Gaits
 	Gait* m_activeGait;
-	TripodGait m_tripodGait;
+	TripodGait* m_tripodGait;
 };
 
 #endif /* HEXAPODE_HEXAPODE_H_ */

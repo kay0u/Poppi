@@ -64,20 +64,24 @@ static void gyro(void const *argument)
 	}
 }
 
-static void moveAx(void const *argument)
+static void hexapodeThread(void const *argument)
 {
+	Hexapode hexapode;
+	hexapode.setDirection(Vector3::forward);
 	Servo servo(1, 30, 220);
 	int angle = 180;
 
 	for (;;)
 	{
-		if (angle > servo.getMaxAngle())
+		/*if (angle > servo.getMaxAngle())
 			angle = servo.getMinAngle();
 		servo.goTo(angle);
 		//serial_pc::printfln("delta: %d", (xTaskGetTickCount() - time) * portTICK_RATE_MS);
 		osDelay(500);
 
-		angle += 10;
+		angle += 10;*/
+		hexapode.update();
+		osDelay(10);
 	}
 }
 
@@ -91,15 +95,15 @@ int main(void)
 	serial_pc::init(1000000);
 
 	// /!\ Attention, avec l'utilisation du printf il faut augmenter la stack size pour le thread.
-	osThreadDef(MOVEThread, moveAx, osPriorityRealtime, 1, configMINIMAL_STACK_SIZE + 1000);
-	osThreadCreate(osThread(MOVEThread), NULL);
+	osThreadDef(HexapodeThread, hexapodeThread, osPriorityRealtime, 1, configMINIMAL_STACK_SIZE + 1000);
+	osThreadCreate(osThread(HexapodeThread), NULL);
 
-	/*osThreadDef(GYROThread, gyro, osPriorityNormal, 1, configMINIMAL_STACK_SIZE);
-	osThreadCreate(osThread(GYROThread), NULL);*/
-
+	osThreadDef(GYROThread, gyro, osPriorityNormal, 1, configMINIMAL_STACK_SIZE);
+	osThreadCreate(osThread(GYROThread), NULL);
+	
 	/* Start scheduler */
 	osKernelStart();
-
+	
 	// We should never get here as control is now taken by the scheduler
 	for (;;) {
 	};

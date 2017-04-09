@@ -8,13 +8,13 @@
 #include "Hexapode/Hexapode.h"
 
 Hexapode::Hexapode():
-m_tripodGait(m_legs),
 m_position(Vector3::zero)
 {
 	for(int i(0);i < LEG_COUNT; ++i)
 		m_legs[i] = new Leg(i*10);
+	m_tripodGait = new TripodGait(m_legs);
 	initializeLegs();
-	m_activeGait = &m_tripodGait;
+	m_activeGait  = m_tripodGait;
 	setDirection(Vector3::zero);
 }
 
