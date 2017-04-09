@@ -37,7 +37,10 @@ float Vector3::magnitude()
 
 Vector3 Vector3::normalized()
 {
-	return (*this) / magnitude();
+	float length = magnitude();
+	if (length != 0)
+		return (*this) / magnitude();
+	return *this;
 }
 
 double Vector3::Distance(Vector3 v1, Vector3 v2)
