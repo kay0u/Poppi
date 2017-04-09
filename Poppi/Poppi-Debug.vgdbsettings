@@ -145,6 +145,7 @@
     <StopAtEntryPoint>false</StopAtEntryPoint>
     <DynamicAnalysisSettings />
     <EndOfStackSymbol>_estack</EndOfStackSymbol>
+    <SemihostingOutputLog />
   </Debug>
   <CustomBuild>
     <PreSyncActions />

@@ -1,32 +1,77 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="$(BSP_ROOT)\FreeRTOS\Source\CMSIS_RTOS\cmsis_os.c">
-      <Filter>Source files\Device-specific files\FreeRTOS</Filter>
+    <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\StartupFiles\startup_stm32f411xe.c">
+      <Filter>Source files\Device-specific files</Filter>
     </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\FreeRTOS\Source\croutine.c">
-      <Filter>Source files\Device-specific files\FreeRTOS</Filter>
+    <ClCompile Include="src\AX12.cpp">
+      <Filter>Source files\src</Filter>
     </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\FreeRTOS\Source\event_groups.c">
-      <Filter>Source files\Device-specific files\FreeRTOS</Filter>
+    <ClCompile Include="src\Imu.cpp">
+      <Filter>Source files\src</Filter>
     </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\FreeRTOS\Source\portable\MemMang\heap_4.c">
-      <Filter>Source files\Device-specific files\FreeRTOS</Filter>
+    <ClCompile Include="src\LedController.cpp">
+      <Filter>Source files\src</Filter>
     </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\FreeRTOS\Source\list.c">
-      <Filter>Source files\Device-specific files\FreeRTOS</Filter>
+    <ClCompile Include="src\ltoa.c">
+      <Filter>Source files\src</Filter>
     </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\FreeRTOS\Source\portable\GCC\ARM_CM4F\port.c">
-      <Filter>Source files\Device-specific files\FreeRTOS</Filter>
+    <ClCompile Include="src\main.cpp">
+      <Filter>Source files\src</Filter>
     </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\FreeRTOS\Source\queue.c">
-      <Filter>Source files\Device-specific files\FreeRTOS</Filter>
+    <ClCompile Include="src\system_stm32f4xx.c">
+      <Filter>Source files\src</Filter>
     </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\FreeRTOS\Source\tasks.c">
-      <Filter>Source files\Device-specific files\FreeRTOS</Filter>
+    <ClCompile Include="src\Time.cpp">
+      <Filter>Source files\src</Filter>
     </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\FreeRTOS\Source\timers.c">
-      <Filter>Source files\Device-specific files\FreeRTOS</Filter>
+    <ClCompile Include="src\Uart_def.cpp">
+      <Filter>Source files\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Useful.cpp">
+      <Filter>Source files\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Math\Vector3.cpp">
+      <Filter>Source files\src\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Math\Trigo.cpp">
+      <Filter>Source files\src\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Hexapode\Hexapode.cpp">
+      <Filter>Source files\src\Hexapode</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Hexapode\Leg.cpp">
+      <Filter>Source files\src\Hexapode</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Hexapode\Servo.cpp">
+      <Filter>Source files\src\Hexapode</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Hexapode\Gaits\Gait.cpp">
+      <Filter>Source files\src\Hexapode\Gaits</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Hexapode\Gaits\AsyncGait.cpp">
+      <Filter>Source files\src\Hexapode\Gaits</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Hexapode\Gaits\TripodGait.cpp">
+      <Filter>Source files\src\Hexapode\Gaits</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BSP\stm32f411e_discovery.c">
+      <Filter>Source files\src\BSP</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BSP\stm32f411e_discovery_accelerometer.c">
+      <Filter>Source files\src\BSP</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BSP\stm32f411e_discovery_gyroscope.c">
+      <Filter>Source files\src\BSP</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitySerial.cpp">
+      <Filter>Source files\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BSP\Components\l3gd20\l3gd20.c">
+      <Filter>Source files\src\BSP\Components\l3gd20</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BSP\Components\lsm303dlhc\lsm303dlhc.c">
+      <Filter>Source files\src\BSP\Components\lsm303dlhc</Filter>
     </ClCompile>
     <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal.c">
       <Filter>Source files\Device-specific files\HAL</Filter>
@@ -73,10 +118,10 @@
     <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_dma.c">
       <Filter>Source files\Device-specific files\HAL</Filter>
     </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_dma_ex.c">
+    <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_dma2d.c">
       <Filter>Source files\Device-specific files\HAL</Filter>
     </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_dma2d.c">
+    <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_dma_ex.c">
       <Filter>Source files\Device-specific files\HAL</Filter>
     </ClCompile>
     <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_dsi.c">
@@ -137,6 +182,9 @@
       <Filter>Source files\Device-specific files\HAL</Filter>
     </ClCompile>
     <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_ltdc_ex.c">
+      <Filter>Source files\Device-specific files\HAL</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_mmc.c">
       <Filter>Source files\Device-specific files\HAL</Filter>
     </ClCompile>
     <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_nand.c">
@@ -217,92 +265,191 @@
     <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_wwdg.c">
       <Filter>Source files\Device-specific files\HAL</Filter>
     </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_adc.c">
+      <Filter>Source files\Device-specific files\HAL</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_crc.c">
+      <Filter>Source files\Device-specific files\HAL</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_dac.c">
+      <Filter>Source files\Device-specific files\HAL</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_dma.c">
+      <Filter>Source files\Device-specific files\HAL</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_dma2d.c">
+      <Filter>Source files\Device-specific files\HAL</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_exti.c">
+      <Filter>Source files\Device-specific files\HAL</Filter>
+    </ClCompile>
     <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_fmc.c">
       <Filter>Source files\Device-specific files\HAL</Filter>
     </ClCompile>
     <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_fsmc.c">
       <Filter>Source files\Device-specific files\HAL</Filter>
     </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_gpio.c">
+      <Filter>Source files\Device-specific files\HAL</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_i2c.c">
+      <Filter>Source files\Device-specific files\HAL</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_lptim.c">
+      <Filter>Source files\Device-specific files\HAL</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_pwr.c">
+      <Filter>Source files\Device-specific files\HAL</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_rcc.c">
+      <Filter>Source files\Device-specific files\HAL</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_rng.c">
+      <Filter>Source files\Device-specific files\HAL</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_rtc.c">
+      <Filter>Source files\Device-specific files\HAL</Filter>
+    </ClCompile>
     <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_sdmmc.c">
+      <Filter>Source files\Device-specific files\HAL</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_spi.c">
+      <Filter>Source files\Device-specific files\HAL</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_tim.c">
+      <Filter>Source files\Device-specific files\HAL</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_usart.c">
       <Filter>Source files\Device-specific files\HAL</Filter>
     </ClCompile>
     <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_usb.c">
       <Filter>Source files\Device-specific files\HAL</Filter>
     </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\StartupFiles\startup_stm32f411xe.c">
-      <Filter>Source files\Device-specific files</Filter>
+    <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_utils.c">
+      <Filter>Source files\Device-specific files\HAL</Filter>
     </ClCompile>
-    <ClCompile Include="src\AX12.cpp">
-      <Filter>Source files\src</Filter>
+    <ClCompile Include="$(BSP_ROOT)\FreeRTOS\Source\croutine.c">
+      <Filter>Source files\Device-specific files\FreeRTOS</Filter>
     </ClCompile>
-    <ClCompile Include="src\Imu.cpp">
-      <Filter>Source files\src</Filter>
+    <ClCompile Include="$(BSP_ROOT)\FreeRTOS\Source\event_groups.c">
+      <Filter>Source files\Device-specific files\FreeRTOS</Filter>
     </ClCompile>
-    <ClCompile Include="src\LedController.cpp">
-      <Filter>Source files\src</Filter>
+    <ClCompile Include="$(BSP_ROOT)\FreeRTOS\Source\list.c">
+      <Filter>Source files\Device-specific files\FreeRTOS</Filter>
     </ClCompile>
-    <ClCompile Include="src\ltoa.c">
-      <Filter>Source files\src</Filter>
+    <ClCompile Include="$(BSP_ROOT)\FreeRTOS\Source\queue.c">
+      <Filter>Source files\Device-specific files\FreeRTOS</Filter>
     </ClCompile>
-    <ClCompile Include="src\main.cpp">
-      <Filter>Source files\src</Filter>
+    <ClCompile Include="$(BSP_ROOT)\FreeRTOS\Source\tasks.c">
+      <Filter>Source files\Device-specific files\FreeRTOS</Filter>
     </ClCompile>
-    <ClCompile Include="src\system_stm32f4xx.c">
-      <Filter>Source files\src</Filter>
+    <ClCompile Include="$(BSP_ROOT)\FreeRTOS\Source\timers.c">
+      <Filter>Source files\Device-specific files\FreeRTOS</Filter>
     </ClCompile>
-    <ClCompile Include="src\Time.cpp">
-      <Filter>Source files\src</Filter>
+    <ClCompile Include="$(BSP_ROOT)\FreeRTOS\Source\CMSIS_RTOS\cmsis_os.c">
+      <Filter>Source files\Device-specific files\FreeRTOS</Filter>
     </ClCompile>
-    <ClCompile Include="src\Uart_def.cpp">
-      <Filter>Source files\src</Filter>
+    <ClCompile Include="$(BSP_ROOT)\FreeRTOS\Source\portable\GCC\ARM_CM4F\port.c">
+      <Filter>Source files\Device-specific files\FreeRTOS</Filter>
     </ClCompile>
-    <ClCompile Include="src\Useful.cpp">
-      <Filter>Source files\src</Filter>
+    <ClCompile Include="$(BSP_ROOT)\FreeRTOS\Source\portable\MemMang\heap_4.c">
+      <Filter>Source files\Device-specific files\FreeRTOS</Filter>
     </ClCompile>
-    <ClCompile Include="src\Math\Vector3.cpp">
-      <Filter>Source files\src\Math</Filter>
+    <ClCompile Include="$(EFP_BASE)\Profiler\FastSemihosting.cpp">
+      <Filter>Source files\Device-specific files\Semihosting/Profiler</Filter>
     </ClCompile>
-    <ClCompile Include="src\Math\Trigo.cpp">
-      <Filter>Source files\src\Math</Filter>
+    <ClCompile Include="$(EFP_BASE)\Profiler\SamplingProfiler.cpp">
+      <Filter>Source files\Device-specific files\Semihosting/Profiler</Filter>
     </ClCompile>
-    <ClCompile Include="src\Hexapode\Hexapode.cpp">
-      <Filter>Source files\src\Hexapode</Filter>
+    <ClCompile Include="$(EFP_BASE)\Profiler\InstrumentingProfiler.cpp">
+      <Filter>Source files\Device-specific files\Semihosting/Profiler</Filter>
     </ClCompile>
-    <ClCompile Include="src\Hexapode\Leg.cpp">
-      <Filter>Source files\src\Hexapode</Filter>
+    <ClCompile Include="$(EFP_BASE)\Profiler\ProfilerDriver_STM32_HAL.cpp">
+      <Filter>Source files\Device-specific files\Semihosting/Profiler</Filter>
     </ClCompile>
-    <ClCompile Include="src\Hexapode\Servo.cpp">
-      <Filter>Source files\src\Hexapode</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Hexapode\Gaits\Gait.cpp">
-      <Filter>Source files\src\Hexapode\Gaits</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Hexapode\Gaits\AsyncGait.cpp">
-      <Filter>Source files\src\Hexapode\Gaits</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Hexapode\Gaits\TripodGait.cpp">
-      <Filter>Source files\src\Hexapode\Gaits</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BSP\stm32f411e_discovery.c">
-      <Filter>Source files\src\BSP</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BSP\stm32f411e_discovery_accelerometer.c">
-      <Filter>Source files\src\BSP</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BSP\stm32f411e_discovery_gyroscope.c">
-      <Filter>Source files\src\BSP</Filter>
-    </ClCompile>
-    <ClCompile Include="UnitySerial.cpp">
-      <Filter>Source files\src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BSP\Components\l3gd20\l3gd20.c">
-      <Filter>Source files\src\BSP\Components\l3gd20</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BSP\Components\lsm303dlhc\lsm303dlhc.c">
-      <Filter>Source files\src\BSP\Components\lsm303dlhc</Filter>
+    <ClCompile Include="$(EFP_BASE)\Profiler\ProfilerRTOS_FreeRTOS.c">
+      <Filter>Source files\Device-specific files\Semihosting/Profiler</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\AX12.h">
+      <Filter>Header files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Imu.h">
+      <Filter>Header files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\LedController.h">
+      <Filter>Header files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ltoa.h">
+      <Filter>Header files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\stm32f4xx_hal_conf.h">
+      <Filter>Header files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="FreeRTOSConfig.h">
+      <Filter>Header files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Time.h">
+      <Filter>Header files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Useful.h">
+      <Filter>Header files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Math\Trigo.h">
+      <Filter>Header files\include\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Hexapode\Hexapode.h">
+      <Filter>Header files\include\Hexapode</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Hexapode\Leg.h">
+      <Filter>Header files\include\Hexapode</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Hexapode\Servo.h">
+      <Filter>Header files\include\Hexapode</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Hexapode\Gaits\AsyncGait.h">
+      <Filter>Header files\include\Hexapode\Gaits</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Hexapode\Gaits\Gait.h">
+      <Filter>Header files\include\Hexapode\Gaits</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Hexapode\Gaits\TripodGait.h">
+      <Filter>Header files\include\Hexapode\Gaits</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BSP\stm32f411e_discovery_accelerometer.h">
+      <Filter>Header files\include\BSP</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BSP\stm32f411e_discovery.h">
+      <Filter>Header files\include\BSP</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BSP\stm32f411e_discovery_gyroscope.h">
+      <Filter>Header files\include\BSP</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BSP\Components\l3gd20\l3gd20.h">
+      <Filter>Header files\include\BSP\Components\l3gd20</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BSP\Components\lsm303dlhc\lsm303dlhc.h">
+      <Filter>Header files\include\BSP\Components\lsm303dlhc</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Math\Vector3.h">
+      <Filter>Header files\include\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Uart.hpp">
+      <Filter>Source files\src</Filter>
+    </ClInclude>
+    <ClInclude Include="UnitySerial.h">
+      <Filter>Header files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BSP\Components\Common\accelero.h">
+      <Filter>Header files\include\BSP\Components\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BSP\Components\Common\gyro.h">
+      <Filter>Header files\include\BSP\Components\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BSP\Components\Common\magneto.h">
+      <Filter>Header files\include\BSP\Components\Common</Filter>
+    </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\FreeRTOS\Source\CMSIS_RTOS\cmsis_os.h">
       <Filter>Header files\Device-specific files\FreeRTOS</Filter>
     </ClInclude>
@@ -321,13 +468,16 @@
     <ClInclude Include="$(BSP_ROOT)\FreeRTOS\Source\include\list.h">
       <Filter>Header files\Device-specific files\FreeRTOS</Filter>
     </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\FreeRTOS\Source\include\mpu_prototypes.h">
+      <Filter>Header files\Device-specific files\FreeRTOS</Filter>
+    </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\FreeRTOS\Source\include\mpu_wrappers.h">
       <Filter>Header files\Device-specific files\FreeRTOS</Filter>
     </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\FreeRTOS\Source\portable\GCC\ARM_CM4F\portmacro.h">
+    <ClInclude Include="$(BSP_ROOT)\FreeRTOS\Source\include\portable.h">
       <Filter>Header files\Device-specific files\FreeRTOS</Filter>
     </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\FreeRTOS\Source\include\portable.h">
+    <ClInclude Include="$(BSP_ROOT)\FreeRTOS\Source\include\projdefs.h">
       <Filter>Header files\Device-specific files\FreeRTOS</Filter>
     </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\FreeRTOS\Source\include\queue.h">
@@ -345,65 +495,8 @@
     <ClInclude Include="$(BSP_ROOT)\FreeRTOS\Source\include\timers.h">
       <Filter>Header files\Device-specific files\FreeRTOS</Filter>
     </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\FreeRTOS\Source\include\projdefs.h">
+    <ClInclude Include="$(BSP_ROOT)\FreeRTOS\Source\portable\GCC\ARM_CM4F\portmacro.h">
       <Filter>Header files\Device-specific files\FreeRTOS</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\Include\arm_common_tables.h">
-      <Filter>Header files\Device-specific files\HAL</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\Include\arm_const_structs.h">
-      <Filter>Header files\Device-specific files\HAL</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\Include\arm_math.h">
-      <Filter>Header files\Device-specific files\HAL</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\Include\cmsis_armcc.h">
-      <Filter>Header files\Device-specific files\HAL</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\Include\cmsis_armcc_V6.h">
-      <Filter>Header files\Device-specific files\HAL</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\Include\cmsis_gcc.h">
-      <Filter>Header files\Device-specific files\HAL</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\RTOS\Template\cmsis_os.h">
-      <Filter>Header files\Device-specific files\HAL</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\Include\core_cm0.h">
-      <Filter>Header files\Device-specific files\HAL</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\Include\core_cm0plus.h">
-      <Filter>Header files\Device-specific files\HAL</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\Include\core_cm3.h">
-      <Filter>Header files\Device-specific files\HAL</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\Include\core_cm4.h">
-      <Filter>Header files\Device-specific files\HAL</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\Include\core_cm7.h">
-      <Filter>Header files\Device-specific files\HAL</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\Include\core_cmFunc.h">
-      <Filter>Header files\Device-specific files\HAL</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\Include\core_cmInstr.h">
-      <Filter>Header files\Device-specific files\HAL</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\Include\core_cmSimd.h">
-      <Filter>Header files\Device-specific files\HAL</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\Include\core_sc000.h">
-      <Filter>Header files\Device-specific files\HAL</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\Include\core_sc300.h">
-      <Filter>Header files\Device-specific files\HAL</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\Legacy\stm32_hal_legacy.h">
-      <Filter>Header files\Device-specific files\HAL</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\Device\ST\STM32F4xx\Include\stm32f4xx.h">
-      <Filter>Header files\Device-specific files\HAL</Filter>
     </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal.h">
       <Filter>Header files\Device-specific files\HAL</Filter>
@@ -453,10 +546,10 @@
     <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_dma.h">
       <Filter>Header files\Device-specific files\HAL</Filter>
     </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_dma_ex.h">
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_dma2d.h">
       <Filter>Header files\Device-specific files\HAL</Filter>
     </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_dma2d.h">
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_dma_ex.h">
       <Filter>Header files\Device-specific files\HAL</Filter>
     </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_dsi.h">
@@ -520,6 +613,9 @@
       <Filter>Header files\Device-specific files\HAL</Filter>
     </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_ltdc_ex.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_mmc.h">
       <Filter>Header files\Device-specific files\HAL</Filter>
     </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_nand.h">
@@ -600,98 +696,158 @@
     <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_wwdg.h">
       <Filter>Header files\Device-specific files\HAL</Filter>
     </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_adc.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_bus.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_cortex.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_crc.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_dac.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_dma.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_dma2d.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_exti.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
+    </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_fmc.h">
       <Filter>Header files\Device-specific files\HAL</Filter>
     </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_fsmc.h">
       <Filter>Header files\Device-specific files\HAL</Filter>
     </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_gpio.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_i2c.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_iwdg.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_lptim.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_pwr.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_rcc.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_rng.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_rtc.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
+    </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_sdmmc.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_spi.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_system.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_tim.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_usart.h">
       <Filter>Header files\Device-specific files\HAL</Filter>
     </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_usb.h">
       <Filter>Header files\Device-specific files\HAL</Filter>
     </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_utils.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_wwdg.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\Legacy\stm32_hal_legacy.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\Device\ST\STM32F4xx\Include\stm32f4xx.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
+    </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\Device\ST\STM32F4xx\Include\system_stm32f4xx.h">
       <Filter>Header files\Device-specific files\HAL</Filter>
     </ClInclude>
-    <ClInclude Include="include\AX12.h">
-      <Filter>Header files\include</Filter>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\Include\arm_common_tables.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
     </ClInclude>
-    <ClInclude Include="include\Imu.h">
-      <Filter>Header files\include</Filter>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\Include\arm_const_structs.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
     </ClInclude>
-    <ClInclude Include="include\LedController.h">
-      <Filter>Header files\include</Filter>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\Include\arm_math.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
     </ClInclude>
-    <ClInclude Include="include\ltoa.h">
-      <Filter>Header files\include</Filter>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\Include\cmsis_armcc.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
     </ClInclude>
-    <ClInclude Include="include\stm32f4xx_hal_conf.h">
-      <Filter>Header files\include</Filter>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\Include\cmsis_armcc_V6.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
     </ClInclude>
-    <ClInclude Include="FreeRTOSConfig.h">
-      <Filter>Header files\include</Filter>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\Include\cmsis_gcc.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
     </ClInclude>
-    <ClInclude Include="include\Time.h">
-      <Filter>Header files\include</Filter>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\Include\core_cm0.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
     </ClInclude>
-    <ClInclude Include="include\Useful.h">
-      <Filter>Header files\include</Filter>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\Include\core_cm0plus.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
     </ClInclude>
-    <ClInclude Include="include\Math\Trigo.h">
-      <Filter>Header files\include\Math</Filter>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\Include\core_cm3.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
     </ClInclude>
-    <ClInclude Include="include\Hexapode\Hexapode.h">
-      <Filter>Header files\include\Hexapode</Filter>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\Include\core_cm4.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
     </ClInclude>
-    <ClInclude Include="include\Hexapode\Leg.h">
-      <Filter>Header files\include\Hexapode</Filter>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\Include\core_cm7.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
     </ClInclude>
-    <ClInclude Include="include\Hexapode\Servo.h">
-      <Filter>Header files\include\Hexapode</Filter>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\Include\core_cmFunc.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
     </ClInclude>
-    <ClInclude Include="include\Hexapode\Gaits\AsyncGait.h">
-      <Filter>Header files\include\Hexapode\Gaits</Filter>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\Include\core_cmInstr.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
     </ClInclude>
-    <ClInclude Include="include\Hexapode\Gaits\Gait.h">
-      <Filter>Header files\include\Hexapode\Gaits</Filter>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\Include\core_cmSimd.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
     </ClInclude>
-    <ClInclude Include="include\Hexapode\Gaits\TripodGait.h">
-      <Filter>Header files\include\Hexapode\Gaits</Filter>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\Include\core_sc000.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
     </ClInclude>
-    <ClInclude Include="include\BSP\stm32f411e_discovery_accelerometer.h">
-      <Filter>Header files\include\BSP</Filter>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\Include\core_sc300.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
     </ClInclude>
-    <ClInclude Include="include\BSP\stm32f411e_discovery.h">
-      <Filter>Header files\include\BSP</Filter>
+    <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\RTOS\Template\cmsis_os.h">
+      <Filter>Header files\Device-specific files\HAL</Filter>
     </ClInclude>
-    <ClInclude Include="include\BSP\stm32f411e_discovery_gyroscope.h">
-      <Filter>Header files\include\BSP</Filter>
+    <ClInclude Include="$(EFP_BASE)\Profiler\SysprogsProfiler.h">
+      <Filter>Header files\Device-specific files\Semihosting/Profiler</Filter>
     </ClInclude>
-    <ClInclude Include="include\BSP\Components\l3gd20\l3gd20.h">
-      <Filter>Header files\include\BSP\Components\l3gd20</Filter>
+    <ClInclude Include="$(EFP_BASE)\Profiler\SmallNumberCoder.h">
+      <Filter>Header files\Device-specific files\Semihosting/Profiler</Filter>
     </ClInclude>
-    <ClInclude Include="include\BSP\Components\lsm303dlhc\lsm303dlhc.h">
-      <Filter>Header files\include\BSP\Components\lsm303dlhc</Filter>
+    <ClInclude Include="$(EFP_BASE)\Profiler\SysprogsProfilerInterface.h">
+      <Filter>Header files\Device-specific files\Semihosting/Profiler</Filter>
     </ClInclude>
-    <ClInclude Include="include\Math\Vector3.h">
-      <Filter>Header files\include\Math</Filter>
+    <ClInclude Include="$(EFP_BASE)\Profiler\ProfilerFreeRTOSHooks.h">
+      <Filter>Header files\Device-specific files\Semihosting/Profiler</Filter>
     </ClInclude>
-    <ClInclude Include="src\Uart.hpp">
-      <Filter>Source files\src</Filter>
-    </ClInclude>
-    <ClInclude Include="UnitySerial.h">
-      <Filter>Header files\include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\BSP\Components\Common\accelero.h">
-      <Filter>Header files\include\BSP\Components\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="include\BSP\Components\Common\gyro.h">
-      <Filter>Header files\include\BSP\Components\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="include\BSP\Components\Common\magneto.h">
-      <Filter>Header files\include\BSP\Components\Common</Filter>
+    <ClInclude Include="$(EFP_BASE)\Profiler\CustomRealTimeWatches.h">
+      <Filter>Header files\Device-specific files\Semihosting/Profiler</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -704,17 +860,6 @@
     <None Include="Poppi-Release.vgdbsettings">
       <Filter>VisualGDB settings</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="$(BSP_ROOT)\FreeRTOS\Source\readme.txt">
-      <Filter>Source files\Device-specific files\FreeRTOS</Filter>
-    </Text>
-    <Text Include="$(BSP_ROOT)\FreeRTOS\Source\st_readme.txt">
-      <Filter>Source files\Device-specific files\FreeRTOS</Filter>
-    </Text>
-    <Text Include="$(BSP_ROOT)\FreeRTOS\License\license.txt">
-      <Filter>Source files\Device-specific files\FreeRTOS</Filter>
-    </Text>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header files">
@@ -795,10 +940,27 @@
     <Filter Include="Header files\include\BSP\Components\lsm303dlhc">
       <UniqueIdentifier>{044018b1-8c87-4f5e-8478-b3654feb0abe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source files\Device-specific files\Semihosting/Profiler">
+      <UniqueIdentifier>{9eb6e8b5-0c28-4a9e-b4be-f7c111ed8203}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header files\Device-specific files\Semihosting/Profiler">
+      <UniqueIdentifier>{b0e2472b-6cfb-4881-9e66-39019aad9e37}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="stm32.xml">
       <Filter>VisualGDB settings</Filter>
     </Xml>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="$(BSP_ROOT)\FreeRTOS\License\license.txt">
+      <Filter>Source files\Device-specific files\FreeRTOS</Filter>
+    </Text>
+    <Text Include="$(BSP_ROOT)\FreeRTOS\Source\readme.txt">
+      <Filter>Source files\Device-specific files\FreeRTOS</Filter>
+    </Text>
+    <Text Include="$(BSP_ROOT)\FreeRTOS\Source\st_readme.txt">
+      <Filter>Source files\Device-specific files\FreeRTOS</Filter>
+    </Text>
   </ItemGroup>
 </Project>

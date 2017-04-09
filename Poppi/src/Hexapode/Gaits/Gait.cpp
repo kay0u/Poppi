@@ -8,10 +8,8 @@
 #include "Useful.h"
 #include "Hexapode/Gaits/Gait.h"
 
-#define INCLUDE_vTaskSuspend                    1
-
-
-SemaphoreHandle_t xSemaphore = NULL;
+osMutexId mutex = NULL;
+osMutexDef(gaitMutex);
 
 Gait::Gait(std::array<Leg*, LEG_COUNT> &legs):
 m_legs(legs),
@@ -20,7 +18,7 @@ m_stopped(true),
 m_moveLoopStart(0)
 {
 	m_taskHandle = NULL;
-	xSemaphore = xSemaphoreCreateMutex();
+	mutex = osMutexCreate(osMutex(gaitMutex));
 }
 
 LegStep::LegStep(Leg *l, LegPosition pos):
@@ -36,7 +34,7 @@ Gait::~Gait()
 
 void Gait::setDirection(Vector3 goal)
 {
-	printDebug("[Gait] setDirection\n\r");
+	printf("[Gait] setDirection\n\r");
 	m_direction = goal;
 	for(int i(0); i < LEG_COUNT; ++i)
 		m_legs[i]->setDirection(goal);
@@ -65,22 +63,20 @@ void Gait::print() const
 
 void walkTask(void *argument)
 {
-	if(xSemaphore != NULL)
-	{
-		if( xSemaphoreTake( xSemaphore, ( TickType_t ) portMAX_DELAY ) == pdTRUE )
+		if( osMutexWait(mutex, osWaitForever) == osOK )
 		{
 			Gait* gait = static_cast<Gait*>(argument);
 			std::vector<Movement> &movements = gait->getMovements();
 			uint8_t loopStartIndex = gait->getMoveLoopStart();
-            xSemaphoreGive( xSemaphore );
+            osMutexRelease(mutex);
 
 			for(uint8_t i(0); i < movements.size() && i < loopStartIndex; ++i)
 			{
-				if( xSemaphoreTake( xSemaphore, ( TickType_t ) portMAX_DELAY ) == pdTRUE )
+				if (osMutexWait(mutex, osWaitForever) == osOK)
 				{
 					gait->executeMovement(movements[i]);
 					gait->waitForMoveEnd();
-					xSemaphoreGive( xSemaphore );
+					osMutexRelease(mutex);
 				}
 			}
 
@@ -88,17 +84,15 @@ void walkTask(void *argument)
 			{
 				for(uint8_t i(loopStartIndex); i < movements.size(); ++i)
 				{
-					if( xSemaphoreTake( xSemaphore, ( TickType_t ) portMAX_DELAY ) == pdTRUE )
+					if (osMutexWait(mutex, osWaitForever) == osOK)
 					{
 						gait->executeMovement(movements[i]);
 						gait->waitForMoveEnd();
-						xSemaphoreGive( xSemaphore );
+						osMutexRelease(mutex);
 					}
 				}
 			}
 		}
-
-	}
 }
 
 std::vector<Movement>& Gait::getMovements()

@@ -10,21 +10,6 @@ __IO uint32_t PauseResumeStatus = IDLE_STATUS;
 /* Counter for User button presses */
 __IO uint32_t PressCount = 0;
 
-
-
-int printDebug(const char *fmt, ...)
-{
-    char buffer[4096];
-    va_list args;
-    va_start(args, fmt);
-    vsnprintf(buffer, sizeof(buffer), fmt, args);
-    va_end(args);
-#ifdef DEBUG
-	printf(buffer);
-#endif
-}
-
-
 uint8_t Useful::UserPressButton = 0;
 Useful::Useful()
 {

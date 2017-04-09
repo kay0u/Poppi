@@ -60,89 +60,89 @@ private:
 	}
 
 	static inline void write(char* val) {
-		osMutexWait(mutex, osWaitForever);
+		lockMutex();
 		while(*val != '\0')
 		{
 			osMessagePut(xQueueT, *val, osWaitForever);
 			val++;
 		}
 		UART.Instance->CR1 |= USART_CR1_TXEIE;                     // Enable TXE interruption
-		osMutexRelease(mutex);
+		releaseMutex();
 	}
 	
 	template<std::size_t size>
 	static inline void write(std::array<char, size>& val)
 	{
-		osMutexWait(mutex, osWaitForever);
+		lockMutex();
 		for (auto& e : val)
 			osMessagePut(xQueueT, e, osWaitForever);
 			
 		UART.Instance->CR1 |= USART_CR1_TXEIE;                     // Enable TXE interruption
-		osMutexRelease(mutex);
+		releaseMutex();
 	}
 	
 	static inline void write(std::vector<char>& val)
 	{
-		osMutexWait(mutex, osWaitForever);
+		lockMutex();
 		for (auto& e : val)
 			osMessagePut(xQueueT, e, osWaitForever);
 			
 		UART.Instance->CR1 |= USART_CR1_TXEIE;                     // Enable TXE interruption
-		osMutexRelease(mutex);
+		releaseMutex();
 	}
 	
 	template<std::size_t size>
 	static inline void write(std::array<unsigned char, size>& val)
 	{
-		osMutexWait(mutex, osWaitForever);
+		lockMutex();
 		for (auto& e : val)
 			osMessagePut(xQueueT, e, osWaitForever);
 			
 		UART.Instance->CR1 |= USART_CR1_TXEIE;                     // Enable TXE interruption
-		osMutexRelease(mutex);
+		releaseMutex();
 	}
 	
 	static inline void write(std::vector<unsigned char>& val)
 	{
-		osMutexWait(mutex, osWaitForever);
+		lockMutex();
 		for (auto& e : val)
 			osMessagePut(xQueueT, e, osWaitForever);
 			
 		UART.Instance->CR1 |= USART_CR1_TXEIE;                     // Enable TXE interruption
-		osMutexRelease(mutex);
+		releaseMutex();
 	}
 
 	static inline void write(char* val, int16_t len) {
-		osMutexWait(mutex, osWaitForever);
+		lockMutex();
 		for(int i = 0; i < len; i++)
 		{
 			osMessagePut(xQueueT, *val, osWaitForever);
 			val++;
 		}
 		UART.Instance->CR1 |= USART_CR1_TXEIE;                     // Enable TXE interruption
-		osMutexRelease(mutex);
+		releaseMutex();
 	}
 	
 	static inline void write(unsigned char* val, int16_t len) {
-		osMutexWait(mutex, osWaitForever);
+		lockMutex();
 		for (int i = 0; i < len; i++)
 		{
 			osMessagePut(xQueueT, *val, osWaitForever);
 			val++;
 		}
 		UART.Instance->CR1 |= USART_CR1_TXEIE;                     // Enable TXE interruption
-		osMutexRelease(mutex);
+		releaseMutex();
 	}
 
 	static inline void write(const char* val) {
-		osMutexWait(mutex, osWaitForever);
+		lockMutex();
 		while(*val != '\0')
 		{
 			osMessagePut(xQueueT, *val, osWaitForever);
 			val++;
 		}
 		UART.Instance->CR1 |= USART_CR1_TXEIE;                     // Enable TXE interruption
-		osMutexRelease(mutex);
+		releaseMutex();
 	}
 
 	static inline void send_ln() {
@@ -245,10 +245,10 @@ public:
 	 *
 	 */
 	static inline void send_char(unsigned char c) {
-		osMutexWait(mutex, osWaitForever);
+		lockMutex();
 		osMessagePut(xQueueT, c, osWaitForever);
 		UART.Instance->CR1 |= USART_CR1_TXEIE;                     // Enable TXE interruption
-		osMutexRelease(mutex);
+		releaseMutex();
 	}
 
 	/**
@@ -380,14 +380,14 @@ public:
 		return READ_SUCCESS;
 	}
 	
-	static inline void lockMutex()
+	static inline osStatus lockMutex()
 	{
-		osMutexWait(mutex, osWaitForever);
+		return osMutexWait(mutex, osWaitForever);
 	}
 	
-	static inline void releaseMutex()
+	static inline osStatus releaseMutex()
 	{
-		osMutexRelease(mutex);
+		return osMutexRelease(mutex);
 	}
 };
 
