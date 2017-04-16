@@ -58,5 +58,7 @@ bool Servo::reachedTarget()
 
 float Servo::getCurrentAngle()
 {
-	return m_ax.GetPresentPosition();
+	float angle;
+	m_ax.GetPresentPosition(angle);
+	return angle;
 }

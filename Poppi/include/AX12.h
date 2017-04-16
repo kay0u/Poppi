@@ -8,6 +8,19 @@
 //#define AX12_READ_DEBUG
 //#define AX12_DEBUG
 
+enum Error
+{
+	TIMEOUT       = 1 << 7,
+	INSTRUCTION   = 1 << 6,
+	OVERLOAD      = 1 << 5,
+	CHECKSUM      = 1 << 4,
+	RANGE         = 1 << 3,
+	OVERHEATING   = 1 << 2,
+	ANGLE_LIMIT   = 1 << 1,
+	INPUT_VOLTAGE = 1,
+	NO_ERROR      = 0
+};
+
 template<typename serial>
 class AX12
 {
@@ -17,6 +30,7 @@ public:
 		Join, //Positional, default
 		Wheel //Continuous rotation
 	};
+	
 	AX12() = delete;
 	
 	~AX12();
@@ -31,6 +45,7 @@ public:
 	* @param mode
 	*    0 = Positional, default
 	*    1 = Continuous rotation
+	* @returns Error Code
 	*/
 	void SetMode(Mode mode);
 	
@@ -45,24 +60,27 @@ public:
 	*    0x22 =    57,600 bps
 	*    0x67 =    19,200 bps
 	*    0xCF =     9,600 bp
+	* @returns Error Code
 	*/
-	int SetBaudrate(int baud);
+	Error SetBaudrate(int baud);
 	
 	/** Set torque either enable or disable
 	*/
-	int SetTorque(bool torqueEnable);
+	Error SetTorque(bool torqueEnable);
 	
 	/** Set the max torque
 	*
 	* @param limitTorque 0-1
+	* @returns Error Code
 	*/
-	int SetTorqueLimit(float limitTorque);
+	Error SetTorqueLimit(float limitTorque);
 	
 	/** Set goal angle in integer degrees, in positional mode
 	*
 	* @param degrees 0-300
+	* @returns Error Code
 	*/
-	int SetGoalPosition(int degrees);
+	Error SetGoalPosition(int degrees);
 	
 	/** Set the speed of the servo
 	*
@@ -74,40 +92,46 @@ public:
 	* @param speed, -1.0 to 1.0
 	*   -1.0 = full speed clock wise
 	*    1.0 = full speed counter clock wise
+	* @returns Error Code
 	*/
-	int SetSpeed(float speed);
+	Error SetSpeed(float speed);
 	
 	/** Set the clockwise limit of the servo
 	*
 	* @param degrees, 0-300
+	* @returns Error Code
 	*/
-	int SetClockwiseLimit(int degrees);
+	Error SetClockwiseLimit(int degrees);
 	
 	/** Set the counter-clockwise limit of the servo
 	*
 	* @param degrees, 0-300
+	* @returns Error Code
 	*/
-	int SetCounterClockwiseLimit(int degrees);
+	Error SetCounterClockwiseLimit(int degrees);
 	
 	/** Change the ID of a servo
 	*
 	* @param CurentID 1-255
 	* @param NewID 1-255
+	* @returns Error Code
 	*
 	* If a servo ID is not know, the broadcast address of 0 can be used for CurrentID.
 	* In this situation, only one servo should be connected to the bus
 	*/
-	int SetID(int currentID, int newID);
+	Error SetID(int currentID, int newID);
 	
 	/** Set the state of the led
 	* @param ledOn true or false
+	* @returns Error Code
 	*/
-	int SetLED(bool ledOn);
+	Error SetLED(bool ledOn);
 	
 	/** Set minimum and maximum angle of the servo
 	*
 	* @param minAngle, 0-300
 	* @param maxAngle, 0-300
+	* @returns Error Code
 	*/
 	int SetExtremum(int minAngle, int maxAngle);
 	
@@ -115,63 +139,71 @@ public:
 	*
 	* @returns true is the servo is moving
 	*/
-	bool isMoving();
+	Error IsMoving(bool& isMoving);
 	
 	/** Poll to see if the torque is enable
 	*/
-	bool isTorqueEnable();
+	Error IsTorqueEnable(bool& isTorqueEnable);
 	
 	/** Read the goal angle of the servo
 	*
-	* @returns float in the range 0.0-300.0
+	* @param float in the range 0.0-300.0
+	* @returns Error Code
 	*/
-	float GetGoalPosition();
+	Error GetGoalPosition(float& angle);
 	
 	/** Read the current angle of the servo
 	*
-	* @returns float in the range 0.0-300.0
+	* @param float in the range 0.0-300.0
+	* @returns Error Code
 	*/
-	float GetPresentPosition();
+	Error GetPresentPosition(float& angle);
 	
 	/** Read the current load of the servo
 	*
-	* @returns float load
+	* @param float load
 	*   -1.0 = full load clock wise
 	*    1.0 = full load counter clock wise
+	* @returns Error Code
 	*/
-	float GetPresentLoad();
+	Error GetPresentLoad(float& load);
 	
 	/** Read the current speed of the servo
 	*
-	* @returns float velocity
+	* @param float velocity
 	*   -1.0 = full speed clock wise
 	*    1.0 = full speed counter clock wise
+	* @returns Error Code
 	*/
-	float GetPresentSpeed();
+	Error GetPresentSpeed(float& speed);
 	
 	/** Reat the limit torque
 	*
-	* @returns float limit torque
+	* @param float limit torque
+	* @returns Error Code
 	*/
-	float GetTorqueLimit();
+	Error GetTorqueLimit(float& torqueLimit);
 	
 	/** Read the temperature of the servo
 	*
-	* @returns float temperature
+	* @param float temperature
+	* @returns Error Code
 	*/
-	float GetTemperature();
+	Error GetTemperature(float& temp);
 	
 	/** Read the supply voltage of the servo
 	*
-	* @returns float voltage
+	* @param float voltage
+	* @returns Error Code
 	*/
-	float GetVolts();
+	Error GetVolts(float& volts);
 	
 	/**  Read the state of the led
 	*
-	* @returns bool isLedOn
+	* @param bool isLedOn
+	* @returns Error Code
 	*/
-	bool GetLED();
+	Error GetLED(bool& led);
 	
 	/*Send the broadcast "trigger" command, to activate any outstanding registered commands
 	*/
@@ -229,8 +261,8 @@ PUNCH_H // 0x31 */
 	//EEPROM Kept after reboot
 	const Register REG_ID = Register(0x3, 1);
 	const Register REG_BAUD = Register(0x4, 1);
-	const Register REG_Clockwise_LIMIT = Register(0x06, 2);
-	const Register REG_CounterClockwise_LIMIT = Register(0x08, 2);
+	const Register REG_CLOCKWISE_LIMIT= Register(0x06, 2);
+	const Register REG_COUNTERCLOCKWISE_LIMIT= Register(0x08, 2);
 	
 	//RAM Reset after reboot
 	const Register REG_TORQUE_ENABLE = Register(0x18, 1);
@@ -258,9 +290,9 @@ PUNCH_H // 0x31 */
 	
 	
 private:
-	int read(int ID, const Register& reg, unsigned char* data);
+	Error read(int ID, const Register& reg, unsigned char* data);
 	template <std::size_t size>
-	int write(int ID, const Register& reg, const std::array<unsigned char, size> &data, bool shouldWaitForTrigger);
+	Error write(int ID, const Register& reg, const std::array<unsigned char, size> &data, bool shouldWaitForTrigger);
 };
 
 template<typename serial>
