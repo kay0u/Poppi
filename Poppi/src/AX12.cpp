@@ -238,6 +238,8 @@ float AX12<serial>::GetGoalPosition() {
 	unsigned char data[2];
 
 	int ErrorCode = read(_ID, REG_GOAL_POSITION, data);
+	if (ErrorCode < 0)
+		return ErrorCode;
 	int position = data[0] + (data[1] << 8);
 	float angle = (position * 300) / 1024;
 
@@ -254,6 +256,8 @@ float AX12<serial>::GetPresentPosition() {
 	unsigned char data[2];
 
 	int ErrorCode = read(_ID, REG_PRESENT_POSITION, data);
+	if (ErrorCode < 0)
+		return ErrorCode;
 	int position = data[0] + (data[1] << 8);
 	float angle = (position * 300) / 1024;
 
@@ -270,6 +274,8 @@ float AX12<serial>::GetPresentSpeed() {
 	unsigned char data[2];
 
 	int ErrorCode = read(_ID, REG_PRESENT_SPEED, data);
+	if (ErrorCode < 0)
+		return ErrorCode;
 
 	float speed = data[0] + ((0x03 & data[1]) << 8);
 	speed /= 1023;
@@ -289,6 +295,8 @@ float AX12<serial>::GetPresentLoad() {
 	unsigned char data[2];
 
 	int ErrorCode = read(_ID, REG_PRESENT_LOAD, data);
+	if (ErrorCode < 0)
+		return ErrorCode;
 
 	float load = data[0] + ((0x03 & data[1]) << 8);
 	load /= 1023;
@@ -308,6 +316,8 @@ float AX12<serial>::GetTorqueLimit() {
 	unsigned char data[2];
 
 	int ErrorCode = read(_ID, REG_TORQUE_LIMIT, data);
+	if (ErrorCode < 0)
+		return ErrorCode;
 
 	float torqueLimit = data[0] + ((0x03 & data[1]) << 8);
 	torqueLimit /= 1023;
@@ -325,6 +335,8 @@ float AX12<serial>::GetTemperature() {
 
 	unsigned char data[1];
 	int ErrorCode = read(_ID, REG_PRESENT_TEMPERATURE, data);
+	if (ErrorCode < 0)
+		return ErrorCode;
 	float temp = data[0];
 	return temp;
 }
@@ -339,6 +351,8 @@ float AX12<serial>::GetVolts() {
 	unsigned char data[1];
 	
 	int ErrorCode = read(_ID, REG_PRESENT_VOLTAGE, data);
+	if (ErrorCode < 0)
+		return ErrorCode;
 	float volts = data[0] / 10.0;
 	return volts;
 }
@@ -353,6 +367,8 @@ bool AX12<serial>::GetLED() {
 	unsigned char data[1];
 	
 	int ErrorCode = read(_ID, REG_LED, data);
+	if (ErrorCode < 0)
+		return ErrorCode;
 	bool volts = data[0] == 1;
 	return volts;
 }
