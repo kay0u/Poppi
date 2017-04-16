@@ -9,6 +9,8 @@
 #include "LedController.h"
 #include "../include/Imu.h"
 
+#include "UnitySerial.h"
+
 #include "Uart.hpp"
 #include "AX12.h"
 
@@ -66,21 +68,24 @@ static void gyro(void const *argument)
 
 static void hexapodeThread(void const *argument)
 {
-	Hexapode hexapode;
-	hexapode.setDirection(Vector3::forward);
-	Servo servo(1, 30, 220);
-	int angle = 180;
+	//Hexapode hexapode;
+	//hexapode.setDirection(Vector3::forward);
+	/*AX12<serial_ax> ax12(1);
+	ax12.SetID(1, 2);*/
+	Servo servo(3, 90, 220);
+	servo.stop();
+	int angle = servo.getMinAngle();
 
 	for (;;)
 	{
 		/*if (angle > servo.getMaxAngle())
 			angle = servo.getMinAngle();
-		servo.goTo(angle);
-		//serial_pc::printfln("delta: %d", (xTaskGetTickCount() - time) * portTICK_RATE_MS);
+		servo.goTo(angle);*/
+		UnitySerial::SendLogToPrint("angle: %d", (int)servo.getCurrentAngle());
 		osDelay(500);
 
-		angle += 10;*/
-		hexapode.update();
+		//angle += 10;
+		//hexapode.update();
 		osDelay(10);
 	}
 }

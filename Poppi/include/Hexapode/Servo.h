@@ -23,10 +23,12 @@ public:
 	bool reachedTarget();
 	float getMaxAngle();
 	float getMinAngle();
+	float getCurrentAngle();
 	
 private:
 	AX12<serial_ax> m_ax;
 	bool m_reachedTarget;
+	bool m_stopped;
 	const float m_minAngle;
 	const float m_maxAngle;
 	const int m_axId;
