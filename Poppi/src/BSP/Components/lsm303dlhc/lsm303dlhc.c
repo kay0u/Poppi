@@ -569,7 +569,8 @@ MAGNETO_DrvTypeDef Lsm303dlhcDrv_magneto =
 	LSM303DLHC_MagDeInit,
 	LSM303DLHC_MagReadID,
 	LSM303DLHC_MagGetDataStatus,
-	LSM303DLHC_MagReadXYZ
+	LSM303DLHC_MagReadXYZ,
+	LSM303DLHC_MagReadTemperature
 };
 
 /**
@@ -685,5 +686,19 @@ void LSM303DLHC_MagReadXYZ(float* pData)
 	pData[2] = (float)((int16_t)((uint16_t)buffer[5] << 8) + buffer[4]) * 1000 / Magn_Sensitivity_Z;
 	
 }
+
+float LSM303DLHC_MagReadTemperature()
+{
+	uint8_t buffer[2];
+	buffer[0] = COMPASSACCELERO_IO_Read(MAG_I2C_ADDRESS, LSM303DLHC_TEMP_OUT_L_M); 
+	buffer[1] = COMPASSACCELERO_IO_Read(MAG_I2C_ADDRESS, LSM303DLHC_TEMP_OUT_H_M);
+	
+	float temp_data_m_c_offset = 19.5; //Trouvé sur internet, donc surement vrai
+
+	float temp_data_m = (float)(((buffer[1] << 8) + buffer[0]) >> 4);
+	float temp_data_m_c = (temp_data_m / LSM303DLHC_TEMPSENSOR_SENSITIVITY) + temp_data_m_c_offset;
+	return temp_data_m_c;
+}
+
   
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/     

@@ -91,6 +91,7 @@ typedef enum
 uint8_t BSP_MAGNETO_Init(void);
 uint8_t BSP_MAGNETO_Status(void);
 void    BSP_MAGNETO_GetXYZ(float *pDataXYZ);
+float    BSP_MAGNETO_GetTemperature(void);
 
 /**
   * @}

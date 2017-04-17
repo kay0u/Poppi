@@ -74,16 +74,18 @@ static void magneto(void const *argument)
 	/* Gyroscope variables */
 	float* Buffer;
 	float Xval, Yval = 0x00;
-
+	float temp = 0;
+	
 	for (;;)
 	{
 		/* Read Gyroscope Angular data */
 		Buffer = imu.getMagnetometer();
-
+		temp = imu.getTemperature();
+		
 		Xval = ABS(Buffer[0]);
 		Yval = ABS(Buffer[1]);
 		
-		//printf("x %f, y %f, z %f\r\n", Buffer[0], Buffer[1], Buffer[2]);
+		//printf("x %f, y %f, z %f, temp %f\r\n", Buffer[0], Buffer[1], Buffer[2], temp);
 		if (Xval > Yval)
 		{
 			if (Buffer[0] > 0)
@@ -149,8 +151,8 @@ int main(void)
 	serial_pc::init(1000000);
 
 	// /!\ Attention, avec l'utilisation du printf il faut augmenter la stack size pour le thread.
-	osThreadDef(HexapodeThread, hexapodeThread, osPriorityRealtime, 1, configMINIMAL_STACK_SIZE + 1000);
-	osThreadCreate(osThread(HexapodeThread), NULL);
+	/*osThreadDef(HexapodeThread, hexapodeThread, osPriorityRealtime, 1, configMINIMAL_STACK_SIZE + 1000);
+	osThreadCreate(osThread(HexapodeThread), NULL);*/
 
 	osThreadDef(MAGNETOThread, magneto, osPriorityNormal, 1, configMINIMAL_STACK_SIZE);
 	osThreadCreate(osThread(MAGNETOThread), NULL);

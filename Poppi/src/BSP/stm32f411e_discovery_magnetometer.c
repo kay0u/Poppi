@@ -149,6 +149,15 @@ void BSP_MAGNETO_GetXYZ(float *pDataXYZ)
   }
 }
 
+float BSP_MAGNETO_GetTemperature(void)
+{
+	if (MagnetometerDrv->GetXYZ != NULL)
+	{
+		return MagnetometerDrv->GetTemperature();
+	}
+	return -1.f;
+}
+
 /**
   * @}
   */ 

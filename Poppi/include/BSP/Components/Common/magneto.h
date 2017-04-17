@@ -86,6 +86,7 @@ typedef struct
   uint8_t   (*ReadID)(void);
   uint8_t   (*Status)(void);
   void      (*GetXYZ)(float *);
+  float      (*GetTemperature)(void);
 }MAGNETO_DrvTypeDef;
 /**
   * @}

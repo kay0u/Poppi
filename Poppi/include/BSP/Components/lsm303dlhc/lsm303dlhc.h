@@ -438,6 +438,7 @@
   */ 
 #define LSM303DLHC_TEMPSENSOR_ENABLE         ((uint8_t) 0x80)   /*!< Temp sensor Enable */
 #define LSM303DLHC_TEMPSENSOR_DISABLE        ((uint8_t) 0x00)   /*!< Temp sensor Disable */
+#define LSM303DLHC_TEMPSENSOR_SENSITIVITY     ((float) 8.0)      /*!< Temp sensitivity  8.0 LSB/deg */
 /**
   * @}
   */
@@ -481,6 +482,7 @@ void    LSM303DLHC_MagDeInit(void);
 uint8_t LSM303DLHC_MagReadID(void);
 uint8_t LSM303DLHC_MagGetDataStatus(void);
 void    LSM303DLHC_MagReadXYZ(float* pData);
+float   LSM303DLHC_MagReadTemperature();
 /**
   * @}
   */

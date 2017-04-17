@@ -24,6 +24,7 @@ public:
 	float* getGyroscope();
 	double* getAccelerometer();
 	float* getMagnetometer();
+	float getTemperature();
 
 
 private:

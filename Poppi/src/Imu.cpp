@@ -127,6 +127,11 @@ float* Imu::getMagnetometer()
 	return m_magValues;
 }
 
+float Imu::getTemperature()
+{
+	return BSP_MAGNETO_GetTemperature();
+}
+
 /**
  * @brief  Significantly increases complementary convergence speed
  * @param  compAngle the computed angle
