@@ -6,6 +6,7 @@
 
 #include "BSP/stm32f411e_discovery.h"
 #include "BSP/stm32f411e_discovery_accelerometer.h"
+#include "BSP/stm32f411e_discovery_magnetometer.h"
 #include "BSP/stm32f411e_discovery_gyroscope.h"
 
 #include "Useful.h"
@@ -22,11 +23,13 @@ public:
 	float* getOrientation();
 	float* getGyroscope();
 	double* getAccelerometer();
+	float* getMagnetometer();
 
 
 private:
 	void readAcc();
 	void readGyr();
+	void readMag();
 	void computeAngles();
 	float computeComplementaryfilter(float dt, float compAngle, float accelAngle, float omega);
 	float formatAccelRange(float accelAngle, float accelZ);
@@ -41,6 +44,8 @@ private:
 
 	//Gyroscope
 	float m_gyroValues[3];
+	
+	float m_magValues[3];
 
 	//Absolute orientation
 	float m_orientation[2];

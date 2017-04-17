@@ -66,13 +66,62 @@ static void gyro(void const *argument)
 	}
 }
 
+static void magneto(void const *argument)
+{
+	Imu imu;
+	imu.init();
+
+	/* Gyroscope variables */
+	float* Buffer;
+	float Xval, Yval = 0x00;
+
+	for (;;)
+	{
+		/* Read Gyroscope Angular data */
+		Buffer = imu.getMagnetometer();
+
+		Xval = ABS(Buffer[0]);
+		Yval = ABS(Buffer[1]);
+		
+		printf("x %f, y %f, z %f\r\n", Buffer[0], Buffer[1], Buffer[2]);
+		if (Xval > Yval)
+		{
+			if (Buffer[0] > 0)
+			{
+				LedController::Instance().ledOn(LED3);
+			}
+			else if (Buffer[0] < 0)
+			{
+				LedController::Instance().ledOn(LED6);
+			}
+		}
+		else
+		{
+			if (Buffer[1] < 0)
+			{
+				LedController::Instance().ledOn(LED5);
+			}
+			else if (Buffer[1] > 0)
+			{
+				LedController::Instance().ledOn(LED4);
+			}
+		}
+		osDelay(100);
+
+		LedController::Instance().ledOff(LED3);
+		LedController::Instance().ledOff(LED4);
+		LedController::Instance().ledOff(LED5);
+		LedController::Instance().ledOff(LED6);
+	}
+}
+
 static void hexapodeThread(void const *argument)
 {
 	//Hexapode hexapode;
 	//hexapode.setDirection(Vector3::forward);
 	/*AX12<serial_ax> ax12(1);
 	ax12.SetID(1, 2);*/
-	Servo servo(3, 90, 220);
+	Servo servo(1, 90, 220);
 	servo.stop();
 	int angle = servo.getMinAngle();
 
@@ -103,8 +152,8 @@ int main(void)
 	osThreadDef(HexapodeThread, hexapodeThread, osPriorityRealtime, 1, configMINIMAL_STACK_SIZE + 1000);
 	osThreadCreate(osThread(HexapodeThread), NULL);
 
-	osThreadDef(GYROThread, gyro, osPriorityNormal, 1, configMINIMAL_STACK_SIZE);
-	osThreadCreate(osThread(GYROThread), NULL);
+	osThreadDef(MAGNETOThread, magneto, osPriorityNormal, 1, configMINIMAL_STACK_SIZE);
+	osThreadCreate(osThread(MAGNETOThread), NULL);
 	
 	/* Start scheduler */
 	osKernelStart();

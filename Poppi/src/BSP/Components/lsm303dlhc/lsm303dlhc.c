@@ -227,7 +227,7 @@ void LSM303DLHC_AccReadXYZ(int16_t* pData)
   /* Read the acceleration control register content */
   ctrlx[0] = COMPASSACCELERO_IO_Read(ACC_I2C_ADDRESS, LSM303DLHC_CTRL_REG4_A);
   ctrlx[1] = COMPASSACCELERO_IO_Read(ACC_I2C_ADDRESS, LSM303DLHC_CTRL_REG5_A);
-  
+
   /* Read output register X, Y & Z acceleration */
   buffer[0] = COMPASSACCELERO_IO_Read(ACC_I2C_ADDRESS, LSM303DLHC_OUT_X_L_A); 
   buffer[1] = COMPASSACCELERO_IO_Read(ACC_I2C_ADDRESS, LSM303DLHC_OUT_X_H_A);
@@ -559,20 +559,131 @@ void LSM303DLHC_AccZClickITConfig(void)
   LSM303DLHC_AccClickITEnable(LSM303DLHC_Z_SINGLE_CLICK);
 }
 
-/**
-  * @}
-  */ 
+/***********************************************************************************************
+  Magnetometer driver 
+***********************************************************************************************/
+
+MAGNETO_DrvTypeDef Lsm303dlhcDrv_magneto =
+{
+	LSM303DLHC_MagInit,
+	LSM303DLHC_MagDeInit,
+	LSM303DLHC_MagReadID,
+	LSM303DLHC_MagGetDataStatus,
+	LSM303DLHC_MagReadXYZ
+};
 
 /**
-  * @}
-  */ 
+  * @brief  Set LSM303DLHC Magnetometer Initialization.
+  * @param  LSM303DLHC_InitStruct: pointer to a LSM303DLHC_MagInitTypeDef structure 
+  *         that contains the configuration setting for the LSM303DLHC.
+  * @retval None
+  */
+void LSM303DLHC_MagInit(MAGNETO_InitTypeDef LSM303DLHC_InitStruct)
+{  
+	COMPASSACCELERO_IO_Write(MAG_I2C_ADDRESS, LSM303DLHC_CRA_REG_M, (LSM303DLHC_InitStruct.Temperature & 0x80) | (LSM303DLHC_InitStruct).DataOutputRate & 0x1C);
+	COMPASSACCELERO_IO_Write(MAG_I2C_ADDRESS, LSM303DLHC_CRB_REG_M, LSM303DLHC_InitStruct.FullScale & 0xE0);
+	COMPASSACCELERO_IO_Write(MAG_I2C_ADDRESS, LSM303DLHC_MR_REG_M, LSM303DLHC_InitStruct.Mode & 0x03);
+}
+
+/**
+  * @brief  LSM303DLHC Magnetometer De-initialization.
+  * @param  None
+  * @retval None
+  */
+void LSM303DLHC_MagDeInit(void)
+{  
+}
+
+/**
+  * @brief  Read LSM303DLHC ID.
+  * @param  None
+  * @retval ID 
+  */
+uint8_t LSM303DLHC_MagReadID(void)
+{  
+  /* Low level init */
+	COMPASSACCELERO_IO_Init();
   
-/**
-  * @}
-  */ 
+	/* Enabled the SPI/I2C read operation */
+	//COMPASSACCELERO_IO_Write(MAG_I2C_ADDRESS, LSM303DLHC_CTRL_REG3_M, 0x84);
+  
+	/* Read value at Who am I register address */
+	return COMPASSACCELERO_IO_Read(MAG_I2C_ADDRESS, LSM303DLHC_WHO_AM_I_ADDR);
+}
 
 /**
-  * @}
-  */ 
+  * @brief  Get status for Mag LSM303DLHC data
+  * @param  None
+  * @retval Data status in a LSM303DLHC Data register
+  */
+uint8_t LSM303DLHC_MagGetDataStatus(void)
+{
+  /* Read Mag STATUS register */
+	return COMPASSACCELERO_IO_Read(MAG_I2C_ADDRESS, LSM303DLHC_SR_REG_M);
+}
+
+/**
+  * @brief  Read X, Y & Z Magnetometer values 
+  * @param  pData: Data out pointer
+  * @retval None
+  */
+void LSM303DLHC_MagReadXYZ(float* pData)
+{
+	uint8_t ctrlx;
+	uint8_t buffer[6];
+	int16_t pnRawData[3];
+	uint8_t i = 0;
+	uint16_t Magn_Sensitivity_XY = LSM303DLHC_M_SENSITIVITY_XY_1_3Ga;
+	uint16_t Magn_Sensitivity_Z = LSM303DLHC_M_SENSITIVITY_Z_1_3Ga;
+  
+	ctrlx = COMPASSACCELERO_IO_Read(MAG_I2C_ADDRESS, LSM303DLHC_CRB_REG_M);
+	
+	/* Read output register X, Y & Z magnetometer */
+	buffer[0] = COMPASSACCELERO_IO_Read(MAG_I2C_ADDRESS, LSM303DLHC_OUT_X_L_M); 
+	buffer[1] = COMPASSACCELERO_IO_Read(MAG_I2C_ADDRESS, LSM303DLHC_OUT_X_H_M);
+	buffer[2] = COMPASSACCELERO_IO_Read(MAG_I2C_ADDRESS, LSM303DLHC_OUT_Y_L_M);
+	buffer[3] = COMPASSACCELERO_IO_Read(MAG_I2C_ADDRESS, LSM303DLHC_OUT_Y_H_M);
+	buffer[4] = COMPASSACCELERO_IO_Read(MAG_I2C_ADDRESS, LSM303DLHC_OUT_Z_L_M);
+	buffer[5] = COMPASSACCELERO_IO_Read(MAG_I2C_ADDRESS, LSM303DLHC_OUT_Z_H_M);
+  
+	switch (ctrlx & 0xE0)
+	{
+	case LSM303DLHC_FS_1_3_GA:
+		Magn_Sensitivity_XY = LSM303DLHC_M_SENSITIVITY_XY_1_3Ga;
+		Magn_Sensitivity_Z = LSM303DLHC_M_SENSITIVITY_Z_1_3Ga;
+		break;
+	case LSM303DLHC_FS_1_9_GA:
+		Magn_Sensitivity_XY = LSM303DLHC_M_SENSITIVITY_XY_1_9Ga;
+		Magn_Sensitivity_Z = LSM303DLHC_M_SENSITIVITY_Z_1_9Ga;
+		break;
+	case LSM303DLHC_FS_2_5_GA:
+		Magn_Sensitivity_XY = LSM303DLHC_M_SENSITIVITY_XY_2_5Ga;
+		Magn_Sensitivity_Z = LSM303DLHC_M_SENSITIVITY_Z_2_5Ga;
+		break;
+	case LSM303DLHC_FS_4_0_GA:
+		Magn_Sensitivity_XY = LSM303DLHC_M_SENSITIVITY_XY_4Ga;
+		Magn_Sensitivity_Z = LSM303DLHC_M_SENSITIVITY_Z_4Ga;
+		break;
+	case LSM303DLHC_FS_4_7_GA:
+		Magn_Sensitivity_XY = LSM303DLHC_M_SENSITIVITY_XY_4_7Ga;
+		Magn_Sensitivity_Z = LSM303DLHC_M_SENSITIVITY_Z_4_7Ga;
+		break;
+	case LSM303DLHC_FS_5_6_GA:
+		Magn_Sensitivity_XY = LSM303DLHC_M_SENSITIVITY_XY_5_6Ga;
+		Magn_Sensitivity_Z = LSM303DLHC_M_SENSITIVITY_Z_5_6Ga;
+		break;
+	case LSM303DLHC_FS_8_1_GA:
+		Magn_Sensitivity_XY = LSM303DLHC_M_SENSITIVITY_XY_8_1Ga;
+		Magn_Sensitivity_Z = LSM303DLHC_M_SENSITIVITY_Z_8_1Ga;
+		break;
+	}
+	
+	for (i = 0; i < 2; i++)
+	{
+		pData[i] = (float)((int16_t)((uint16_t)buffer[2*i + 1] << 8) + buffer[2*i]) * 1000 / Magn_Sensitivity_XY;
+	}
+	pData[2] = (float)((int16_t)((uint16_t)buffer[5] << 8) + buffer[4]) * 1000 / Magn_Sensitivity_Z;
+	
+}
   
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/     

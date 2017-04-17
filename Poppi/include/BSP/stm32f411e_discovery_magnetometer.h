@@ -1,14 +1,15 @@
 /**
   ******************************************************************************
-  * @file    magneto.h
+  * @file    stm32f411e_discovery_Magnometer.h
   * @author  MCD Application Team
-  * @version V4.0.1
-  * @date    21-July-2015
-  * @brief   This header file contains the functions prototypes for the MAGNETO driver.
+  * @version V1.0.2
+  * @date    27-January-2017
+  * @brief   This file contains all the functions prototypes for the 
+  *          stm32f411e_discovery_Magnometer.c firmware driver.
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2015 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT(c) 2017 STMicroelectronics</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -34,62 +35,62 @@
   *
   ******************************************************************************
   */
+  
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __MAGNETO_H
-#define __MAGNETO_H
+#ifndef __STM32F411E_DISCOVERY_Magnometer_H
+#define __STM32F411E_DISCOVERY_Magnometer_H
 
 #ifdef __cplusplus
  extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include <stdint.h>
+#include "stm32f411e_discovery.h"
 
+/* Include Magnometer component driver */
+#include "../Components/lsm303dlhc/lsm303dlhc.h"
+   
 /** @addtogroup BSP
   * @{
   */
-
-/** @addtogroup Components
-  * @{
-  */
-    
-/** @addtogroup MAGNETO
-  * @{
-  */
-
-/** @defgroup MAGNETO_Exported_Types
+  
+/** @addtogroup STM32F411E_DISCOVERY
   * @{
   */ 
 
-/** @defgroup MAGNETO_Config_structure  Magnetometer Configuration structure
+/** @addtogroup STM32F411E_DISCOVERY_Magnometer
   * @{
   */
-typedef struct
+  
+/** @defgroup STM32F411E_DISCOVERY_Magnometer_Exported_Types STM32F411E DISCOVERY Magnometer Exported Types
+  * @{
+  */
+typedef enum 
 {
-  uint8_t Temperature;
-  uint8_t DataOutputRate;
-  uint8_t FullScale;
-  uint8_t Mode;
-}MAGNETO_InitTypeDef;
+  MAGNETO_OK = 0,
+  MAGNETO_ERROR = 1,
+  MAGNETO_TIMEOUT = 2
+}MAGNETO_StatusTypeDef;
+
 /**
   * @}
   */
 
-/** @defgroup MAGNETO_Driver_structure  Magnetometer Driver structure
+/** @defgroup STM32F411E_DISCOVERY_Magnometer_Exported_Constants STM32F411E DISCOVERY Magnometer Exported Constants
   * @{
   */
-typedef struct
-{  
-  void      (*Init)(MAGNETO_InitTypeDef);
-  void      (*DeInit)(void); 
-  uint8_t   (*ReadID)(void);
-  uint8_t   (*Status)(void);
-  void      (*GetXYZ)(float *);
-}MAGNETO_DrvTypeDef;
 /**
   * @}
   */
+  
+/** @defgroup STM32F411E_DISCOVERY_Magnometer_Exported_Functions STM32F411E DISCOVERY Magnometer Exported Functions
+  * @{
+  */
+/* Magnometer functions */   
+uint8_t BSP_MAGNETO_Init(void);
+uint8_t BSP_MAGNETO_Status(void);
+void    BSP_MAGNETO_GetXYZ(float *pDataXYZ);
 
 /**
   * @}
@@ -101,16 +102,16 @@ typedef struct
 
 /**
   * @}
-  */
+  */ 
 
 /**
   * @}
-  */
+  */ 
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __MAGNETO_H */
+#endif /* __STM32F411E_DISCOVERY_Magnometer_H */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/ 

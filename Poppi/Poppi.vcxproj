@@ -149,6 +149,7 @@
     <ClCompile Include="src\BSP\Components\lsm303dlhc\lsm303dlhc.c" />
     <ClCompile Include="src\BSP\stm32f411e_discovery.c" />
     <ClCompile Include="src\BSP\stm32f411e_discovery_accelerometer.c" />
+    <ClCompile Include="src\BSP\stm32f411e_discovery_magnetometer.c" />
     <ClCompile Include="src\BSP\stm32f411e_discovery_gyroscope.c" />
     <ClCompile Include="src\Hexapode\Gaits\AsyncGait.cpp" />
     <ClCompile Include="src\Hexapode\Gaits\Gait.cpp" />
@@ -311,6 +312,7 @@
     <ClInclude Include="include\BSP\Components\lsm303dlhc\lsm303dlhc.h" />
     <ClInclude Include="include\BSP\stm32f411e_discovery.h" />
     <ClInclude Include="include\BSP\stm32f411e_discovery_accelerometer.h" />
+    <ClInclude Include="include\BSP\stm32f411e_discovery_magnetometer.h" />
     <ClInclude Include="include\BSP\stm32f411e_discovery_gyroscope.h" />
     <ClInclude Include="include\Hexapode\Gaits\AsyncGait.h" />
     <ClInclude Include="include\Hexapode\Gaits\Gait.h" />

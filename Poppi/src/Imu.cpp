@@ -30,6 +30,12 @@ void Imu::init()
 		printf("[IMU]Error encountered while initializeing the gyroscope.\r\n");
 #endif
 	}
+	if (BSP_MAGNETO_Init() != HAL_OK)
+	{
+#ifdef DEBUG
+		printf("[IMU]Error encountered while initializeing the gyroscope.\r\n");
+#endif
+	}
 }
 
 
@@ -69,6 +75,20 @@ void Imu::readGyr()
 }
 
 /**
+ * @brief  Read Magnetometer data.
+ * @param  None
+ * @retval None
+ */
+void Imu::readMag()
+{
+	if ((BSP_MAGNETO_Status() & 0x01) == 1)
+	{
+		BSP_MAGNETO_GetXYZ(m_magValues);
+	}
+
+}
+
+/**
  * @brief  Find the quarant whee the angle lies and format it in range [0, 2*pi]
  * @param  accelAngle the angle (float)
  * @param  accelZ the raw Z acceleration (float)
@@ -99,6 +119,12 @@ double* Imu::getAccelerometer()
 {
 	readAcc();
 	return m_accelAngle;
+}
+
+float* Imu::getMagnetometer()
+{
+	readMag();
+	return m_magValues;
 }
 
 /**

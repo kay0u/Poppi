@@ -45,6 +45,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "../Common/accelero.h"
+#include "../Common/magneto.h"
 
 /** @addtogroup BSP
   * @{
@@ -134,6 +135,7 @@
 /******************************************************************************/
 
 #define I_AM_LMS303DLHC                   ((uint8_t)0x33)
+#define I_AM_LMS303DLHC_MAG                   ((uint8_t)0x3C)
 
 /** @defgroup Acc_Power_Mode_selection
   * @{
@@ -472,7 +474,13 @@ uint8_t COMPASSACCELERO_IO_Read(uint16_t DeviceAddr, uint8_t RegisterAddr);
 
 /* ACC driver structure */
 extern ACCELERO_DrvTypeDef Lsm303dlhcDrv;
+extern MAGNETO_DrvTypeDef Lsm303dlhcDrv_magneto;
 
+void    LSM303DLHC_MagInit(MAGNETO_InitTypeDef LSM303DLHC_InitStruct);
+void    LSM303DLHC_MagDeInit(void);
+uint8_t LSM303DLHC_MagReadID(void);
+uint8_t LSM303DLHC_MagGetDataStatus(void);
+void    LSM303DLHC_MagReadXYZ(float* pData);
 /**
   * @}
   */
