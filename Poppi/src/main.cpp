@@ -83,7 +83,7 @@ static void magneto(void const *argument)
 		Xval = ABS(Buffer[0]);
 		Yval = ABS(Buffer[1]);
 		
-		printf("x %f, y %f, z %f\r\n", Buffer[0], Buffer[1], Buffer[2]);
+		//printf("x %f, y %f, z %f\r\n", Buffer[0], Buffer[1], Buffer[2]);
 		if (Xval > Yval)
 		{
 			if (Buffer[0] > 0)
