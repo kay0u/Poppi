@@ -81,11 +81,11 @@ void Imu::readGyr()
  */
 void Imu::readMag()
 {
-	if ((BSP_MAGNETO_Status() & 0x01) == 1)
+	uint8_t status = BSP_MAGNETO_Status();
+	if (((status & 0x01) == 1) && ((status & 0x02) == 0))
 	{
 		BSP_MAGNETO_GetXYZ(m_magValues);
 	}
-
 }
 
 /**

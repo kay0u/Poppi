@@ -37,7 +37,7 @@
   */ 
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f411e_discovery_magnetometer.h"
+#include "BSP/stm32f411e_discovery_magnetometer.h"
 
 /** @addtogroup BSP
   * @{
@@ -130,10 +130,11 @@ uint8_t BSP_MAGNETO_Init(void)
   */
 uint8_t BSP_MAGNETO_Status(void)
 {
-  if(MagnetometerDrv->Status != NULL)
-  {
-	  return MagnetometerDrv->Status();
-  }  
+	if (MagnetometerDrv->Status != NULL)
+	{
+		return MagnetometerDrv->Status();
+	}
+	return -1;
 }
 
 /**
@@ -155,7 +156,7 @@ float BSP_MAGNETO_GetTemperature(void)
 	{
 		return MagnetometerDrv->GetTemperature();
 	}
-	return -1.f;
+	return -1;
 }
 
 /**
