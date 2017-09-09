@@ -32,7 +32,7 @@ Vector3::~Vector3()
 
 float Vector3::magnitude()
 {
-	return sqrt((x * x) + (y * y) + (z * z));
+	return std::sqrt((x * x) + (y * y) + (z * z));
 }
 
 Vector3 Vector3::normalized()
@@ -45,7 +45,7 @@ Vector3 Vector3::normalized()
 
 double Vector3::Distance(Vector3 v1, Vector3 v2)
 {
-   return sqrt((v1.x-v2.x)*(v1.x-v2.x)+(v1.y-v2.y)*(v1.y-v2.y)+(v1.z-v2.z)*(v1.z-v2.z));
+	return std::sqrt((v1.x-v2.x)*(v1.x-v2.x)+(v1.y-v2.y)*(v1.y-v2.y)+(v1.z-v2.z)*(v1.z-v2.z));
 }
 
 Vector3 Vector3::operator+(const Vector3& v2)

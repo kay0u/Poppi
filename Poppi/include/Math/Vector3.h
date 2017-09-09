@@ -17,6 +17,10 @@ public:
 	Vector3(float x, float y, float z);
 	~Vector3();
 
+	float x;
+	float y;
+	float z;
+
 	float magnitude();
 	Vector3 normalized();
 	static double Distance(Vector3 v1, Vector3 v2);
@@ -42,11 +46,5 @@ public:
 	static const Vector3 right;
 	static const Vector3 forward;
 	static const Vector3 backward;
-
-
-	float x;
-	float y;
-	float z;
-
 };
 #endif

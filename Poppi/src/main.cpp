@@ -124,7 +124,6 @@ static void hexapodeThread(void const *argument)
 	//Servo servo(3, 110, 220);
 	//servo.stop();
 	//int angle = servo.getMinAngle();
-	
 	for (;;)
 	{
 		/*if (angle > servo.getMaxAngle())
@@ -136,7 +135,6 @@ static void hexapodeThread(void const *argument)
 
 		//angle += 10;
 
-		hexapode.update();
 		osDelay(10);
 	}
 }
@@ -154,8 +152,8 @@ int main(void)
 	osThreadDef(HexapodeThread, hexapodeThread, osPriorityRealtime, 1, configMINIMAL_STACK_SIZE + 1000);
 	osThreadCreate(osThread(HexapodeThread), NULL);
 
-	osThreadDef(MAGNETOThread, magneto, osPriorityNormal, 1, configMINIMAL_STACK_SIZE);
-	osThreadCreate(osThread(MAGNETOThread), NULL);
+	//osThreadDef(MAGNETOThread, magneto, osPriorityNormal, 1, configMINIMAL_STACK_SIZE);
+	//osThreadCreate(osThread(MAGNETOThread), NULL);
 	
 	/* Start scheduler */
 	osKernelStart();
