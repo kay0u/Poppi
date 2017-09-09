@@ -49,7 +49,7 @@
 #include "stm32f411e_discovery.h"
 
 /* Include Magnometer component driver */
-#include "../Components/lsm303dlhc/lsm303dlhc.h"
+#include "Components/lsm303dlhc/lsm303dlhc.h"
    
 /** @addtogroup BSP
   * @{
@@ -91,7 +91,7 @@ typedef enum
 uint8_t BSP_MAGNETO_Init(void);
 uint8_t BSP_MAGNETO_Status(void);
 void    BSP_MAGNETO_GetXYZ(float *pDataXYZ);
-float    BSP_MAGNETO_GetTemperature(void);
+float   BSP_MAGNETO_GetTemperature(void);
 
 /**
   * @}

@@ -49,7 +49,7 @@
 #include "stm32f411e_discovery.h"
 
  /* Include Gyroscope component driver */
-#include "../Components/l3gd20/l3gd20.h"   
+#include "Components/l3gd20/l3gd20.h"
 
 /** @addtogroup BSP
   * @{

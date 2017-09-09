@@ -5,8 +5,8 @@
  *      Author: Vincent
  */
 
-#include "../../include/Hexapode/Servo.h"
-#include "../UnitySerial.h"
+#include "Hexapode/Servo.h"
+#include "UnitySerial.h"
 
 Servo::Servo(int id, float minAngle, float maxAngle):
 m_reachedTarget(true),

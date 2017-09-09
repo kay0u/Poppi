@@ -119,24 +119,24 @@ static void magneto(void const *argument)
 
 static void hexapodeThread(void const *argument)
 {
-	//Hexapode hexapode;
-	//hexapode.setDirection(Vector3::forward);
-	/*AX12<serial_ax> ax12(1);
-	ax12.SetID(1, 2);*/
-	Servo servo(1, 90, 220);
-	servo.stop();
-	int angle = servo.getMinAngle();
-
+	Hexapode hexapode;
+	hexapode.setDirection(Vector3::forward);
+	//Servo servo(3, 110, 220);
+	//servo.stop();
+	//int angle = servo.getMinAngle();
+	
 	for (;;)
 	{
 		/*if (angle > servo.getMaxAngle())
 			angle = servo.getMinAngle();
 		servo.goTo(angle);*/
-		UnitySerial::SendLogToPrint("angle: %d", (int)servo.getCurrentAngle());
-		osDelay(500);
+		
+		//UnitySerial::SendLogToPrint("angle: %d", (int)servo.getCurrentAngle());
+		//osDelay(500);
 
 		//angle += 10;
-		//hexapode.update();
+
+		hexapode.update();
 		osDelay(10);
 	}
 }
@@ -151,8 +151,8 @@ int main(void)
 	serial_pc::init(1000000);
 
 	// /!\ Attention, avec l'utilisation du printf il faut augmenter la stack size pour le thread.
-	/*osThreadDef(HexapodeThread, hexapodeThread, osPriorityRealtime, 1, configMINIMAL_STACK_SIZE + 1000);
-	osThreadCreate(osThread(HexapodeThread), NULL);*/
+	osThreadDef(HexapodeThread, hexapodeThread, osPriorityRealtime, 1, configMINIMAL_STACK_SIZE + 1000);
+	osThreadCreate(osThread(HexapodeThread), NULL);
 
 	osThreadDef(MAGNETOThread, magneto, osPriorityNormal, 1, configMINIMAL_STACK_SIZE);
 	osThreadCreate(osThread(MAGNETOThread), NULL);

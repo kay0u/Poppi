@@ -12,6 +12,9 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{FC8DD099-196A-41C4-89BE-E74F256085C9}</ProjectGuid>
+    <BSP_ID>com.sysprogs.arm.stm32</BSP_ID>
+    <BSP_VERSION>4.3</BSP_VERSION>
+    <InPlaceBSPSubdir />
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|VisualGDB'">
@@ -29,9 +32,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|VisualGDB'">
     <GNUConfigurationType>Debug</GNUConfigurationType>
     <Toolchain>C:\SysGCC\arm-eabi</Toolchain>
+    <ToolchainID>com.visualgdb.arm-eabi</ToolchainID>
+    <ToolchainVersion>6.2.0/7.12/r4</ToolchainVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|VisualGDB'">
     <Toolchain>C:\SysGCC\arm-eabi</Toolchain>
+    <ToolchainID>com.visualgdb.arm-eabi</ToolchainID>
+    <ToolchainVersion>6.2.0/7.12/r4</ToolchainVersion>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|VisualGDB'">
     <ClCompile>
@@ -49,7 +56,6 @@
     <ClCompile Include="$(BSP_ROOT)\FreeRTOS\Source\croutine.c" />
     <ClCompile Include="$(BSP_ROOT)\FreeRTOS\Source\event_groups.c" />
     <ClCompile Include="$(BSP_ROOT)\FreeRTOS\Source\list.c" />
-    <ClCompile Include="$(BSP_ROOT)\FreeRTOS\Source\portable\GCC\ARM_CM4F\port.c" />
     <ClCompile Include="$(BSP_ROOT)\FreeRTOS\Source\portable\MemMang\heap_4.c" />
     <ClCompile Include="$(BSP_ROOT)\FreeRTOS\Source\queue.c" />
     <ClCompile Include="$(BSP_ROOT)\FreeRTOS\Source\tasks.c" />
@@ -139,11 +145,6 @@
     <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_usart.c" />
     <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_usb.c" />
     <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_utils.c" />
-    <ClCompile Include="$(EFP_BASE)\Profiler\FastSemihosting.cpp" />
-    <ClCompile Include="$(EFP_BASE)\Profiler\InstrumentingProfiler.cpp" />
-    <ClCompile Include="$(EFP_BASE)\Profiler\ProfilerDriver_STM32_HAL.cpp" />
-    <ClCompile Include="$(EFP_BASE)\Profiler\ProfilerRTOS_FreeRTOS.c" />
-    <ClCompile Include="$(EFP_BASE)\Profiler\SamplingProfiler.cpp" />
     <ClCompile Include="src\AX12.cpp" />
     <ClCompile Include="src\BSP\Components\l3gd20\l3gd20.c" />
     <ClCompile Include="src\BSP\Components\lsm303dlhc\lsm303dlhc.c" />
@@ -185,7 +186,6 @@
     <ClInclude Include="$(BSP_ROOT)\FreeRTOS\Source\include\StackMacros.h" />
     <ClInclude Include="$(BSP_ROOT)\FreeRTOS\Source\include\task.h" />
     <ClInclude Include="$(BSP_ROOT)\FreeRTOS\Source\include\timers.h" />
-    <ClInclude Include="$(BSP_ROOT)\FreeRTOS\Source\portable\GCC\ARM_CM4F\portmacro.h" />
     <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\Device\ST\STM32F4xx\Include\stm32f4xx.h" />
     <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\Device\ST\STM32F4xx\Include\system_stm32f4xx.h" />
     <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\Include\arm_common_tables.h" />
@@ -298,11 +298,6 @@
     <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_usb.h" />
     <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_utils.h" />
     <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_wwdg.h" />
-    <ClInclude Include="$(EFP_BASE)\Profiler\CustomRealTimeWatches.h" />
-    <ClInclude Include="$(EFP_BASE)\Profiler\ProfilerFreeRTOSHooks.h" />
-    <ClInclude Include="$(EFP_BASE)\Profiler\SmallNumberCoder.h" />
-    <ClInclude Include="$(EFP_BASE)\Profiler\SysprogsProfiler.h" />
-    <ClInclude Include="$(EFP_BASE)\Profiler\SysprogsProfilerInterface.h" />
     <ClInclude Include="FreeRTOSConfig.h" />
     <ClInclude Include="include\AX12.h" />
     <ClInclude Include="include\BSP\Components\Common\accelero.h" />

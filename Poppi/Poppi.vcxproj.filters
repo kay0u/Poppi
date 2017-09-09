@@ -352,27 +352,13 @@
     <ClCompile Include="$(BSP_ROOT)\FreeRTOS\Source\CMSIS_RTOS\cmsis_os.c">
       <Filter>Source files\Device-specific files\FreeRTOS</Filter>
     </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\FreeRTOS\Source\portable\GCC\ARM_CM4F\port.c">
-      <Filter>Source files\Device-specific files\FreeRTOS</Filter>
-    </ClCompile>
     <ClCompile Include="$(BSP_ROOT)\FreeRTOS\Source\portable\MemMang\heap_4.c">
       <Filter>Source files\Device-specific files\FreeRTOS</Filter>
     </ClCompile>
-    <ClCompile Include="$(EFP_BASE)\Profiler\FastSemihosting.cpp">
-      <Filter>Source files\Device-specific files\Semihosting/Profiler</Filter>
+      <Filter>Source files\Device-specific files\FreeRTOS</Filter>
     </ClCompile>
-    <ClCompile Include="$(EFP_BASE)\Profiler\SamplingProfiler.cpp">
-      <Filter>Source files\Device-specific files\Semihosting/Profiler</Filter>
-    </ClCompile>
-    <ClCompile Include="$(EFP_BASE)\Profiler\InstrumentingProfiler.cpp">
-      <Filter>Source files\Device-specific files\Semihosting/Profiler</Filter>
-    </ClCompile>
-    <ClCompile Include="$(EFP_BASE)\Profiler\ProfilerDriver_STM32_HAL.cpp">
-      <Filter>Source files\Device-specific files\Semihosting/Profiler</Filter>
-    </ClCompile>
-    <ClCompile Include="$(EFP_BASE)\Profiler\ProfilerRTOS_FreeRTOS.c">
-      <Filter>Source files\Device-specific files\Semihosting/Profiler</Filter>
-    </ClCompile>
+      <Filter>Header files\Device-specific files\FreeRTOS</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\AX12.h">
@@ -499,9 +485,6 @@
       <Filter>Header files\Device-specific files\FreeRTOS</Filter>
     </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\FreeRTOS\Source\include\timers.h">
-      <Filter>Header files\Device-specific files\FreeRTOS</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\FreeRTOS\Source\portable\GCC\ARM_CM4F\portmacro.h">
       <Filter>Header files\Device-specific files\FreeRTOS</Filter>
     </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal.h">
@@ -840,21 +823,6 @@
     <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\RTOS\Template\cmsis_os.h">
       <Filter>Header files\Device-specific files\HAL</Filter>
     </ClInclude>
-    <ClInclude Include="$(EFP_BASE)\Profiler\SysprogsProfiler.h">
-      <Filter>Header files\Device-specific files\Semihosting/Profiler</Filter>
-    </ClInclude>
-    <ClInclude Include="$(EFP_BASE)\Profiler\SmallNumberCoder.h">
-      <Filter>Header files\Device-specific files\Semihosting/Profiler</Filter>
-    </ClInclude>
-    <ClInclude Include="$(EFP_BASE)\Profiler\SysprogsProfilerInterface.h">
-      <Filter>Header files\Device-specific files\Semihosting/Profiler</Filter>
-    </ClInclude>
-    <ClInclude Include="$(EFP_BASE)\Profiler\ProfilerFreeRTOSHooks.h">
-      <Filter>Header files\Device-specific files\Semihosting/Profiler</Filter>
-    </ClInclude>
-    <ClInclude Include="$(EFP_BASE)\Profiler\CustomRealTimeWatches.h">
-      <Filter>Header files\Device-specific files\Semihosting/Profiler</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="stm32.props">
@@ -945,12 +913,6 @@
     </Filter>
     <Filter Include="Header files\include\BSP\Components\lsm303dlhc">
       <UniqueIdentifier>{044018b1-8c87-4f5e-8478-b3654feb0abe}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source files\Device-specific files\Semihosting/Profiler">
-      <UniqueIdentifier>{9eb6e8b5-0c28-4a9e-b4be-f7c111ed8203}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header files\Device-specific files\Semihosting/Profiler">
-      <UniqueIdentifier>{b0e2472b-6cfb-4881-9e66-39019aad9e37}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

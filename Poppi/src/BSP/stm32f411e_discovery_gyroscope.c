@@ -36,7 +36,7 @@
   ******************************************************************************
   */
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f411e_discovery_gyroscope.h"
+#include "BSP/stm32f411e_discovery_gyroscope.h"
 
 /** @addtogroup BSP
   * @{
