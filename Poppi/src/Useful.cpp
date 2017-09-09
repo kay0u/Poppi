@@ -103,6 +103,9 @@ extern "C"
 		/* Go to infinite loop when Hard Fault exception occurs */
 		while (1)
 		{
+			for (int i(0); i < 1000000; i++)
+				;
+			LedController::Instance().toggleLed(LedRed);
 		}
 	}
 
