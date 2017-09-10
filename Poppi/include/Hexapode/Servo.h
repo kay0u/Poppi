@@ -29,6 +29,8 @@ private:
 	AX12<serial_ax> m_ax;
 	bool m_reachedTarget;
 	bool m_stopped;
+	bool m_isConnected;
+	int m_epsilon;
 	const float m_minAngle;
 	const float m_maxAngle;
 	const int m_axId;
