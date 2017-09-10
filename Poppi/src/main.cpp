@@ -120,22 +120,11 @@ static void magneto(void const *argument)
 static void hexapodeThread(void const *argument)
 {
 	Hexapode hexapode;
-	hexapode.setDirection(Vector3::forward);
-	//Servo servo(3, 110, 220);
-	//servo.stop();
-	//int angle = servo.getMinAngle();
+	hexapode.setDirection(Vector3(-0.7, 0,1.6));
+	
+	osThreadTerminate(osThreadGetId()); //On a plus besoinde ce thread, l'hexapode en crée un tout seul
 	for (;;)
 	{
-		/*if (angle > servo.getMaxAngle())
-			angle = servo.getMinAngle();
-		servo.goTo(angle);*/
-		
-		//UnitySerial::SendLogToPrint("angle: %d", (int)servo.getCurrentAngle());
-		//osDelay(500);
-
-		//angle += 10;
-
-		osDelay(10);
 	}
 }
 
@@ -149,7 +138,7 @@ int main(void)
 	serial_pc::init(1000000);
 
 	// /!\ Attention, avec l'utilisation du printf il faut augmenter la stack size pour le thread.
-	osThreadDef(HexapodeThread, hexapodeThread, osPriorityRealtime, 1, configMINIMAL_STACK_SIZE + 1000);
+	osThreadDef(HexapodeThread, hexapodeThread, osPriorityNormal, 1, configMINIMAL_STACK_SIZE + 1000);
 	osThreadCreate(osThread(HexapodeThread), NULL);
 
 	//osThreadDef(MAGNETOThread, magneto, osPriorityNormal, 1, configMINIMAL_STACK_SIZE);
