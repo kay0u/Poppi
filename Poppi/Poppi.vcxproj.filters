@@ -361,6 +361,9 @@
     <ClInclude Include="$(BSP_ROOT)\FreeRTOS\Source\portable\GCC\ARM_CM3\portmacro.h">
       <Filter>Header files\Device-specific files\FreeRTOS</Filter>
     </ClInclude>
+    <ClCompile Include="src\AX12Base.cpp">
+      <Filter>Source files\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\AX12.h">
@@ -824,6 +827,9 @@
     </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\STM32F4xxxx\CMSIS_HAL\RTOS\Template\cmsis_os.h">
       <Filter>Header files\Device-specific files\HAL</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AX12Base.h">
+      <Filter>Header files\include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
