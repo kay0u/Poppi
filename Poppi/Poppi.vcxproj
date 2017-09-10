@@ -169,6 +169,8 @@
     <ClCompile Include="src\Uart_def.cpp" />
     <ClCompile Include="src\Useful.cpp" />
     <ClCompile Include="UnitySerial.cpp" />
+	<ClCompile Include="$(BSP_ROOT)\FreeRTOS\Source\portable\GCC\ARM_CM3\port.c" />
+    <ClInclude Include="$(BSP_ROOT)\FreeRTOS\Source\portable\GCC\ARM_CM3\portmacro.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(BSP_ROOT)\FreeRTOS\Source\CMSIS_RTOS\cmsis_os.h" />
