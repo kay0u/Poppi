@@ -29,7 +29,7 @@ LegStep::LegStep(Leg *l, LegPosition pos):
 
 Gait::~Gait()
 {
-
+	vTaskDelete(m_taskHandle);
 }
 
 void Gait::setDirection(Vector3 goal)
@@ -108,7 +108,7 @@ uint8_t Gait::getMoveLoopStart()
 void Gait::walk()
 {
 	LedController::Instance().toggleAllLed();
-	xTaskCreate(walkTask, "Walk task", configMINIMAL_STACK_SIZE + 200, this, osPriorityNormal,&m_taskHandle);
+	xTaskCreate(walkTask, "Walk task", configMINIMAL_STACK_SIZE + 200, this, osPriorityRealtime, &m_taskHandle);
 	configASSERT(m_taskHandle);
 }
 
@@ -120,7 +120,15 @@ void Gait::executeMovement(Movement move)
 
 void Gait::waitForMoveEnd() const
 {
-	osDelay(1000);
+	bool hasReachedGoal = false;
+	while (!hasReachedGoal)
+	{
+		hasReachedGoal = true;
+		for (uint32_t i(0); i < LEG_COUNT; ++i)
+			hasReachedGoal &= m_legs[i]->hasReachedGoal();
+	}
+	//Debug
+	//osDelay(1000);
 }
 
 bool Gait::isStopped()
