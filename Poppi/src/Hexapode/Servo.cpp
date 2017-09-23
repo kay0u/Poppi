@@ -58,9 +58,9 @@ bool Servo::reachedTarget()
 	if (!m_isConnected)
 		return true; //Todo: Pour l'instant, on dit que toutes les pattes sont branchées ok?!
 	float goal;
-	Error error; //Todo: Gérer les erreurs
+	AX12Base::Error error;  //Todo: Gérer les erreurs
 	error = m_ax.GetGoalPosition(goal);
-	if (error == Error::TIMEOUT)
+	if (error == AX12Base::Error::TIMEOUT)
 	{
 		m_isConnected = false;
 		return true; //Todo: Pour l'instant, on dit que toutes les pattes sont branchées ok?!

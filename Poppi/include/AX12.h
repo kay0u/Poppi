@@ -27,7 +27,7 @@ public:
 	void syncWriteGoal(const std::array<uint8_t, size>& idList, const std::array<int, size>& goalList);
 	
 protected:
-	Error read(unsigned char* data);
+	Error read() override;
 	Error write() override;
 };
 

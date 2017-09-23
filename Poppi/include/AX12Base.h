@@ -8,30 +8,30 @@
 //#define AX12_READ_DEBUG
 //#define AX12_DEBUG
 
-enum Error
-{
-	TIMEOUT       = 1 << 7,
-	INSTRUCTION   = 1 << 6,
-	OVERLOAD      = 1 << 5,
-	CHECKSUM      = 1 << 4,
-	RANGE         = 1 << 3,
-	OVERHEATING   = 1 << 2,
-	ANGLE_LIMIT   = 1 << 1,
-	INPUT_VOLTAGE = 1,
-	NO_ERROR      = 0
-}
-;
-
 class AX12Base
 {
 public:
 	virtual ~AX12Base() {};
+	
 	enum Mode
 	{
-		Join, 
-		//Positional, default
-	   Wheel //Continuous rotation
+		Join, //Positional, default
+		Wheel //Continuous rotation
 	};
+	
+	enum Error
+	{
+		TIMEOUT       = 1 << 7,
+		INSTRUCTION   = 1 << 6,
+		OVERLOAD      = 1 << 5,
+		CHECKSUM      = 1 << 4,
+		RANGE         = 1 << 3,
+		OVERHEATING   = 1 << 2,
+		ANGLE_LIMIT   = 1 << 1,
+		INPUT_VOLTAGE = 1,
+		NO_ERROR      = 0
+	};
+	
 	static const int ID_BROADCAST = 0xFE;
 	
 	/** Set the mode of the servo
@@ -206,6 +206,7 @@ protected:
 	
 	std::vector<char> _txBuf;
 	std::vector<char> _rxBuf;
+	std::vector<char> _data;
 	
 	/*
 //EEPROM
@@ -230,51 +231,44 @@ PUNCH_H // 0x31 */
 	
 	struct Register
 	{
-		constexpr Register(unsigned addr, unsigned len)
-			: address(addr)
-			, length(len)
-		{
-		}
-		const unsigned address;
-		const unsigned length;
+		const uint8_t address;
+		const uint8_t length;
 	};
 	
 	//EEPROM Kept after reboot
-	static const Register REG_ID;    // = Register(0x3, 1);
-	static const Register REG_BAUD;    // = Register(0x4, 1);
-	static const Register REG_CLOCKWISE_LIMIT;    // = Register(0x06, 2);
-	static const Register REG_COUNTERCLOCKWISE_LIMIT;    // = Register(0x08, 2);
+	static constexpr Register REG_ID = { 0x3, 1 };
+	static constexpr Register REG_BAUD = { 0x4, 1 };
+	static constexpr Register REG_CLOCKWISE_LIMIT = { 0x06, 2 };
+	static constexpr Register REG_COUNTERCLOCKWISE_LIMIT = { 0x08, 2 };
 	
 	//RAM Reset after reboot
-	static const Register REG_TORQUE_ENABLE;    // = Register(0x18, 1);
-	static const Register REG_LED;    // = Register(0x19, 1);
-	static const Register REG_GOAL_POSITION;    // = Register(0x1E, 2);
-	static const Register REG_MOVING_SPEED;    // = Register(0X20, 2);
-	static const Register REG_TORQUE_LIMIT;    // = Register(0x22, 2);
-	static const Register REG_PRESENT_POSITION;     // = Register(0x24, 2);
-	static const Register REG_PRESENT_SPEED;     // = Register(0x26, 2);
-	static const Register REG_PRESENT_LOAD;     // = Register(0x28, 2);
-	static const Register REG_PRESENT_VOLTAGE;     // = Register(0x2A, 1);
-	static const Register REG_PRESENT_TEMPERATURE;     // = Register(0x2B, 1);
-	static const Register REG_MOVING;     // = Register(0x2E, 1);
+	static constexpr Register REG_TORQUE_ENABLE = { 0x18, 1 };
+	static constexpr Register REG_LED = { 0x19, 1 };
+	static constexpr Register REG_GOAL_POSITION = { 0x1E, 2 };
+	static constexpr Register REG_MOVING_SPEED = { 0X20, 2 };
+	static constexpr Register REG_TORQUE_LIMIT = { 0x22, 2 };
+	static constexpr Register REG_PRESENT_POSITION = { 0x24, 2 };
+	static constexpr Register REG_PRESENT_SPEED = { 0x26, 2 };
+	static constexpr Register REG_PRESENT_VOLTAGE = { 0x2A, 1 };
+	static constexpr Register REG_PRESENT_LOAD = { 0x28, 2 };
+	static constexpr Register REG_PRESENT_TEMPERATURE = { 0x2B, 1 };
+	static constexpr Register REG_MOVING = { 0x2E, 1 };
 	
 	enum Instruction
 	{
-		PING = 0x01,   // No execution. It is used when controller is ready to receive Status Packet
-		READ_DATA = 0x02,   // This command reads data from Dynamixel
-		WRITE_DATA = 0x03,   // This command writes data to Dynamixel
-		REG_WRITE = 0x04,   // It is similar to WRITE_DATA, but it remains in the standby state without being executed until the ACTION command arrives.
-		ACTION = 0x05,   // This command initiates motions registered with REG_WRITE
-		RESET = 0x06,   // This command restores the state of Dynamixel to the factory default setting.
+		PING       = 0x01, // No execution. It is used when controller is ready to receive Status Packet
+		READ_DATA  = 0x02, // This command reads data from Dynamixel
+		WRITE_DATA = 0x03, // This command writes data to Dynamixel
+		REG_WRITE  = 0x04, // It is similar to WRITE_DATA, but it remains in the standby state without being executed until the ACTION command arrives.
+		ACTION     = 0x05, // This command initiates motions registered with REG_WRITE
+		RESET      = 0x06, // This command restores the state of Dynamixel to the factory default setting.
 		SYNC_WRITE = 0x83 // This command is used to control several Dynamixels simultaneously at a time.
-	}
-	;
+	};
 	
 protected:
-	Error read(int ID, const Register& reg, unsigned char* data);
-	template <std::size_t size>
-	Error write(int ID, const Register& reg, const std::array<unsigned char, size> &data, bool shouldWaitForTrigger);
+	Error read(int ID, const Register& reg);
+	Error write(int ID, const Register& reg, bool shouldWaitForTrigger);
 	
-	virtual Error read(unsigned char* data) = 0;
+	virtual Error read() = 0;
 	virtual Error write() = 0;
 };

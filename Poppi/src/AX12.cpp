@@ -16,7 +16,7 @@ AX12<serial>::AX12(int ID, int baud, Mode mode, bool shouldWaitForTrigger)
 }
 
 template<typename serial>
-Error AX12<serial>::read(unsigned char* data)
+AX12Base::Error AX12<serial>::read()
 {
 	// Transmit the packet in one burst with no pausing
 	serial::changeCommunicationMode(serial::communicationMode::TX);
@@ -64,7 +64,7 @@ Error AX12<serial>::read(unsigned char* data)
 
 		// Copy the data from Status into data for return
 		for(int i = 0 ; i < _rxBuf[3] - 2 ; i++) {
-			data[i] = _rxBuf[5 + i];
+			_data[i] = _rxBuf[5 + i];
 		}
 
 #ifdef AX12_READ_DEBUG
@@ -91,7 +91,7 @@ Error AX12<serial>::read(unsigned char* data)
 }
 
 template<typename serial>
-Error AX12<serial>::write()
+AX12Base::Error AX12<serial>::write()
 {
 	// Transmit the packet in one burst with no pausing
 	serial::changeCommunicationMode(serial::communicationMode::TX);
