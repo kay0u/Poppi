@@ -20,10 +20,10 @@ public:
 
 	void printAngles();
 	void init();
-	float* getOrientation();
-	float* getGyroscope();
-	double* getAccelerometer();
-	float* getMagnetometer();
+	std::array<float, 2> getOrientation();
+	std::array <float, 3> getGyroscope();
+	std::array<double, 2> getAccelerometer();
+	std::array <float, 3> getMagnetometer();
 	float getTemperature();
 
 
@@ -41,15 +41,15 @@ private:
 	const float LPF;
 
 	//Accelerometer
-	double m_accelAngle[2];
+	std::array<double, 2> m_accelAngle;
 
 	//Gyroscope
-	float m_gyroValues[3];
+	std::array <float, 3> m_gyroValues;
 	
-	float m_magValues[3];
+	std::array <float, 3> m_magValues;
 
 	//Absolute orientation
-	float m_orientation[2];
+	std::array<float, 2> m_orientation;
 
 };
 

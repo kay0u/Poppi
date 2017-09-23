@@ -9,7 +9,7 @@ LPF(0.02),
 m_orientation()
 {
 }
-#undef DEBUG
+#define  DEBUG
 
 /**
  * @brief  Initialize the accelerometer and the gyroscope.
@@ -21,7 +21,7 @@ void Imu::init()
 	if (BSP_ACCELERO_Init() != HAL_OK)
 	{
 #ifdef DEBUG
-		printf("[IMU]Error encountered while initializeing the accelerometer : %" PRIu8 "\r\n", BSP_ACCELERO_Init());
+		printf("[IMU]Error encountered while initializeing the accelerometer.\r\n");
 #endif
 	}
 	if (BSP_GYRO_Init() != HAL_OK)
@@ -71,7 +71,9 @@ void Imu::readAcc()
  */
 void Imu::readGyr()
 {
-	BSP_GYRO_GetXYZ(m_gyroValues);
+	float gyroValues[3] = { 0 };
+	BSP_GYRO_GetXYZ(gyroValues);
+	std::copy(std::begin(gyroValues), std::end(gyroValues), std::begin(m_gyroValues));
 }
 
 /**
@@ -84,7 +86,9 @@ void Imu::readMag()
 	uint8_t status = BSP_MAGNETO_Status();
 	if (((status & 0x01) == 1) && ((status & 0x02) == 0))
 	{
-		BSP_MAGNETO_GetXYZ(m_magValues);
+		float magValues[3] = { 0 };
+		BSP_MAGNETO_GetXYZ(magValues);
+		std::copy(std::begin(magValues), std::end(magValues), std::begin(m_magValues));
 	}
 }
 
@@ -104,24 +108,24 @@ float Imu::formatAccelRange(float accelAngle, float accelZ)
 	return accelAngle;
 }
 
-float* Imu::getOrientation() {
+std::array<float, 2> Imu::getOrientation() {
 	computeAngles();
 	return m_orientation;
 }
 
-float* Imu::getGyroscope()
+std::array <float, 3> Imu::getGyroscope()
 {
 	readGyr();
 	return m_gyroValues;
 }
 
-double* Imu::getAccelerometer()
+std::array<double, 2> Imu::getAccelerometer()
 {
 	readAcc();
 	return m_accelAngle;
 }
 
-float* Imu::getMagnetometer()
+std::array <float, 3> Imu::getMagnetometer()
 {
 	readMag();
 	return m_magValues;

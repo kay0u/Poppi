@@ -20,7 +20,7 @@ static void gyro(void const *argument)
 	imu.init();
 
 	/* Gyroscope variables */
-	float* Buffer;
+	std::array<float,3> Buffer;
 	float Xval, Yval = 0x00;
 
 	for (;;)
@@ -72,9 +72,11 @@ static void magneto(void const *argument)
 	imu.init();
 
 	/* Gyroscope variables */
-	float* Buffer;
+	std::array<float, 3> Buffer;
 	float Xval, Yval = 0x00;
 	float temp = 0;
+	
+	int XCounter = 0, YCounter = 0;
 	
 	for (;;)
 	{
@@ -82,11 +84,17 @@ static void magneto(void const *argument)
 		Buffer = imu.getMagnetometer();
 		temp = imu.getTemperature();
 		
+		float mag = sqrt(Buffer[0] * Buffer[0] + Buffer[1] * Buffer[1]);
+		
+		Buffer[0] /= mag;
+		Buffer[1] /= mag;
+		
 		Xval = ABS(Buffer[0]);
 		Yval = ABS(Buffer[1]);
 		
-		//printf("x %f, y %f, z %f, temp %f\r\n", Buffer[0], Buffer[1], Buffer[2], temp);
-		if (Xval > Yval)
+		//printf("x %f, y %f, z %f, mag %f, temp %f\r\n", Buffer[0], Buffer[1], Buffer[2], mag, temp);
+		
+		if(Xval * 100 > XCounter)
 		{
 			if (Buffer[0] > 0)
 			{
@@ -99,6 +107,12 @@ static void magneto(void const *argument)
 		}
 		else
 		{
+			LedController::Instance().ledOff(LED3);
+			LedController::Instance().ledOff(LED6);
+		}
+		
+		if (Yval * 100 > YCounter)
+		{
 			if (Buffer[1] < 0)
 			{
 				LedController::Instance().ledOn(LED5);
@@ -108,12 +122,20 @@ static void magneto(void const *argument)
 				LedController::Instance().ledOn(LED4);
 			}
 		}
-		osDelay(100);
-
-		LedController::Instance().ledOff(LED3);
-		LedController::Instance().ledOff(LED4);
-		LedController::Instance().ledOff(LED5);
-		LedController::Instance().ledOff(LED6);
+		else
+		{
+			LedController::Instance().ledOff(LED4);
+			LedController::Instance().ledOff(LED5);
+		}
+		
+		XCounter++;
+		YCounter++;
+		
+		if (XCounter % 100 == 0)
+			XCounter = 0;
+		if (YCounter % 100 == 0)
+			YCounter = 0;
+		osDelay(1);
 	}
 }
 
@@ -122,7 +144,7 @@ static void hexapodeThread(void const *argument)
 	Hexapode hexapode;
 	hexapode.setDirection(Vector3(-0.7, 0,1.6));
 	
-	osThreadTerminate(osThreadGetId()); //On a plus besoinde ce thread, l'hexapode en crée un tout seul
+	osThreadTerminate(osThreadGetId()); //On a plus besoin de ce thread, l'hexapode en crée un tout seul
 	for (;;)
 	{
 	}
@@ -141,7 +163,7 @@ int main(void)
 	osThreadDef(HexapodeThread, hexapodeThread, osPriorityNormal, 1, configMINIMAL_STACK_SIZE + 1000);
 	osThreadCreate(osThread(HexapodeThread), NULL);
 
-	//osThreadDef(MAGNETOThread, magneto, osPriorityNormal, 1, configMINIMAL_STACK_SIZE);
+	//osThreadDef(MAGNETOThread, magneto, osPriorityNormal, 1, configMINIMAL_STACK_SIZE+ 1000);
 	//osThreadCreate(osThread(MAGNETOThread), NULL);
 	
 	/* Start scheduler */
