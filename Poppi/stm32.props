@@ -9,14 +9,15 @@
 <!-- In order to build this project manually (outside VisualGDB), please provide TOOLCHAIN_ROOT, BSP_ROOT, EFP_BASE and TESTFW_BASE variables via Environment or Make command line -->
 	<ItemDefinitionGroup>
 		<ClCompile>
-			<PreprocessorDefinitions>ARM_MATH_CM4;STM32F411VE;USE_FREERTOS;flash_layout;STM32F411xE;%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
-			<AdditionalIncludeDirectories>$(ProjectDir);$(BSP_ROOT)/FreeRTOS/Source/CMSIS_RTOS;$(BSP_ROOT)/FreeRTOS/Source/Include;$(BSP_ROOT)/FreeRTOS/Source/Portable/gcc/ARM_CM3;$(BSP_ROOT)/STM32F4xxxx/STM32F4xx_HAL_Driver/Inc;$(BSP_ROOT)/STM32F4xxxx/STM32F4xx_HAL_Driver/Inc/Legacy;$(BSP_ROOT)/STM32F4xxxx/CMSIS_HAL/Device/ST/STM32F4xx/Include;$(BSP_ROOT)/STM32F4xxxx/CMSIS_HAL/Include;%(ClCompile.AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+			<PreprocessorDefinitions>ARM_MATH_CM4;STM32F411VE;USE_FREERTOS;flash_layout;STM32F411xE;FAST_SEMIHOSTING_BUFFER_SIZE=4096;FAST_SEMIHOSTING_BLOCKING_MODE=1;FAST_SEMIHOSTING_STDIO_DRIVER=1;FAST_SEMIHOSTING_PROFILER_DRIVER=1;PROFILER_STM32F4;%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
+			<AdditionalIncludeDirectories>$(ProjectDir);$(BSP_ROOT)/FreeRTOS/Source/CMSIS_RTOS;$(BSP_ROOT)/FreeRTOS/Source/Include;$(BSP_ROOT)/FreeRTOS/Source/Portable/gcc/ARM_CM3;$(BSP_ROOT)/STM32F4xxxx/STM32F4xx_HAL_Driver/Inc;$(BSP_ROOT)/STM32F4xxxx/STM32F4xx_HAL_Driver/Inc/Legacy;$(BSP_ROOT)/STM32F4xxxx/CMSIS_HAL/Device/ST/STM32F4xx/Include;$(BSP_ROOT)/STM32F4xxxx/CMSIS_HAL/Include;$(EFP_BASE)/Profiler;%(ClCompile.AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+			<ForcedIncludeFiles>$(EFP_BASE)/Profiler/ProfilerFreeRTOSHooks.h;%(ClCompile.ForcedIncludeFiles)</ForcedIncludeFiles>
 		</ClCompile>
 	</ItemDefinitionGroup>
 	<ItemDefinitionGroup>
 		<Link>
 			<LinkerScript Condition="'%(Link.LinkerScript)' == ''">$(BSP_ROOT)/STM32F4xxxx/LinkerScripts/STM32F411VE_flash.lds</LinkerScript>
-			<AdditionalLibraryNames>compactcpp;%(Link.AdditionalLibraryNames)</AdditionalLibraryNames>
+			<AdditionalLibraryNames>%(Link.AdditionalLibraryNames)</AdditionalLibraryNames>
 			<AdditionalOptions>--specs=nano.specs -u _printf_float -u _scanf_float --specs=nosys.specs %(Link.AdditionalOptions)</AdditionalOptions>
 		</Link>
 	</ItemDefinitionGroup>

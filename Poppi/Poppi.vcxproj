@@ -13,7 +13,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{FC8DD099-196A-41C4-89BE-E74F256085C9}</ProjectGuid>
     <BSP_ID>com.sysprogs.arm.stm32</BSP_ID>
-    <BSP_VERSION>4.3</BSP_VERSION>
+    <BSP_VERSION>4.6R4</BSP_VERSION>
     <InPlaceBSPSubdir />
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -33,22 +33,31 @@
     <GNUConfigurationType>Debug</GNUConfigurationType>
     <Toolchain>C:\SysGCC\arm-eabi</Toolchain>
     <ToolchainID>com.visualgdb.arm-eabi</ToolchainID>
-    <ToolchainVersion>6.2.0/7.12/r4</ToolchainVersion>
+    <ToolchainVersion>7.2.0/8.0.1/r3</ToolchainVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|VisualGDB'">
     <Toolchain>C:\SysGCC\arm-eabi</Toolchain>
     <ToolchainID>com.visualgdb.arm-eabi</ToolchainID>
-    <ToolchainVersion>6.2.0/7.12/r4</ToolchainVersion>
+    <ToolchainVersion>7.2.0/8.0.1/r3</ToolchainVersion>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|VisualGDB'">
     <ClCompile>
       <AdditionalIncludeDirectories>include;include/BSP;include/BSP/Components;include/BSP/Components/l3gd20;include/BSP/Components/lsm303dlhc;%(ClCompile.AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <CPPLanguageStandard>CPP11</CPPLanguageStandard>
     </ClCompile>
+    <Link>
+      <RemoveUnusedSections>true</RemoveUnusedSections>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|VisualGDB'">
     <ClCompile>
       <AdditionalIncludeDirectories>include;include/BSP;include/BSP/Components;include/BSP/Components/l3gd20;include/BSP/Components/lsm303dlhc;%(ClCompile.AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <CPPLanguageStandard>CPP11</CPPLanguageStandard>
     </ClCompile>
+    <Link>
+      <VerboseMode>
+      </VerboseMode>
+    </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="$(BSP_ROOT)\STM32F4xxxx\StartupFiles\startup_stm32f411xe.c" />
@@ -172,6 +181,16 @@
     <ClCompile Include="UnitySerial.cpp" />
     <ClCompile Include="$(BSP_ROOT)\FreeRTOS\Source\portable\GCC\ARM_CM3\port.c" />
     <ClInclude Include="$(BSP_ROOT)\FreeRTOS\Source\portable\GCC\ARM_CM3\portmacro.h" />
+    <ClCompile Include="$(EFP_BASE)\Profiler\FastSemihosting.cpp" />
+    <ClCompile Include="$(EFP_BASE)\Profiler\SamplingProfiler.cpp" />
+    <ClCompile Include="$(EFP_BASE)\Profiler\InstrumentingProfiler.cpp" />
+    <ClCompile Include="$(EFP_BASE)\Profiler\ProfilerDriver_STM32_HAL.cpp" />
+    <ClCompile Include="$(EFP_BASE)\Profiler\ProfilerRTOS_FreeRTOS.c" />
+    <ClInclude Include="$(EFP_BASE)\Profiler\SysprogsProfiler.h" />
+    <ClInclude Include="$(EFP_BASE)\Profiler\SmallNumberCoder.h" />
+    <ClInclude Include="$(EFP_BASE)\Profiler\SysprogsProfilerInterface.h" />
+    <ClInclude Include="$(EFP_BASE)\Profiler\ProfilerFreeRTOSHooks.h" />
+    <ClInclude Include="$(EFP_BASE)\Profiler\CustomRealTimeWatches.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(BSP_ROOT)\FreeRTOS\Source\CMSIS_RTOS\cmsis_os.h" />
@@ -336,7 +355,9 @@
     <None Include="stm32.props" />
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="stm32.xml" />
+    <Xml Include="stm32.xml">
+      <SubType>Designer</SubType>
+    </Xml>
   </ItemGroup>
   <ItemGroup>
     <Text Include="$(BSP_ROOT)\FreeRTOS\License\license.txt" />
