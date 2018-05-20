@@ -260,13 +260,6 @@ public:
 
 		return (ev.status == osEventMessage);
 	}
-	
-	static inline bool dataToSend(void) {
-		osEvent ev = osMessagePeek(xQueueT, 1);
-
-		return (ev.status == osEventMessage);
-	}
-	
 
 	/**
 	 * Read one byte from the ring buffer with a timeout (~ in ms)

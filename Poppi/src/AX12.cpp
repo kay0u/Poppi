@@ -28,14 +28,15 @@ AX12Base::Error AX12<serial>::read()
 	//float delay = _txBuf.size() * 1000.0 / _baud;
 	//osDelay(delay);
 	
-	
-	serial::changeCommunicationMode(serial::communicationMode::RX);
+	// make sure we have a valid return
+	_rxBuf[4] = 0x00;
 	
 	// Skip if the read was to the broadcast address
 	int ID = _txBuf[2];
 	if(ID != ID_BROADCAST) {
 
-		//printf("size : %d, capacity : %d", _rxBuf.size(), _rxBuf.capacity());
+		serial::changeCommunicationMode(serial::communicationMode::RX);
+		
 		// response packet is always 6 + bytes
 		// 0xFF, 0xFF, ID, Length Error, Param(s) Checksum
 		// timeout is a little more than the time to transmit
@@ -87,8 +88,6 @@ AX12Base::Error AX12<serial>::write()
 //	float delay = _txBuf.size() * 1000.0 / _baud;
 //	osDelay(delay);
 	
-	serial::changeCommunicationMode(serial::communicationMode::RX);
-	
 	// make sure we have a valid return
 	_rxBuf[4] = 0x00;
 
@@ -96,8 +95,8 @@ AX12Base::Error AX12<serial>::write()
 	int ID = _txBuf[2];
 	if(ID != ID_BROADCAST) {
 		
-		_rxBuf[4] = 0xFE;  // return code
-
+		serial::changeCommunicationMode(serial::communicationMode::RX);
+		
 		// response packet is always 6 bytes
 		// 0xFF, 0xFF, ID, Length Error, Param(s) Checksum
 		// timeout is a little more than the time to transmit
