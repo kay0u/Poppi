@@ -7,7 +7,7 @@
     <Revision>3</Revision>
   </ToolchainVersion>
   <BspID>com.sysprogs.arm.stm32</BspID>
-  <BspVersion>4.3</BspVersion>
+  <BspVersion>4.6R4</BspVersion>
   <McuID>STM32F411VE</McuID>
   <MCUDefinitionFile>STM32F4xxxx/DeviceDefinitions/stm32f411xe.xml</MCUDefinitionFile>
   <MCUProperties>
@@ -40,14 +40,6 @@
   <FrameworkProperties>
     <Entries>
       <KeyValue>
-        <Key>com.sysprogs.bspoptions.stm32.freertos.heap</Key>
-        <Value>heap_4</Value>
-      </KeyValue>
-      <KeyValue>
-        <Key>com.sysprogs.bspoptions.stm32.freertos.portcore</Key>
-        <Value>CM3</Value>
-      </KeyValue>
-      <KeyValue>
         <Key>com.sysprogs.efp.semihosting.buffer_size</Key>
         <Value>4096</Value>
       </KeyValue>
@@ -70,6 +62,18 @@
       <KeyValue>
         <Key>com.sysprogs.efp.profiling.nosampling</Key>
         <Value>0</Value>
+      </KeyValue>
+      <KeyValue>
+        <Key>com.sysprogs.efp.profiling.debugger_check</Key>
+        <Value />
+      </KeyValue>
+      <KeyValue>
+        <Key>com.sysprogs.bspoptions.stm32.freertos.heap</Key>
+        <Value>heap_4</Value>
+      </KeyValue>
+      <KeyValue>
+        <Key>com.sysprogs.bspoptions.stm32.freertos.portcore</Key>
+        <Value>CM3</Value>
       </KeyValue>
     </Entries>
   </FrameworkProperties>

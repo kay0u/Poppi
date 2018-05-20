@@ -84,10 +84,11 @@ static void magneto(void const *argument)
 		Buffer = imu.getMagnetometer();
 		temp = imu.getTemperature();
 		
-		float mag = sqrt(Buffer[0] * Buffer[0] + Buffer[1] * Buffer[1]);
+		float mag = sqrt(Buffer[0] * Buffer[0] + Buffer[1] * Buffer[1] + Buffer[2] * Buffer[2]);
 		
 		Buffer[0] /= mag;
 		Buffer[1] /= mag;
+		Buffer[2] /= mag;
 		
 		Xval = ABS(Buffer[0]);
 		Yval = ABS(Buffer[1]);
@@ -160,11 +161,14 @@ int main(void)
 	serial_pc::init(1000000);
 
 	// /!\ Attention, avec l'utilisation du printf il faut augmenter la stack size pour le thread.
-	osThreadDef(HexapodeThread, hexapodeThread, osPriorityNormal, 1, configMINIMAL_STACK_SIZE + 1000);
+	osThreadDef(HexapodeThread, hexapodeThread, osPriorityNormal, 1, configMINIMAL_STACK_SIZE + 512);
 	osThreadCreate(osThread(HexapodeThread), NULL);
 
-	//osThreadDef(MAGNETOThread, magneto, osPriorityNormal, 1, configMINIMAL_STACK_SIZE+ 1000);
-	//osThreadCreate(osThread(MAGNETOThread), NULL);
+	/*osThreadDef(MAGNETOThread, magneto, osPriorityNormal, 1, configMINIMAL_STACK_SIZE+ 1000);
+	osThreadCreate(osThread(MAGNETOThread), NULL);
+	
+	osThreadDef(GyroThread, gyro, osPriorityNormal, 1, configMINIMAL_STACK_SIZE + 1000);
+	osThreadCreate(osThread(GyroThread), NULL);*/
 	
 	/* Start scheduler */
 	osKernelStart();

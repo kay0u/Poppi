@@ -122,15 +122,12 @@ void Leg::goTo(LegPosition pos)
 	switch(pos)
 	{
 	case Idle:
-		printf("Go to idle \n");
 		goToIK(m_idlePosition);
 		break;
 	case Start:
-		printf("Go to start \n");
 		goToIK(m_startPosition);
 		break;
 	case End:
-		printf("Go to end \n");
 		goToIK(m_endPosition);
 		break;
 	}

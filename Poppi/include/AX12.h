@@ -2,6 +2,7 @@
 
 #include "AX12Base.h"
 #include <array>
+#include "cmsis_os.h"
 
 template<typename serial>
 class AX12 : public AX12Base
@@ -29,6 +30,10 @@ public:
 protected:
 	Error read() override;
 	Error write() override;
+	
+private:
+	static osMutexId mutex;
+	
 };
 
 template<typename serial>

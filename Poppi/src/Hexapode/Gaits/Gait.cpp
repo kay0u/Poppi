@@ -34,7 +34,7 @@ Gait::~Gait()
 
 void Gait::setDirection(Vector3 goal)
 {
-	printf("[Gait] setDirection\n\r");
+	//printf("[Gait] setDirection\n\r");
 	m_direction = goal;
 	for(int i(0); i < LEG_COUNT; ++i)
 		m_legs[i]->setDirection(goal);

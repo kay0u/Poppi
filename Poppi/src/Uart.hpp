@@ -227,7 +227,7 @@ public:
 		UART.Init.Parity = UART_PARITY_NONE; // pas de bit de parité (standard)
 		UART.Init.Mode = communicationMode::RXTX;
 
-		__HAL_UART_ENABLE_IT(&UART, UART_IT_RXNE);                     // Enable RXNE interruption
+		//__HAL_UART_ENABLE_IT(&UART, UART_IT_RXNE);                     // Enable RXNE interruption
 		
 		if (HAL_UART_Init(&UART) != HAL_OK)
 			while(1);
@@ -269,10 +269,12 @@ public:
 
 		osEvent ev = osMessageGet(xQueueR, timeout);
 
-		if (ev.status == osEventMessage)
+		if (ev.status == osEventMessage) {
 			byte = ev.value.v;
-
-		return READ_SUCCESS;
+			return READ_SUCCESS;
+		}
+	
+		return READ_TIMEOUT;
 	}
 
 	/**
@@ -283,10 +285,12 @@ public:
 
 		osEvent ev = osMessageGet(xQueueR, timeout);
 
-		if (ev.status == osEventMessage)
+		if (ev.status == osEventMessage) {
 			byte = ev.value.v;
-
-		return READ_SUCCESS;
+			return READ_SUCCESS;
+		}
+	
+		return READ_TIMEOUT;
 	}
 
 	template<class T>
@@ -337,12 +341,37 @@ public:
 		write("\r");
 		va_end(args);
 	}
+	
+	static inline void waitEndTransmition()
+	{
+		while (USART2->CR1 & USART_CR1_TXEIE);
+	}
 
 	template<class T>
-	static inline uint8_t read(T &val, uint32_t timeout = osWaitForever) {
+	static inline uint8_t read(T &val, uint32_t timeout = osWaitForever)
+	{
 		static char buffer[20];
 		uint8_t status = read(buffer, timeout);
 		val = atol(buffer);
+
+		return status;
+	}
+	
+	static inline uint8_t read(std::vector<char> &val, uint32_t timeout = osWaitForever)
+	{
+		uint8_t status = READ_SUCCESS;
+		for (int i = 0; i < val.size(); i++)
+		{
+			status &= read_char(val[i], timeout);
+			if (status != READ_SUCCESS)
+				break;
+		}
+		
+		if (status)
+		{
+			char c;
+			while (read_char(c, timeout));
+		}
 
 		return status;
 	}

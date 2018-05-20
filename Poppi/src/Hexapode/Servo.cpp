@@ -16,8 +16,10 @@ m_minAngle(minAngle),
 m_axId(id),
 m_ax(id),
 m_isConnected(true),
-m_epsilon(5) //Todo, à modifier
+m_epsilon(5), //Todo, à modifier
+m_goal(0)
 {
+	m_isConnected = id < 3;// m_ax.Ping() == AX12Base::NO_ERROR;
 }
 
 Servo::~Servo()
@@ -33,8 +35,10 @@ void Servo::goTo(float angle)
 		m_stopped = false;
 	}
 	angle = std::max(std::min(angle, m_maxAngle), m_minAngle);
-	m_ax.SetGoalPosition(angle);
-	UnitySerial::SendAx12GoToPosition(m_axId, angle);
+	m_goal = static_cast<int>(angle);
+	if (m_isConnected) //Ne fonctionne pas si je ne commente pas cette ligne
+		m_ax.SetGoalPosition(m_goal);
+	//UnitySerial::SendAx12GoToPosition(m_axId, m_goal);
 }
 
 float Servo::getMaxAngle()
@@ -57,17 +61,18 @@ bool Servo::reachedTarget()
 {
 	if (!m_isConnected)
 		return true; //Todo: Pour l'instant, on dit que toutes les pattes sont branchées ok?!
-	float goal;
-	AX12Base::Error error;  //Todo: Gérer les erreurs
-	error = m_ax.GetGoalPosition(goal);
-	if (error == AX12Base::Error::TIMEOUT)
-	{
-		m_isConnected = false;
-		return true; //Todo: Pour l'instant, on dit que toutes les pattes sont branchées ok?!
-	}
-	float presentPosition;
+	AX12Base::Error error;   //Todo: Gérer les erreurs
+	//float goal;
+	//error = m_ax.GetGoalPosition(goal);
+	float presentPosition = 0;
 	error = m_ax.GetPresentPosition(presentPosition);
-	m_reachedTarget = std::abs(goal - presentPosition) < m_epsilon;  //On n'a jamais la même valeur en vrai
+	if(error != AX12Base::NO_ERROR)
+	{
+		//m_isConnected = false;
+		return true;   //Todo: Pour l'instant, on dit que toutes les pattes sont branchées ok?!
+	}
+	m_reachedTarget = std::abs(m_goal - presentPosition) < m_epsilon;    //On n'a jamais la même valeur en vrai
+	
 	return m_reachedTarget;
 }
 

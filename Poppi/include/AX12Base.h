@@ -35,11 +35,11 @@ public:
 	static const int ID_BROADCAST = 0xFE;
 	
 	/** Set the mode of the servo
-* @param mode
-*    0 = Positional, default
-*    1 = Continuous rotation
-* @returns Error Code
-*/
+	* @param mode
+	*    0 = Positional, default
+	*    1 = Continuous rotation
+	* @returns Error Code
+	*/
 	void SetMode(Mode mode);
 	
 	/** Set baud rate of all attached servos
@@ -197,6 +197,8 @@ public:
 	* @returns Error Code
 	*/
 	Error GetLED(bool& led);
+	
+	Error Ping();
 	
 protected:
 	int _ID;

@@ -359,10 +359,41 @@ AX12Base::Error AX12Base::GetLED(bool& led) {
 	return ErrorCode;
 }
 
+AX12Base::Error AX12Base::Ping()
+{
+	_txBuf.clear();
+	_txBuf.reserve(6);
+	char sum = 0;
+	_rxBuf.clear();
+	_rxBuf.resize(6);
+	
+	_txBuf.push_back(0xff);
+	_txBuf.push_back(0xff);
+
+	// ID
+	_txBuf.push_back(_ID);
+	sum += _txBuf.back();
+
+	// Packet Length
+	_txBuf.push_back(0x2);
+	sum += _txBuf.back();
+	
+	// Instruction
+	_txBuf.push_back(Instruction::PING);
+	sum += _txBuf.back();
+	
+	_txBuf.push_back(~sum);
+	
+	return write();
+}
+
 AX12Base::Error AX12Base::read(int ID, const Register& reg)
 {
 	_txBuf.clear();
+	_txBuf.reserve(8);
+	
 	char sum = 0;
+	_rxBuf.clear();
 	_rxBuf.resize(6 + reg.length);
 
 	_rxBuf[4] = 0xFE;  // return code
@@ -434,8 +465,10 @@ AX12Base::Error AX12Base::write(int ID, const Register& reg, bool shouldWaitForT
 	// 0xff, 0xff, ID, Length, Intruction(write), Address, Param(s), Checksum
 
 	_txBuf.clear();
+	_txBuf.reserve(7 + reg.length);
 	
 	char sum = 0;
+	_rxBuf.clear();
 	_rxBuf.resize(6);
 	
 #ifdef AX12_WRITE_DEBUG

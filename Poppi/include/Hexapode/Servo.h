@@ -34,6 +34,7 @@ private:
 	const float m_minAngle;
 	const float m_maxAngle;
 	const int m_axId;
+	int m_goal;
 };
 
 #endif /* HEXAPODE_SERVO_H_ */

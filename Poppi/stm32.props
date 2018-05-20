@@ -17,7 +17,6 @@
 	<ItemDefinitionGroup>
 		<Link>
 			<LinkerScript Condition="'%(Link.LinkerScript)' == ''">$(BSP_ROOT)/STM32F4xxxx/LinkerScripts/STM32F411VE_flash.lds</LinkerScript>
-			<AdditionalLibraryNames>%(Link.AdditionalLibraryNames)</AdditionalLibraryNames>
 			<AdditionalOptions>--specs=nano.specs -u _printf_float -u _scanf_float --specs=nosys.specs %(Link.AdditionalOptions)</AdditionalOptions>
 		</Link>
 	</ItemDefinitionGroup>
@@ -29,17 +28,8 @@
 		<ToolchainSettingsContainer>
 			<ARMCPU>cortex-m4</ARMCPU>
 			<InstructionSet>THUMB</InstructionSet>
+			<ARMFPU>fpv4-sp-d16</ARMFPU>
 			<FloatABI>soft</FloatABI>
 		</ToolchainSettingsContainer>
 	</ItemDefinitionGroup>
-	<Target Name="ApplyASFLAGS">
-		<ItemGroup>
-			<ClCompile Condition="'%(ClCompile.InputLanguage)' == 'Assembler' or '%(ClCompile.InputLanguage)' == 'PreprocessedAssembler' or ('%(ClCompile.InputLanguage)' == '' and '%(ClCompile.Extension)' == '.s')">
-				<AdditionalOptions>-mfpu=fpv4-sp-d16 %(ClCompile.AdditionalOptions)</AdditionalOptions>
-			</ClCompile>
-		</ItemGroup>
-	</Target>
-	<PropertyGroup>
-		<ClCompileDependsOn>$(ClCompileDependsOn);ApplyASFLAGS</ClCompileDependsOn>
-	</PropertyGroup>
 </Project>
