@@ -28,7 +28,10 @@ void USART1_IRQHandler(void) {
 
 	if (USART_SR_RXNE & USART1->SR)                     // Read Data Reg Not Empty ?
 	{
-		c = USART1->DR & 0xFF;                          // read Data Register
+		c = USART1->DR & 0xFF;                           // read Data Register
+		
+		USART1->SR &= ~USART_FLAG_RXNE;                 // clear interrupt
+		
 		osMessagePut(Uart<1>::xQueueR, c, 0);
 	}
 	else if (USART_SR_TXE & USART1->SR)                 // Transmit Data Reg Empty ?
@@ -46,7 +49,10 @@ void USART2_IRQHandler(void) {
 
 	if (USART_SR_RXNE & USART2->SR)                     // Read Data Reg Not Empty ?
 	{
-		c = USART2->DR & 0xFF;                          // read Data Register
+		c = USART2->DR & 0xFF;                           // read Data Register
+		
+		USART2->SR &= ~USART_FLAG_RXNE;                 // clear interrupt
+
 		osMessagePut(Uart<2>::xQueueR, c, 0);
 	}
 	else if (USART_SR_TXE & USART2->SR)                 // Transmit Data Reg Empty ?
@@ -64,7 +70,10 @@ void USART6_IRQHandler(void) {
 
 	if (USART_SR_RXNE & USART6->SR)                     // Read Data Reg Not Empty ?
 	{
-		c = USART6->DR & 0xFF;                          // read Data Register
+		c = USART6->DR & 0xFF;                            // read Data Register
+		
+		USART6->SR &= ~USART_FLAG_RXNE;                    // clear interrupt
+		
 		osMessagePut(Uart<6>::xQueueR, c, 0);
 	}
 	else if (USART_SR_TXE & USART6->SR)                 // Transmit Data Reg Empty ?

@@ -12,7 +12,7 @@ AX12<serial>::AX12(int ID, int baud, Mode mode, bool shouldWaitForTrigger)
 	_shouldWaitForTrigger = shouldWaitForTrigger;
 	serial::init(baud);
 	serial::changeCommunicationMode(serial::communicationMode::TX);
-	//SetMode(_mode);
+	SetMode(_mode);
 }
 
 template<typename serial>
@@ -20,15 +20,15 @@ AX12Base::Error AX12<serial>::read()
 {
 	// Transmit the packet in one burst with no pausing
 	serial::changeCommunicationMode(serial::communicationMode::TX);
-	{
-		uint8_t test[20];
-		for (int i = 0; i < _txBuf.size(); i++)
-			test[i] = _txBuf[i];
+	HAL_UART_Transmit(&serial::UART, _txBuf.data(), _txBuf.size(), 100);
 	
-		HAL_UART_Transmit(&serial::UART, test, _txBuf.size(), 100);
-	}
 	//serial::print(_txBuf);
-	serial::waitEndTransmition();
+	//	
+	//// Wait for the bytes to be transmitted
+	//float delay = _txBuf.size() * 1000.0 / _baud;
+	//osDelay(delay);
+	
+	
 	serial::changeCommunicationMode(serial::communicationMode::RX);
 	
 	// Skip if the read was to the broadcast address
@@ -40,23 +40,12 @@ AX12Base::Error AX12<serial>::read()
 		// 0xFF, 0xFF, ID, Length Error, Param(s) Checksum
 		// timeout is a little more than the time to transmit
 		// the packet back, i.e. (6+bytes)*10 bit periods
-		
-		{
-			uint8_t test[20];
-	
-			if (HAL_UART_Receive(&serial::UART, test, _rxBuf.size(), 1000) == HAL_OK)
-			{
-				if (_rxBuf.size() > 8)
-					_rxBuf[0] = test[0];
-				for (int i = 0; i < _rxBuf.size(); i++)
-					_rxBuf[i] = test[i];
-			}
-			else
-				return TIMEOUT;
-		}
-		/*if(serial::read(_rxBuf, 10) == serial::READ_TIMEOUT) {
+		if (HAL_UART_Receive(&serial::UART, _rxBuf.data(), _rxBuf.size(), 100) != HAL_OK)
 			return TIMEOUT;
-		}*/
+		
+//		if(serial::read(_rxBuf, 100) == serial::READ_TIMEOUT) {
+//			return TIMEOUT;
+//		}
 		
 		// Copy the data from Status into data for return
 		for(int i = 0 ; i < std::min(_rxBuf[3] - 2, static_cast<int>(_rxBuf.size())); i++) {
@@ -89,15 +78,15 @@ AX12Base::Error AX12<serial>::write()
 {
 	// Transmit the packet in one burst with no pausing
 	serial::changeCommunicationMode(serial::communicationMode::TX);
-	{
-		uint8_t test[20];
-		for (int i = 0; i < _txBuf.size(); i++)
-			test[i] = _txBuf[i];
+	HAL_UART_Transmit(&serial::UART, _txBuf.data(), _txBuf.size(), 100);
 	
-		HAL_UART_Transmit(&serial::UART, test, _txBuf.size(), 100);
-	}
-	//serial::print(_txBuf);
-	serial::waitEndTransmition();
+		
+//	serial::print(_txBuf);
+//		
+//	// Wait for the bytes to be transmitted
+//	float delay = _txBuf.size() * 1000.0 / _baud;
+//	osDelay(delay);
+	
 	serial::changeCommunicationMode(serial::communicationMode::RX);
 	
 	// make sure we have a valid return
@@ -113,19 +102,12 @@ AX12Base::Error AX12<serial>::write()
 		// 0xFF, 0xFF, ID, Length Error, Param(s) Checksum
 		// timeout is a little more than the time to transmit
 		// the packet back, i.e. 60 bit periods, round up to 100
-		{
-			uint8_t test[20];
-			if (HAL_UART_Receive(&serial::UART, test, _rxBuf.size(), 1000) == HAL_OK)
-			{
-				for (int i = 0; i < _rxBuf.size(); i++)
-					_rxBuf[i] = test[i];
-			}
-			else
-				return TIMEOUT;
-		}
-		/*if(serial::read(_rxBuf, 10) == serial::READ_TIMEOUT) {
+		if(HAL_UART_Receive(&serial::UART, _rxBuf.data(), _rxBuf.size(), 100) != HAL_OK)
 			return TIMEOUT;
-		}*/
+		
+		//if(serial::read(_rxBuf, 100) == serial::READ_TIMEOUT) {
+		//	return TIMEOUT;
+		//}
 		
 		
 		// Build the TxPacket first in RAM, then we'll send in one go
@@ -148,8 +130,8 @@ AX12Base::Error AX12<serial>::write()
 template<typename serial>
 void AX12<serial>::trigger() {
 
-	osMutexWait(mutex, osWaitForever);
 	_txBuf.clear();
+	_txBuf.reserve(6);
 	char sum = 0;
 
 #ifdef AX12_TRIGGER_DEBUG
@@ -194,12 +176,10 @@ void AX12<serial>::trigger() {
 
 	// Transmit the packet in one burst with no pausing
 	serial::changeCommunicationMode(serial::communicationMode::TX);
-	serial::print(_txBuf);
+	HAL_UART_Transmit(&serial::UART, _txBuf.data(), _txBuf.size(), 100);
 		
 	// This is a broadcast packet, so there will be no reply
-	osMutexRelease(mutex);
 	return;
 }
 
 template class AX12<serial_ax>;
-template<typename serial> osMutexId AX12<serial>::mutex = osMutexCreate(osMutex(osmutex));

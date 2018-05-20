@@ -227,7 +227,7 @@ public:
 		UART.Init.Parity = UART_PARITY_NONE; // pas de bit de parité (standard)
 		UART.Init.Mode = communicationMode::RXTX;
 
-		//__HAL_UART_ENABLE_IT(&UART, UART_IT_RXNE);                     // Enable RXNE interruption
+		__HAL_UART_ENABLE_IT(&UART, UART_IT_RXNE);                     // Enable RXNE interruption
 		
 		if (HAL_UART_Init(&UART) != HAL_OK)
 			while(1);
@@ -260,6 +260,13 @@ public:
 
 		return (ev.status == osEventMessage);
 	}
+	
+	static inline bool dataToSend(void) {
+		osEvent ev = osMessagePeek(xQueueT, 1);
+
+		return (ev.status == osEventMessage);
+	}
+	
 
 	/**
 	 * Read one byte from the ring buffer with a timeout (~ in ms)
@@ -342,11 +349,6 @@ public:
 		va_end(args);
 	}
 	
-	static inline void waitEndTransmition()
-	{
-		while (USART2->CR1 & USART_CR1_TXEIE);
-	}
-
 	template<class T>
 	static inline uint8_t read(T &val, uint32_t timeout = osWaitForever)
 	{
@@ -357,7 +359,7 @@ public:
 		return status;
 	}
 	
-	static inline uint8_t read(std::vector<char> &val, uint32_t timeout = osWaitForever)
+	static inline uint8_t read(std::vector<unsigned char> &val, uint32_t timeout = osWaitForever)
 	{
 		uint8_t status = READ_SUCCESS;
 		for (int i = 0; i < val.size(); i++)
@@ -367,12 +369,6 @@ public:
 				break;
 		}
 		
-		if (status)
-		{
-			char c;
-			while (read_char(c, timeout));
-		}
-
 		return status;
 	}
 

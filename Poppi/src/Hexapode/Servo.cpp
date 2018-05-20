@@ -19,7 +19,7 @@ m_isConnected(true),
 m_epsilon(5), //Todo, à modifier
 m_goal(0)
 {
-	m_isConnected = id < 3;// m_ax.Ping() == AX12Base::NO_ERROR;
+	m_isConnected = m_ax.Ping() == AX12Base::NO_ERROR;
 }
 
 Servo::~Servo()
@@ -69,7 +69,7 @@ bool Servo::reachedTarget()
 	if(error != AX12Base::NO_ERROR)
 	{
 		//m_isConnected = false;
-		return true;   //Todo: Pour l'instant, on dit que toutes les pattes sont branchées ok?!
+		return false;   //Todo: Pour l'instant, on dit que toutes les pattes sont branchées ok?!
 	}
 	m_reachedTarget = std::abs(m_goal - presentPosition) < m_epsilon;    //On n'a jamais la même valeur en vrai
 	

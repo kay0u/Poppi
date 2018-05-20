@@ -206,9 +206,9 @@ protected:
 	Mode _mode;
 	bool _shouldWaitForTrigger;
 	
-	std::vector<char> _txBuf;
-	std::vector<char> _rxBuf;
-	std::vector<char> _data;
+	std::vector<unsigned char> _txBuf;
+	std::vector<unsigned char> _rxBuf;
+	std::vector<unsigned char> _data;
 	
 	/*
 //EEPROM

@@ -30,10 +30,6 @@ public:
 protected:
 	Error read() override;
 	Error write() override;
-	
-private:
-	static osMutexId mutex;
-	
 };
 
 template<typename serial>
@@ -41,6 +37,7 @@ template <std::size_t size>
 void AX12<serial>::syncWriteGoalAndSpeed(const std::array<uint8_t, size>& idList, const std::array<int, size>& goalList, const std::array<float, size>& speedList)
 {
 	_txBuf.clear();
+	_txBuf.reserve(8 + idList.size() * 5);
 	
 	//REG_MOVING_SPEED is next to REG_GOAL_POSITION, so if you write after REG_GOAL_POSITION.address + REG_GOAL_POSITION.length, you write in REG_MOVING_SPEED.address
 	int dataLength = REG_GOAL_POSITION.length + REG_MOVING_SPEED.length;
@@ -92,7 +89,7 @@ void AX12<serial>::syncWriteGoalAndSpeed(const std::array<uint8_t, size>& idList
 	_txBuf.push_back(~sum);
 	
 	serial::changeCommunicationMode(serial::communicationMode::TX);
-	serial::print(_txBuf);
+	HAL_UART_Transmit(&serial::UART, _txBuf.data(), _txBuf.size(), 100);
 }
 
 template<typename serial>
@@ -100,6 +97,7 @@ template <std::size_t size>
 void AX12<serial>::syncWriteGoal(const std::array<uint8_t, size>& idList, const std::array<int, size>& goalList)
 {
 	_txBuf.clear();
+	_txBuf.reserve(8 + idList.size() * 3);
 	
 	//REG_MOVING_SPEED is next to REG_GOAL_POSITION, so if you write after REG_GOAL_POSITION.address + REG_GOAL_POSITION.length, you write in REG_MOVING_SPEED.address
 	int dataLength = REG_GOAL_POSITION.length/* + REG_MOVING_SPEED.length*/;
@@ -143,6 +141,6 @@ void AX12<serial>::syncWriteGoal(const std::array<uint8_t, size>& idList, const 
 	_txBuf.push_back(~sum);
 	
 	serial::changeCommunicationMode(serial::communicationMode::TX);
-	serial::print(_txBuf);
+	HAL_UART_Transmit(&serial::UART, _txBuf.data(), _txBuf.size(), 100);
 }
 
