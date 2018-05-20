@@ -49,7 +49,7 @@ AX12Base::Error AX12<serial>::read()
 //		}
 		
 		// Copy the data from Status into data for return
-		for(int i = 0 ; i < std::min(_rxBuf[3] - 2, static_cast<int>(_rxBuf.size())); i++) {
+		for(int i = 0 ; i < std::min(_rxBuf[3] - 2, static_cast<int>(_rxBuf.size() - 1)); i++) {
 			_data[i] = _rxBuf[5 + i];
 		}
 
