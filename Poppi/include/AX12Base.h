@@ -109,7 +109,7 @@ public:
 	* @param NewID 1-255
 	* @returns Error Code
 	*
-	* If a servo ID is not know, the broadcast address of 0 can be used for CurrentID.
+	* If a servo ID is unknown, the broadcast address (0xFE) can be used for CurrentID.
 	* In this situation, only one servo should be connected to the bus
 	*/
 	Error SetID(int currentID, int newID);
