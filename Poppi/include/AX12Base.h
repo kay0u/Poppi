@@ -11,7 +11,7 @@
 class AX12Base
 {
 public:
-	virtual ~AX12Base() {};
+	virtual ~AX12Base() = default;
 	
 	enum Mode
 	{

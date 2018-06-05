@@ -111,8 +111,8 @@ AX12Base::Error AX12Base::SetSpeed(float speed) {
 	int goal = (0x3ff * std::abs(speed));
 
 	// Set direction CW if we have a negative speed
-if((_mode == Mode::Wheel) && (speed < 0))
-	goal |= (0x1 << 10);
+	if((_mode == Mode::Wheel) && (speed < 0))
+		goal |= (0x1 << 10);
 
 	_data[0] = goal & 0xff;   // bottom 8 bits
 	_data[1] = goal >> 8;     // top 8 bits

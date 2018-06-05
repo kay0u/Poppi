@@ -121,8 +121,6 @@ AX12Base::Error AX12<serial>::write()
 #endif
 	}
 	
-	Error error =  static_cast<Error>(_rxBuf[4]);
-	
 	return static_cast<Error>(_rxBuf[4]);
 }
 

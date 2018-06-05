@@ -9,8 +9,6 @@ class AX12 : public AX12Base
 public:	
 	AX12() = delete;
 	
-	virtual ~AX12() {};
-	
 	/** Create an AX12 servo object connected to the specified serial port, with the specified ID
 	*
 	* @param int ID, the Bus ID of the servo 1-255
