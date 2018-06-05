@@ -12,9 +12,8 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{FC8DD099-196A-41C4-89BE-E74F256085C9}</ProjectGuid>
-    <BSP_ID>com.sysprogs.arm.stm32</BSP_ID>
-    <BSP_VERSION>4.6R4</BSP_VERSION>
     <InPlaceBSPSubdir />
+    <BSP_ID>com.sysprogs.arm.stm32</BSP_ID>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|VisualGDB'">
@@ -43,7 +42,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|VisualGDB'">
     <ClCompile>
       <AdditionalIncludeDirectories>include;include/BSP;include/BSP/Components;include/BSP/Components/l3gd20;include/BSP/Components/lsm303dlhc;%(ClCompile.AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <CPPLanguageStandard>CPP11</CPPLanguageStandard>
+      <CPPLanguageStandard>CPP14</CPPLanguageStandard>
     </ClCompile>
     <Link>
       <RemoveUnusedSections>true</RemoveUnusedSections>
@@ -52,7 +51,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|VisualGDB'">
     <ClCompile>
       <AdditionalIncludeDirectories>include;include/BSP;include/BSP/Components;include/BSP/Components/l3gd20;include/BSP/Components/lsm303dlhc;%(ClCompile.AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <CPPLanguageStandard>CPP11</CPPLanguageStandard>
+      <CPPLanguageStandard>CPP14</CPPLanguageStandard>
     </ClCompile>
     <Link>
       <VerboseMode>
